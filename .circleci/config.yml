@@ -47,6 +47,7 @@ workflows:
   build-master:
     jobs:
       - build:
+          context: airbnb-bussines-core
           filters:
             branches:
               only: main
