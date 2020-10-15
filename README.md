@@ -1,5 +1,6 @@
 # businesscore
 
+npm start # levanta la aplicacion en el puerto 3000
 
 # docker
 
@@ -15,3 +16,7 @@ docker ps # ver todos los contenedores corriendo
 docker logs -f <nombre del contenedor>
 
 docker pull cordobacesar/taller2airbnb ## bajar la imagen
+docker push cordobacesar/taller2airbnb ## psuhea la imagen
+
+# test
+node run test
