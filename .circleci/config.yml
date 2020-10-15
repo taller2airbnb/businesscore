@@ -8,9 +8,6 @@ executors:
       IMAGE_NAME: cordobacesar/taller2airbnb
     docker:
       - image: circleci/buildpack-deps:stretch
-      auth:
-        username: $DOCKERHUB_USERNAME
-        password: $DOCKERHUB_PASSWORD
 jobs:
   build:
     executor: docker-publisher
