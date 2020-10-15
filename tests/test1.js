@@ -7,5 +7,5 @@ suite.test('Test 4', t => {
 });
 
 suite.test('Test 5 papa', t => {
-    t.equal(1,1);
+    t.equal(1,2);
 });
