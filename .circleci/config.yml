@@ -39,6 +39,8 @@ jobs:
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
+            echo "$DOCKERHUB_PASS"
+            echo "$DOCKERHUB_USERNAME"
 workflows:
   version: 2
   node-tests:
