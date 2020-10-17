@@ -70,8 +70,7 @@ jobs:
       - run:
           name: Deploy Heroku Docker Container
           command: |
-            heroku container:push web -a taller2airbnb-businesscore
-            heroku container:release web -a taller2airbnb-businesscore
+            docker push registry.heroku.com/taller2airbnb-businesscore/web
 
 workflows:
   version: 2
