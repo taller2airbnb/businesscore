@@ -1,16 +1,17 @@
 version: 2.1
 orbs:
-  deploy-to-heroku: rise/deploy-to-heroku@0.0.6
   node: circleci/node@3.0.0
+  deploy-to-heroku: rise/deploy-to-heroku@0.0.6
 
 executors:
   docker-publisher:
-    - image: circleci/node:12
-  environment:
-    IMAGE_NAME: cordobacesar/taller2airbnb
-    HEROKU_LOGIN: cordobacesar
-    HEROKU_API_KEY: 4d54c6c2-4015-4cf0-bb03-6bca051b42f4
+    environment:
+      IMAGE_NAME: cordobacesar/taller2airbnb
+      HEROKU_LOGIN: cordobacesar
+      HEROKU_API_KEY: 4d54c6c2-4015-4cf0-bb03-6bca051b42f4
 
+    docker:
+      - image: circleci/buildpack-deps:stretch
 jobs:
   build:
     executor: docker-publisher
@@ -43,7 +44,7 @@ jobs:
           command: |
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
-  heroku-install-login-deploy:
+  heroku-install:
     executor: docker-publisher
     steps:
       - checkout
@@ -60,6 +61,11 @@ jobs:
             else
               echo "Heroku is already installed. No operation was performed."
             fi
+  heroku-login-deploy:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
       - run:
           name: Login into Heroku Docker Repository
           command: |
@@ -67,8 +73,9 @@ jobs:
       - run:
           name: Deploy Heroku Docker Container
           command: |
-            docker push $IMAGE_NAME:latest/web
-
+            heroku container:push web -a taller2airbnb-businesscore
+            heroku container:release web -a taller2airbnb-businesscore
+            
 workflows:
   version: 2
   node-tests:
@@ -86,9 +93,15 @@ workflows:
           filters:
             branches:
               only: main
-      - heroku-install-login-deploy:
+      - heroku-install:
           requires:
             - publish-latest
+          filters:
+            branches:
+              only: main
+      - heroku-login-deploy:
+          requires:
+            - heroku-install
           filters:
             branches:
               only: main
