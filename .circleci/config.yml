@@ -4,7 +4,7 @@ orbs:
   node: circleci/node@3.0.0
 
 executors:
-  docker:
+  docker-publisher:
     - image: circleci/node:12
   environment:
     IMAGE_NAME: cordobacesar/taller2airbnb
@@ -13,7 +13,7 @@ executors:
 
 jobs:
   build:
-    executor: docker
+    executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker
@@ -30,7 +30,7 @@ jobs:
           paths:
             - ./image.tar
   publish-latest:
-    executor: docker
+    executor: docker-publisher
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -44,7 +44,7 @@ jobs:
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
   heroku-install-login-deploy:
-    executor: docker
+    executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker
