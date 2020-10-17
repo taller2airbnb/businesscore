@@ -1,19 +1,17 @@
 version: 2.1
-orbs:
-  node: circleci/node@3.0.0
 
 executors:
-  docker-publisher:
+  node:
+    docker:
+      - image: circleci/node:12
     environment:
       IMAGE_NAME: cordobacesar/taller2airbnb
       HEROKU_LOGIN: cordobacesar
       HEROKU_API_KEY: 4d54c6c2-4015-4cf0-bb03-6bca051b42f4
 
-    docker:
-      - image: circleci/buildpack-deps:stretch
 jobs:
   build:
-    executor: docker-publisher
+    executor: docker
     steps:
       - checkout
       - setup_remote_docker
@@ -30,7 +28,7 @@ jobs:
           paths:
             - ./image.tar
   publish-latest:
-    executor: docker-publisher
+    executor: docker
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -44,7 +42,7 @@ jobs:
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
   heroku-install-login-deploy:
-    executor: docker-publisher
+    executor: docker
     steps:
       - checkout
       - setup_remote_docker
@@ -67,7 +65,7 @@ jobs:
       - run:
           name: Deploy Heroku Docker Container
           command: |
-            docker push registry.heroku.com/taller2airbnb-businesscore/web
+            docker push $IMAGE_NAME:latest/web
 
 workflows:
   version: 2
