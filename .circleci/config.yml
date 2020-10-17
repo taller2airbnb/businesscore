@@ -43,6 +43,21 @@ jobs:
           command: |
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
+  heroku-install:
+    install_dependencies:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies- # fallback to using the latest cache if no exact match is found
+      - run:
+          name: "Install Heroku CLI, if necessary"
+          command: |
+            if [[ $(command -v heroku) == "" ]]; then
+              curl https://cli-assets.heroku.com/install.sh | sh
+            else
+              echo "Heroku is already installed. No operation was performed."
+            fi
   heroku-login-deploy:
     executor: docker-publisher
     steps:
@@ -73,9 +88,15 @@ workflows:
           filters:
             branches:
               only: main
-      - heroku-login-deploy:
+      - heroku-install:
           requires:
             - publish-latest
+          filters:
+            branches:
+              only: main
+      - heroku-login-deploy:
+          requires:
+            - heroku-install
           filters:
             branches:
               only: main
