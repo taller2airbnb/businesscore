@@ -6,6 +6,9 @@ executors:
   docker-publisher:
     environment:
       IMAGE_NAME: cordobacesar/taller2airbnb
+      HEROKU_LOGIN: cordobacesar
+      HEROKU_API_KEY: 4d54c6c2-4015-4cf0-bb03-6bca051b42f4
+
     docker:
       - image: circleci/buildpack-deps:stretch
 jobs:
@@ -40,20 +43,19 @@ jobs:
           command: |
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
-
+  heroku-login-deploy:
+    executor: docker-publisher
+    steps:
       - run:
-         command: ls
-      - attach_workspace:
-          at: /
-      - run:
-              name: Setup Heroku
-              command: |
-                chmod +x .circleci/setup-heroku.sh
-                .circleci/setup-heroku.sh
-      - run:
-          name: Deploy to Heroku
+          name: Login into Heroku Docker Repository
           command: |
-            git push heroku master
+            docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
+      - run:
+          name: Deploy Heroku Docker Container
+          command: |
+            heroku container:push web -a taller2airbnb-businesscore
+            heroku container:release web -a taller2airbnb-businesscore
+
 workflows:
   version: 2
   node-tests:
