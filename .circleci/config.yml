@@ -39,6 +39,15 @@ jobs:
           command: |
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
+      - run:
+              name: Setup Heroku
+              command: |
+                chmod +x .circleci/setup-heroku.sh
+                .circleci/setup-heroku.sh
+      - run:
+          name: Deploy to Heroku
+          command: |
+            git push heroku master
 workflows:
   version: 2
   node-tests:
