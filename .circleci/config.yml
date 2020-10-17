@@ -42,7 +42,7 @@ jobs:
             docker push $IMAGE_NAME:latest
 
       - run:
-         command: ls .circleci/
+         command: ls
       - attach_workspace:
           at: /
       - run:
