@@ -16,6 +16,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build Docker image
+          command: ls
           command: |
             docker build -t $IMAGE_NAME:latest .
       - run:
@@ -42,9 +43,8 @@ jobs:
       - run:
               name: Setup Heroku
               command: |
-                ls
-                chmod +x setup-heroku.sh
-                setup-heroku.sh
+                chmod +x .circleci/setup-heroku.sh
+                .circleci/setup-heroku.sh
       - run:
           name: Deploy to Heroku
           command: |
