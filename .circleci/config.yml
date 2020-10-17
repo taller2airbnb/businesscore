@@ -43,7 +43,7 @@ jobs:
           command: |
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
-  heroku-install:
+  heroku-install-login-deploy:
     executor: docker-publisher
     steps:
       - checkout
