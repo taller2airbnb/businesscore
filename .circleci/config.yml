@@ -15,8 +15,6 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          command: ls .circleci/
-      - run:
           name: Build Docker image
           
           command: |
@@ -42,6 +40,11 @@ jobs:
           command: |
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
+
+      - run:
+        command: ls .circleci/
+      - attach_workspace:
+          at: s/
       - run:
               name: Setup Heroku
               command: |
