@@ -73,4 +73,11 @@ workflows:
           filters:
             branches:
               only: main
+      - heroku-login-deploy:
+          requires:
+            - publish-latest
+          filters:
+            branches:
+              only: main
+
       
