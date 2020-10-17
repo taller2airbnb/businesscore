@@ -4,13 +4,12 @@ orbs:
   node: circleci/node@3.0.0
 
 executors:
-  node:
-    docker:
-      - image: circleci/node:12
-    environment:
-      IMAGE_NAME: cordobacesar/taller2airbnb
-      HEROKU_LOGIN: cordobacesar
-      HEROKU_API_KEY: 4d54c6c2-4015-4cf0-bb03-6bca051b42f4
+  docker:
+    - image: circleci/node:12
+  environment:
+    IMAGE_NAME: cordobacesar/taller2airbnb
+    HEROKU_LOGIN: cordobacesar
+    HEROKU_API_KEY: 4d54c6c2-4015-4cf0-bb03-6bca051b42f4
 
 jobs:
   build:
