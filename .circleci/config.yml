@@ -42,9 +42,9 @@ jobs:
             docker push $IMAGE_NAME:latest
 
       - run:
-        command: ls .circleci/
+         command: ls .circleci/
       - attach_workspace:
-          at: s/
+          at: /
       - run:
               name: Setup Heroku
               command: |
