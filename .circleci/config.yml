@@ -30,7 +30,7 @@ jobs:
           root: .
           paths:
             - ./image.tar
-  publish-latest:
+  publish:
     executor: docker-publisher
     steps:
       - attach_workspace:
@@ -44,7 +44,7 @@ jobs:
           command: |
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
-  heroku:
+  deploy:
     executor: docker-publisher
     steps:
       - checkout
@@ -82,15 +82,15 @@ workflows:
           filters:
             branches:
               only: main
-      - publish-latest:
+      - publish:
           requires:
             - build
           filters:
             branches:
               only: main
-      - heroku:
+      - deploy:
           requires:
-            - publish-latest
+            - publish
           filters:
             branches:
               only: main
