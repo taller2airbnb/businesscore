@@ -20,7 +20,7 @@ router.get("/profile-status", (req, res) => {
 });
 
 router.get("/health", (req, res) => {
-  res.send(JSON.stringify({ status: "UP" }));
+  res.send(JSON.stringify({ status: "UP", from: "bussines-core" }));
 });
 
 module.exports = router;
