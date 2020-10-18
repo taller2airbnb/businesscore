@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 
 router.get("/profile-status", (req, res,next) => {
   request.get(
-    "https://taller2airbnb-profile.herokuapp.com/health.json",
+    "https://taller2airbnb-profile.herokuapp.com/health",
     (error, response, body) => {
       if (error) {
         return console.dir(error);
