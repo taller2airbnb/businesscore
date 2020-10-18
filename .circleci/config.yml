@@ -44,7 +44,7 @@ jobs:
           command: |
             echo ${DOCKERHUB_PASS} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
             docker push $IMAGE_NAME:latest
-  heroku-install:
+  heroku:
     executor: docker-publisher
     steps:
       - checkout
@@ -61,11 +61,6 @@ jobs:
             else
               echo "Heroku is already installed. No operation was performed."
             fi
-  heroku-login-deploy:
-    executor: docker-publisher
-    steps:
-      - checkout
-      - setup_remote_docker
       - run:
           name: Login into Heroku Docker Repository
           command: |
@@ -93,15 +88,9 @@ workflows:
           filters:
             branches:
               only: main
-      - heroku-install:
+      - heroku:
           requires:
             - publish-latest
-          filters:
-            branches:
-              only: main
-      - heroku-login-deploy:
-          requires:
-            - heroku-install
           filters:
             branches:
               only: main
