@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const router = Router();
-var https = require("https");
 var request = require("request");
 
 router.get("/", (req, res) => {
@@ -14,7 +13,7 @@ router.get("/profile-status", (req, res) => {
       if (error) {
         return console.dir(error);
       }
-      res.send(JSON.parse(body).status);
+      res.send(JSON.parse(body));
     }
   );
 });
