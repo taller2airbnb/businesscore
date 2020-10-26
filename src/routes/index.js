@@ -12,8 +12,8 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerOptions = {
     swaggerDefinition: {
         info: {
-            title: "swagger-airbnb-bussinescore",
-            description: "Swagger bussines core"
+            title: "swagger-airbnb-businesscore",
+            description: "Swagger business core"
         },
         servers: ["http://localhost:3000"]
     },
@@ -43,7 +43,7 @@ router.options('*', cors());
  *           description: Mensaje de bienvenida
  */
 router.get("/", (req, res) => {
-    res.status(200).send("Bienvenido a airbnb bussines core");
+    res.status(200).send("Bienvenido a airbnb business core");
 });
 
 router.get("/profile-status", (req, res, next) => {
@@ -68,7 +68,7 @@ router.get("/profile-status", (req, res, next) => {
  *           description: health UP
  */
 router.get("/health", (req, res) => {
-    res.send(JSON.stringify({ status: "UP", from: "bussines-core" }));
+    res.send(JSON.stringify({ status: "UP", from: "business-core" }));
 });
 
 module.exports = router;
