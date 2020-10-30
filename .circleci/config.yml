@@ -75,8 +75,8 @@ workflows:
   version: 2
   node-tests:
     jobs:
-      - node/test
-      - run: npm run cover
+      override:
+        - npm run cover
   build-master:
     jobs:
       - build:
