@@ -85,7 +85,18 @@ workflows:
       - node/test
   build-master:
     jobs:
+      - coverage:
+        filters:
+          branches:
+            only: main
       - build:
+        requires:
+          - coverage
+        filters:
+          branches:
+            only: main
+         requires:
+            - coverage
           filters:
             branches:
               only: main
