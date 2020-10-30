@@ -86,11 +86,11 @@ workflows:
   build-master:
     jobs:
       - build:
-        requires:
-          - coverage
-        filters:
-          branches:
-            only: main
+          requires:
+              - coverage
+          filters:
+            branches:
+              only: main
       - publish:
           requires:
             - build
