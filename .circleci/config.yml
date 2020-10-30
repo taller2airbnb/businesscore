@@ -84,9 +84,6 @@ workflows:
   node-tests:
     jobs:
       - node/test
-  coverage:
-    jobs:
-      - test
   build-master:
     jobs:
       - test:
