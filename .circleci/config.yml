@@ -89,13 +89,13 @@ workflows:
       - test
   build-master:
     jobs:
-      - coverage:
+      - test:
         filters:
           branches:
             only: main
       - build:
           requires:
-              - coverage
+              - test
           filters:
             branches:
               only: main
