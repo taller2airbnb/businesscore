@@ -13,6 +13,12 @@ executors:
     docker:
       - image: circleci/node:12
 jobs:
+  coverage:
+    executor: coverage with jests
+    steps:
+      - run:
+          run: npm run cover
+          
   build:
     executor: docker-publisher
     steps:
@@ -75,8 +81,7 @@ workflows:
   version: 2
   node-tests:
     jobs:
-      override:
-        - npm run cover
+      - node/test
   build-master:
     jobs:
       - build:
