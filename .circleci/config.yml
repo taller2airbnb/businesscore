@@ -76,6 +76,7 @@ workflows:
   node-tests:
     jobs:
       - node/test
+      - node/cover
   build-master:
     jobs:
       - build:
