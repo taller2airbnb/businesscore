@@ -14,7 +14,8 @@ executors:
       - image: circleci/node:12
 jobs:
   test:
-    executor: coverage
+    executor: 
+    name: coverage
     steps:
       - run:
           name: coverage-jest
@@ -84,12 +85,11 @@ workflows:
   node-tests:
     jobs:
       - node/test
+  coverage:
+    jobs:
+      - test 
   build-master:
     jobs:
-      - test:
-        filters:
-          branches:
-            only: main
       - build:
           requires:
               - test
