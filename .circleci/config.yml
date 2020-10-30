@@ -14,10 +14,11 @@ executors:
       - image: circleci/node:12
 jobs:
   coverage:
-    executor: coverage with jests
+    executor: coverage
     steps:
       - run:
-          run: npm run cover
+          name: coverage-jest
+          command: npm run cover
           
   build:
     executor: docker-publisher
