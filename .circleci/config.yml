@@ -12,19 +12,19 @@ executors:
 
     docker:
       - image: circleci/node:12
+
 jobs:
-  coverage:
-    executor: coverage
-    steps:
-      - run:
-          name: coverage-jest
-          command: npm run cover
-          
   build:
     executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker
+      - run: npm install
+      - run:
+          name: "Run Jest and Collect Coverage Reports"
+          command: jest --collectCoverage=true
+      - store_artifacts:
+          path: coverage
       - run:
           name: Build Docker image
           
@@ -77,6 +77,7 @@ jobs:
           command: |
             heroku container:push web -a taller2airbnb-businesscore
             heroku container:release web -a taller2airbnb-businesscore
+
 workflows:
   version: 2
   node-tests:
