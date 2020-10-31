@@ -13,14 +13,12 @@ executors:
     docker:
       - image: circleci/node:12
 jobs:
-  test:
-    executor: 
-    name: coverage
+  coverage:
+    executor: coverage
     steps:
       - run:
           name: coverage-jest
-          command: |
-            npm run cover
+          command: npm run cover
           
   build:
     executor: docker-publisher
@@ -79,15 +77,11 @@ jobs:
           command: |
             heroku container:push web -a taller2airbnb-businesscore
             heroku container:release web -a taller2airbnb-businesscore
-
 workflows:
   version: 2
   node-tests:
     jobs:
       - node/test
-  coverage:
-    jobs:
-      - test 
   build-master:
     jobs:
       - build:
@@ -106,5 +100,3 @@ workflows:
           filters:
             branches:
               only: main
-
-      
