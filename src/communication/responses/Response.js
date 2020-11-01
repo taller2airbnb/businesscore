@@ -1,6 +1,5 @@
-"use strict";
 
-module.exports = class ApiResponse {
+ class ApiResponse {
     static understandThis(jsonResponse) {
         throw new Error("You have to implement the method");
     }
@@ -21,3 +20,6 @@ module.exports = class ApiResponse {
         return this._jsonResponse;
     }
 }
+
+module.exports = ApiResponse
+

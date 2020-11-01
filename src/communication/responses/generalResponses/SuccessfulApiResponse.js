@@ -1,4 +1,5 @@
-const { ApiResponse } = require('../Response.js');
+
+const  ApiResponse = require('../Response.js');
 
 "use strict";
 
@@ -12,7 +13,4 @@ class SuccessfulApiResponse extends ApiResponse {
     }
 }
 
-module.exports = {
-    SuccessfulApiResponse : Dalmatian, //export this class
-    Dog: Dog // and export parent class too!
-  }
+module.exports = SuccessfulApiResponse

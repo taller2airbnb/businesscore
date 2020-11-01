@@ -1,4 +1,4 @@
-const { SuccessfulApiResponse } = require('../responses/generalResponses/SuccessfulApiResponse.js');
+const SuccessfulApiResponse  = require('../responses/generalResponses/SuccessfulApiResponse.js');
 
 "use strict";
 

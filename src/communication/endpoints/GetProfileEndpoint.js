@@ -1,22 +1,22 @@
-const { Endpoint } = require('./Endpoint.js');
-const { GetProfileSuccessful } = require('../responses/profiles/GetProfileSuccessful.js');
+const Endpoint = require("./Endpoint.js");
+const GetProfileSuccessful = require("../responses/profiles/GetProfileSuccessful.js");
 
-'use strict';
+("use strict");
 
 module.exports = class GetProfileEndpoint extends Endpoint {
-    static url() {
-        return '/users/2'
-    }
+  static url() {
+    return "/users/2";
+  }
 
-    ownResponses() {
-        return [GetProfileSuccessful];
-    }
+  ownResponses() {
+    return [GetProfileSuccessful];
+  }
 
-    method() {
-        return 'GET'
-    }
+  method() {
+    return "GET";
+  }
 
-    needsAuthorization() {
-        return false;
-    }
-}
+  needsAuthorization() {
+    return false;
+  }
+};

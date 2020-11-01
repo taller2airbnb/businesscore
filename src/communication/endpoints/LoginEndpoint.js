@@ -1,8 +1,8 @@
-import {Endpoint} from "./Endpoint.js";
-import {LoginSuccessful} from "../responses/login/LoginSuccessful";
-import {InvalidCredentials} from "../responses/login/InvalidCredentials";
+const Endpoint = require("./Endpoint.js");
+const LoginSuccessful = require("../responses/login/LoginSuccessful");
+const InvalidCredentials = require("../responses/login/InvalidCredentials");
 
-export class LoginEndpoint extends Endpoint {
+module.exports = class LoginEndpoint extends Endpoint {
     static url() {
         return '/login'
     }

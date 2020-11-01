@@ -1,9 +1,10 @@
-import {SuccessfulApiResponse} from "../generalResponses/SuccessfulApiResponse.js";
+const SuccessfulApiResponse = require("../generalResponses/SuccessfulApiResponse.js");
+("use strict");
 
-export class LoginSuccessful extends SuccessfulApiResponse {
-    static defaultResponse() {
-        return {
-            "token": "QpwL5tke4Pnpja7X4"
-        }
-    }
-}
+module.exports = class LoginSuccessful extends SuccessfulApiResponse {
+  static defaultResponse() {
+    return {
+      token: "QpwL5tke4Pnpja7X4",
+    };
+  }
+};
