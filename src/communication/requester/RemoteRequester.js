@@ -1,7 +1,9 @@
-import {Requester} from "./Requester.js";
-import {ErrorApiResponse} from "../responses/generalResponses/ErrorApiResponse.js";
+const Requester = require("./Requester.js");
+const ErrorApiResponse = require("../responses/generalResponses/ErrorApiResponse.js");
 
-class RemoteRequester extends Requester {
+("use strict");
+
+module.exports = class RemoteRequester extends Requester {
     constructor(url) {
         super();
         this._baseUrl = url;
@@ -149,5 +151,3 @@ class JsonEncoder extends Encoder {
         return JSON.stringify(requestBody);
     }
 }
-
-export default RemoteRequester;
