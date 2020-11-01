@@ -1,41 +1,43 @@
-import {SuccessfulApiResponse} from "../responses/generalResponses/SuccessfulApiResponse.js";
+const { SuccessfulApiResponse } = require('../responses/generalResponses/SuccessfulApiResponse.js');
 
-export class Endpoint {
-    static url() {
-        throw new Error("You have to implement the method");
-    }
+"use strict";
 
-    generalResponses() {
-        return [SuccessfulApiResponse]
-    }
+module.exports = class Endpoint {
+  static url() {
+    throw new Error("You have to implement the method");
+  }
 
-    ownResponses() {
-        /*
+  generalResponses() {
+    return [SuccessfulApiResponse];
+  }
+
+  ownResponses() {
+    /*
             Override this in order to provide custom responses
         "*/
-        return []
-    }
+    return [];
+  }
 
-    responses() {
-        /*
+  responses() {
+    /*
             Own responses have more precedence over the general responses
         "*/
-        return this.ownResponses().concat(this.generalResponses())
-    }
+    return this.ownResponses().concat(this.generalResponses());
+  }
 
-    url() {
-        return this.constructor.url();
-    }
+  url() {
+    return this.constructor.url();
+  }
 
-    contentType() {
-        return 'application/json';
-    }
+  contentType() {
+    return "application/json";
+  }
 
-    method() {
-        throw new Error("You have to implement the method");
-    }
+  method() {
+    throw new Error("You have to implement the method");
+  }
 
-    needsAuthorization() {
-        throw new Error("You have to implement the method");
-    }
+  needsAuthorization() {
+    throw new Error("You have to implement the method");
+  }
 }

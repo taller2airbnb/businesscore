@@ -2,7 +2,9 @@ const { ServerErrorResponse } = require('../responses/generalResponses/ServerErr
 const { GetProfileEndpoint } = require('../endpoints/GetProfileEndpoint.js');
 const { LoginEndpoint } = require('../endpoints/LoginEndpoint');
 
-class ApiClient {
+'use strict';
+
+module.exports = class ApiClient {
     constructor(requester, onServerErrorDo = () => {
     }) {
         this._requester = requester;
@@ -42,5 +44,3 @@ class ApiClient {
         });
     }
 }
-
-export default ApiClient;

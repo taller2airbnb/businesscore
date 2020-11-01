@@ -1,4 +1,6 @@
-export class ApiResponse {
+"use strict";
+
+module.exports = class ApiResponse {
     static understandThis(jsonResponse) {
         throw new Error("You have to implement the method");
     }

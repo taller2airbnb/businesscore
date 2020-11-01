@@ -1,6 +1,8 @@
-import {ApiResponse} from "../Response.js"
+const { ApiResponse } = require('../Response.js');
 
-export class SuccessfulApiResponse extends ApiResponse {
+"use strict";
+
+class SuccessfulApiResponse extends ApiResponse {
     static defaultResponse() {
         throw new Error("You have to implement the method");
     }
@@ -9,3 +11,8 @@ export class SuccessfulApiResponse extends ApiResponse {
         return jsonResponse.error === undefined;
     }
 }
+
+module.exports = {
+    SuccessfulApiResponse : Dalmatian, //export this class
+    Dog: Dog // and export parent class too!
+  }

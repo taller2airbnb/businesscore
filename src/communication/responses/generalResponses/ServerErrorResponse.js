@@ -1,3 +1,6 @@
+
+'use strict';
+    
 class HTTPResponse {
     constructor(response) {
         this._response = response;
@@ -9,7 +12,7 @@ class HTTPResponse {
 }
 
 
-export class ServerErrorResponse extends HTTPResponse {
+module.exports = class ServerErrorResponse extends HTTPResponse {
     static defaultResponse() {
         return {
             status: 500

@@ -1,7 +1,9 @@
-import {Endpoint} from "./Endpoint.js";
-import {GetProfileSuccessful} from "../responses/profiles/GetProfileSuccessful.js";
+const { Endpoint } = require('./Endpoint.js');
+const { GetProfileSuccessful } = require('../responses/profiles/GetProfileSuccessful.js');
 
-export class GetProfileEndpoint extends Endpoint {
+'use strict';
+
+module.exports = class GetProfileEndpoint extends Endpoint {
     static url() {
         return '/users/2'
     }
