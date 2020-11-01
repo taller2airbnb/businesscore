@@ -1,6 +1,9 @@
-const { ServerErrorResponse } = require('../responses/generalResponses/ServerErrorResponse.js');
+constServerErrorResponse  = require('../responses/generalResponses/ServerErrorResponse.js');
 const { GetProfileEndpoint } = require('../endpoints/GetProfileEndpoint.js');
 const { LoginEndpoint } = require('../endpoints/LoginEndpoint');
+const RegisterEndpoint  = require('../endpoints/RegisterEndpoint');
+const StatusProfile  = require('../endpoints/StatusProfile');
+
 
 'use strict';
 
@@ -13,6 +16,7 @@ module.exports = class ApiClient {
     }
 
     _handleResponse(response, onResponse) {
+        console.log(response);
         if (response instanceof ServerErrorResponse) {
             console.log("Server error: ", response);
             return this._handleServerError(response);
@@ -39,6 +43,14 @@ module.exports = class ApiClient {
     register(data, onResponse) {
         return this._requester.call({
             endpoint: new RegisterEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
+    statusProfile(data, onResponse) {
+        return this._requester.call({
+            endpoint: new StatusProfile(),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: data
         });

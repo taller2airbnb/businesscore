@@ -1,13 +1,13 @@
 const Endpoint  = require("./Endpoint.js");
 ("use strict");
 
-module.exports = class RegisterEndpoint extends Endpoint {
+module.exports = class StatusProfile extends Endpoint {
   static url() {
-    return "/register";
+    return "/health";
   }
 
   method() {
-    return "POST";
+    return "GET";
   }
 
   needsAuthorization() {

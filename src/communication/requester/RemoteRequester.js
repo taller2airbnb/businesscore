@@ -1,7 +1,6 @@
 const Requester = require("./Requester.js");
 const ErrorApiResponse = require("../responses/generalResponses/ErrorApiResponse.js");
-
-("use strict");
+const fetch  = require('node-fetch');
 
 module.exports = class RemoteRequester extends Requester {
     constructor(url) {
@@ -12,10 +11,12 @@ module.exports = class RemoteRequester extends Requester {
     call({endpoint, onResponse, data = undefined}) {
         const request = this._buildRequest(endpoint, data);
         let url = endpoint.url();
-        if (endpoint.method() === 'GET' && data) {
-            url += "?" + this._dataToQueryString(data);
-        }
-
+        console.log("DATA:")
+        console.log(data)
+        // if (endpoint.method() === 'GET' && data) {
+        //     url += "?" + this._dataToQueryString(data);
+        // }
+        console.log(this._baseUrl + url)
         return fetch(this._baseUrl + url, request).then(result => result.json())
             .then(jsonResponse => {
                 return onResponse(this._buildResponse(jsonResponse, endpoint));
@@ -72,12 +73,14 @@ module.exports = class RemoteRequester extends Requester {
 
         return headers;
     }
-
     _dataToQueryString(data) {
         let keyValuePairs = [];
         for (let i = 0; i < Object.keys(data).length; i += 1) {
             let key = Object.keys(data)[i];
             let value = Object.values(data)[i];
+            console.log("key " + key);
+            console.log("value " + value);
+
             if (value) {
                 keyValuePairs.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
             }
@@ -148,6 +151,7 @@ class JsonEncoder extends Encoder {
     }
 
     encode(requestBody) {
+        console.log(requestBody)
         return JSON.stringify(requestBody);
     }
 }
