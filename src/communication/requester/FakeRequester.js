@@ -1,7 +1,9 @@
-import {Requester} from "./Requester.js";
-import fakeRequesterExpectedResponses from "../mocks/fakeRequesterExpectedResponses.js";
+const Requester = require("./Requester.js");
+const fakeRequesterExpectedResponses = require("../mocks/fakeRequesterExpectedResponses.js");
 
-class FakeRequester extends Requester {
+("use strict");
+
+module.exports = class FakeRequester extends Requester {
     constructor(expectedResponses) {
         super();
         this._expectedResponses = expectedResponses || fakeRequesterExpectedResponses();
@@ -16,5 +18,3 @@ class FakeRequester extends Requester {
         setTimeout(() => onResponse(endpointResponse), 2500);
     }
 }
-
-export default FakeRequester;

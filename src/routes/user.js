@@ -1,5 +1,5 @@
 const { ApiClient } = require('../../src/communication/client/ApiClient');
-const { getSettingProfile } = require('settings');
+const { getSettingProfile } = require('../../');
 const { FakeRequester } = require('../../src/communication/requester/FakeRequester');
 const { RemoteRequester } = require('../../src/communication/requester/RemoteRequester');
 

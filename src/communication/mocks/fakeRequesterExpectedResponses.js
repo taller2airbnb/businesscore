@@ -1,15 +1,14 @@
-import {GetProfileEndpoint} from "../endpoints/GetProfileEndpoint";
-import {GetProfileSuccessful} from "../responses/profiles/GetProfileSuccessful";
-import {LoginEndpoint} from "../endpoints/LoginEndpoint";
-import {LoginSuccessful} from "../responses/login/LoginSuccessful";
-import {InvalidCredentials} from "../responses/login/InvalidCredentials";
+const GetProfileEndpoint = require("../endpoints/GetProfileEndpoint");
+const GetProfileSuccessful = require("../responses/profiles/GetProfileSuccessful");
+const LoginEndpoint = require("../endpoints/LoginEndpoint");
+const LoginSuccessful = require("../endpoints/LoginSuccessful");
+const InvalidCredentials = require("../endpoints/InvalidCredentials");
 
+("use strict");
 
-const fakeRequesterExpectedResponses = () => {
+module.exports = fakeRequesterExpectedResponses = () => {
     return {
         [GetProfileEndpoint.name]: GetProfileSuccessful,
         [LoginEndpoint.name]: LoginSuccessful,
     }
 };
-
-export default fakeRequesterExpectedResponses;
