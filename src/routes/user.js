@@ -1,7 +1,9 @@
-const { ApiClient } = require('../../src/communication/client/ApiClient');
-const { getSettingProfile } = require('../../setting');
+const ApiClient = require('../../src/communication/client/ApiClient');
+
+const getSettingProfile = require('../../settings.js');
+
 const { FakeRequester } = require('../../src/communication/requester/FakeRequester');
-const { RemoteRequester } = require('../../src/communication/requester/RemoteRequester');
+const  RemoteRequester  = require('../../src/communication/requester/RemoteRequester');
 
 const { Router } = require("express");
 const router = Router();
@@ -21,10 +23,12 @@ router.get("/profile-status", (req, res, next) => {
     );
 });
 
-const remoteApiUrl = getSettingProfile("API_URL");
+const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
 
 router.get("/profile-register", (req, res, next) => {
     apiClient.register(req, response);
 });
+
+module.exports = router;
