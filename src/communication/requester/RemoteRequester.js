@@ -11,8 +11,7 @@ module.exports = class RemoteRequester extends Requester {
     call({endpoint, onResponse, data = undefined}) {
         const request = this._buildRequest(endpoint, data);
         let url = endpoint.url();
-        console.log("DATA:")
-        console.log(data)
+        //TODO: implementar el post 
         // if (endpoint.method() === 'GET' && data) {
         //     url += "?" + this._dataToQueryString(data);
         // }

@@ -1,58 +1,38 @@
-const ApiClient = require('../../src/communication/client/ApiClient');
-
-const getSettingProfile = require('../../settings.js');
-
-const { FakeRequester } = require('../../src/communication/requester/FakeRequester');
-const  RemoteRequester  = require('../../src/communication/requester/RemoteRequester');
+const ApiClient = require("../../src/communication/client/ApiClient");
+const getSettingProfile = require("../../settings.js");
+const handlerResponse = require("./hanlderResponse");
+const RemoteRequester = require("../../src/communication/requester/RemoteRequester");
 
 const { Router } = require("express");
 const router = Router();
 var request = require("request");
-var cors = require("cors")
-const bodyParser = require('body-parser')
+var cors = require("cors");
+const bodyParser = require("body-parser");
 
 router.get("/profile-status", (req, res, next) => {
-    request.get(
-        "https://taller2airbnb-profile.herokuapp.com/health",
-        (error, response, body) => {
-            if (error) {
-                return console.dir(error);
-            }
-            res.send(JSON.parse(body));
-        }
-    );
+  request.get(
+    "https://taller2airbnb-profile.herokuapp.com/health",
+    (error, response, body) => {
+      if (error) {
+        return console.dir(error);
+      }
+      res.send(JSON.parse(body));
+    }
+  );
 });
 
 //const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
-let remoteApiUrl = 'https://taller2airbnb-profile.herokuapp.com'
+let remoteApiUrl = "https://taller2airbnb-profile.herokuapp.com";
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
 
-
-
-
-
-const myFunc = function(response) {
-    if (response.hasError()) {
-        console.log(response.errorMessages());
-        return (response.errorMessages());
-    } else {
-        console.log(response._jsonResponse);
-        return response._jsonResponse;
-    }
- }
-
-
-
-
-router.get("/profile-register2", (req,res, next) => {
-    console.log("entro al registrer 2");
-    futureResponse  = apiClient.statusProfile(req.body, myFunc);
-    futureResponse.then((result) => { 
-        res.send(result)
-    });
+router.get("/profile-register2", (req, res, next) => {
+  console.log("entro al registrer 2");
+  futureResponse = apiClient.statusProfile(req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.send(result);
+  });
 });
-
 
 /**
  * @swagger
@@ -80,7 +60,7 @@ router.get("/profile-register2", (req,res, next) => {
  *         description: Server error
  */
 router.post("/profile-register", (req, res, next) => {
-    apiClient.register(req, res);
+  apiClient.register(req, res);
 });
 
 module.exports = router;
