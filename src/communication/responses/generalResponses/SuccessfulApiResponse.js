@@ -1,7 +1,4 @@
-
 const  ApiResponse = require('../Response.js');
-
-"use strict";
 
 class SuccessfulApiResponse extends ApiResponse {
     static defaultResponse() {

@@ -1,4 +1,4 @@
-constServerErrorResponse  = require('../responses/generalResponses/ServerErrorResponse.js');
+const ServerErrorResponse  = require('../responses/generalResponses/ServerErrorResponse.js');
 const { GetProfileEndpoint } = require('../endpoints/GetProfileEndpoint.js');
 const { LoginEndpoint } = require('../endpoints/LoginEndpoint');
 const RegisterEndpoint  = require('../endpoints/RegisterEndpoint');

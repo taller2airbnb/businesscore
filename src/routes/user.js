@@ -29,9 +29,28 @@ const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
 
 
-router.get("/profile-register2", (req, res, next) => {
+
+
+
+const myFunc = function(response) {
+    if (response.hasError()) {
+        console.log(response.errorMessages());
+        return (response.errorMessages());
+    } else {
+        console.log(response._jsonResponse);
+        return response._jsonResponse;
+    }
+ }
+
+
+
+
+router.get("/profile-register2", (req,res, next) => {
     console.log("entro al registrer 2");
-    apiClient.statusProfile(req.body, res);
+    futureResponse  = apiClient.statusProfile(req.body, myFunc);
+    futureResponse.then((result) => { 
+        res.send(result)
+    });
 });
 
 
