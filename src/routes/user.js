@@ -22,7 +22,6 @@ router.get("/profile-status", (req, res, next) => {
 });
 
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
-//let remoteApiUrl = "https://taller2airbnb-profile.herokuapp.com";
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
 
@@ -36,23 +35,20 @@ router.get("/profile-register2", (req, res, next) => {
 
 /**
  * @swagger
- * /registration:
+ * /profile-register:
  *   post:
  *     tags:
- *       - registration
+ *       - profile-register
  *     description: User registration
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: name
  *         description: Username to use for login.
+ *         in: body
  *         required: true
- *         type: string
- *       - password: password
- *         description: password to use for login.
- *         in: formData
- *         required: true
- *         type: string
+ *         schema:
+ *           $ref: '#/definitions/Registration'
  *     responses:
  *       200:
  *         description: Successfully added
@@ -60,7 +56,10 @@ router.get("/profile-register2", (req, res, next) => {
  *         description: Server error
  */
 router.post("/profile-register", (req, res, next) => {
-  apiClient.register(req, res);
+  futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.send(result);
+  });
 });
 
 module.exports = router;
