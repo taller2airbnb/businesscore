@@ -21,8 +21,8 @@ router.get("/profile-status", (req, res, next) => {
   );
 });
 
-//const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
-let remoteApiUrl = "https://taller2airbnb-profile.herokuapp.com";
+const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
+//let remoteApiUrl = "https://taller2airbnb-profile.herokuapp.com";
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
 
