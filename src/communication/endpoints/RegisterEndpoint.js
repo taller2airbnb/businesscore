@@ -3,7 +3,7 @@ const Endpoint  = require("./Endpoint.js");
 
 module.exports = class RegisterEndpoint extends Endpoint {
   static url() {
-    return "/register";
+    return "/register/";
   }
 
   method() {

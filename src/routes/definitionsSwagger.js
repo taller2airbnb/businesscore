@@ -4,12 +4,18 @@
  * definitions:
  *   Registration:
  *     properties:
- *       name:
+ *       first_name:
  *         type: string
- *       breed:
+ *       last_name:
  *         type: string
  *       age:
- *         type: integer
- *       sex:
+ *         type: string
+ *       password:
+ *         type: string
+ *       national_id_type:
+ *         type: string
+ *       alias:
+ *         type: string
+ *       profile:
  *         type: string
  */

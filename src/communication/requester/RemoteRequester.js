@@ -15,8 +15,11 @@ module.exports = class RemoteRequester extends Requester {
         // if (endpoint.method() === 'GET' && data) {
         //     url += "?" + this._dataToQueryString(data);
         // }
-        console.log(this._baseUrl + url)
-        return fetch(this._baseUrl + url, request).then(result => result.json())
+        console.log(request.body);
+        return fetch(this._baseUrl + url, request).then(result => {
+            console.log("result response:")
+            console.log(result.body);
+        })
             .then(jsonResponse => {
                 return onResponse(this._buildResponse(jsonResponse, endpoint));
             })
@@ -39,11 +42,11 @@ module.exports = class RemoteRequester extends Requester {
             method: endpoint.method(),
             headers: headers
         };
-
+        
         if (endpoint.method() !== 'GET') {
             let encoder = this._encoderFor(endpoint.contentType());
             Object.assign(headers, encoder.headers());
-            Object.assign(requestOptions, {body: encoder.encode(data)});
+            Object.assign(requestOptions, {body: JSON.parse(JSON.stringify(encoder.encode(data)))});
         }
         return requestOptions;
     }
