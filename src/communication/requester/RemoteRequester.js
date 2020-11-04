@@ -16,13 +16,10 @@ module.exports = class RemoteRequester extends Requester {
         //     url += "?" + this._dataToQueryString(data);
         // }
         console.log(request.body);
-        return fetch(this._baseUrl + url, request).then(result => {
-            console.log("result response:")
-            console.log(result.body);
+        return fetch(this._baseUrl + url, request).then(result => result.json())
+        .then(jsonResponse => {
+            return onResponse(this._buildResponse(jsonResponse, endpoint));
         })
-            .then(jsonResponse => {
-                return onResponse(this._buildResponse(jsonResponse, endpoint));
-            })
             /***
              * https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Checking_that_the_fetch_was_successful
              *
