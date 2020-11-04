@@ -42,4 +42,34 @@ router.post("/profile-register", (req, res, next) => {
   });
 });
 
+/**
+ * @swagger
+ * /profile-login:
+ *   post:
+ *     tags:
+ *       - profile-login
+ *     description: User login
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: name
+ *         description: Username to use for login.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Login'
+ *     responses:
+ *       200:
+ *         description: Successfully login
+ *       500:
+ *         description: Server error
+ */
+router.post("/profile-login", (req, res, next) => {
+  futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.send(result);
+  });
+});
+
+
 module.exports = router;

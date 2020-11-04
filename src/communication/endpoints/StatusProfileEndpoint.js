@@ -1,7 +1,7 @@
 const Endpoint  = require("./Endpoint.js");
 ("use strict");
 
-module.exports = class StatusProfile extends Endpoint {
+module.exports = class StatusProfileEndpoint extends Endpoint {
   static url() {
     return "/health";
   }

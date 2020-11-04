@@ -1,8 +1,8 @@
 const ServerErrorResponse  = require('../responses/generalResponses/ServerErrorResponse.js');
-const { GetProfileEndpoint } = require('../endpoints/GetProfileEndpoint.js');
-const { LoginEndpoint } = require('../endpoints/LoginEndpoint');
+const  GetProfileEndpoint  = require('../endpoints/GetProfileEndpoint.js');
+const  LoginEndpoint  = require('../endpoints/LoginEndpoint');
 const RegisterEndpoint  = require('../endpoints/RegisterEndpoint');
-const StatusProfile  = require('../endpoints/StatusProfile');
+const StatusProfile  = require('../endpoints/StatusProfileEndpoint');
 
 
 'use strict';

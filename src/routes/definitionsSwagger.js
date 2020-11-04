@@ -19,3 +19,14 @@
  *       profile:
  *         type: string
  */
+
+ /**
+ * @swagger
+ * definitions:
+ *   Login:
+ *     properties:
+ *       email:
+ *         type: string
+ *       password:
+ *         type: string
+ */
