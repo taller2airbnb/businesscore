@@ -16,7 +16,6 @@ module.exports = class ApiClient {
     }
 
     _handleResponse(response, onResponse) {
-        console.log(response);
         if (response instanceof ServerErrorResponse) {
             console.log("Server error: ", response);
             return this._handleServerError(response);

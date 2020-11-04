@@ -15,7 +15,6 @@ module.exports = class RemoteRequester extends Requester {
         // if (endpoint.method() === 'GET' && data) {
         //     url += "?" + this._dataToQueryString(data);
         // }
-        console.log(request.body);
         return fetch(this._baseUrl + url, request).then(result => result.json())
         .then(jsonResponse => {
             return onResponse(this._buildResponse(jsonResponse, endpoint));
@@ -77,8 +76,6 @@ module.exports = class RemoteRequester extends Requester {
         for (let i = 0; i < Object.keys(data).length; i += 1) {
             let key = Object.keys(data)[i];
             let value = Object.values(data)[i];
-            console.log("key " + key);
-            console.log("value " + value);
 
             if (value) {
                 keyValuePairs.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
@@ -150,7 +147,6 @@ class JsonEncoder extends Encoder {
     }
 
     encode(requestBody) {
-        console.log(requestBody)
         return JSON.stringify(requestBody);
     }
 }
