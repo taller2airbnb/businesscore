@@ -7,7 +7,9 @@ const router = Router();
 var cors = require("cors");
 router.use(cors());
 router.options('*', cors());
-
+var jwt = require('jsonwebtoken')
+var bodyParser = require('body-parser')
+var validToken = require('./tokenController.js')
 
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
@@ -24,7 +26,7 @@ const apiClient = new ApiClient(requester);
  *       - application/json
  *     parameters:
  *       - name: name
- *         description: Username to use for login.
+ *         description: Username to use for registration.
  *         in: body
  *         required: true
  *         schema:
@@ -67,9 +69,65 @@ router.post("/profile-register", (req, res, next) => {
 router.post("/profile-login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.send(result);
+
+    var username = req.body.email
+    var password = req.body.password
+    var profile = req.body.profile
+
+    var tokenData = {
+      username: username,
+      password: password,
+      profile: profile
+    }
+
+    var token = jwt.sign(tokenData, 'Secret Password', {
+      expiresIn: 60 * 60 * 24 // expires in 24 hours
+    })
+
+    res.send({token})
   });
 });
 
+/**
+ * @swagger
+ * /profile-register-admin:
+ *   post:
+ *     tags:
+ *       - profile-register-admin
+ *     description: User registration admin
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: name
+ *         description: Username to use for register admin.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/RegistrationAdmin'
+ *     responses:
+ *       200:
+ *         description: Successfully registration
+ *       500:
+ *         description: Server error
+ */
+router.post("/profile-register-admin", (req, res, next) => {
+  futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+
+    validToken.validToken(res);
+
+    var username = req.body.email
+    var password = req.body.password
+    var profile = req.body.profile
+
+    var tokenData = {
+      username: username,
+      password: password,
+      profile: profile
+    }
+
+    res.send({});
+  });
+});
 
 module.exports = router;
