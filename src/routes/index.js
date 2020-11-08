@@ -16,7 +16,15 @@ const swaggerOptions = {
             title: "swagger-airbnb-businesscore",
             description: "Swagger business core"
         },
-        servers: ["http://localhost:3000"]
+        servers: ["http://localhost:3000"],
+        securityDefinitions: {
+            bearerAuth: {
+                type: 'apiKey',
+                name: 'Authorization',
+                scheme: 'bearer',
+                in: 'header',
+            }
+        }
     },
     // ['.routes/*.js']
     apis: ["src/routes/*.js"],

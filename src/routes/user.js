@@ -7,9 +7,10 @@ const router = Router();
 var cors = require("cors");
 router.use(cors());
 router.options('*', cors());
-var jwt = require('jsonwebtoken')
 var bodyParser = require('body-parser')
 var validToken = require('./tokenController.js')
+var jwt = require('jsonwebtoken')
+
 
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
@@ -54,12 +55,20 @@ router.post("/profile-register", (req, res, next) => {
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: name
- *         description: Username to use for login.
+ *       - name: body
  *         in: body
- *         required: true
  *         schema:
  *           $ref: '#/definitions/Login'
+ *           type: object
+ *           properties:
+ *             username:
+ *               type: string
+ *             password:
+ *               type: string
+ *               format: password
+ *         required:
+ *           - username
+ *           - password       
  *     responses:
  *       200:
  *         description: Successfully login
@@ -70,14 +79,17 @@ router.post("/profile-login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
 
-    var username = req.body.email
-    var password = req.body.password
-    var profile = req.body.profile
+    var username = result.email
+    var password = result.password
+    var profile = result.profile
+    var id = result.id
+
 
     var tokenData = {
       username: username,
       password: password,
-      profile: profile
+      profile: profile,
+      id: id
     }
 
     var token = jwt.sign(tokenData, 'Secret Password', {
@@ -97,6 +109,8 @@ router.post("/profile-login", (req, res, next) => {
  *     description: User registration admin
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: name
  *         description: Username to use for register admin.
@@ -111,23 +125,20 @@ router.post("/profile-login", (req, res, next) => {
  *         description: Server error
  */
 router.post("/profile-register-admin", (req, res, next) => {
-  futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
-  futureResponse.then((result) => {
 
-    validToken.validToken(res);
+  validToken.validToken(req, res);
 
-    var username = req.body.email
-    var password = req.body.password
-    var profile = req.body.profile
+  // var username = req.body.email
+  // var password = req.body.password
+  // var profile = req.body.profile
 
-    var tokenData = {
-      username: username,
-      password: password,
-      profile: profile
-    }
+  //   var jsto= {
+  //     username: username,
+  //     password: password,
+  //     profile: profile
+  //   }
 
-    res.send({});
-  });
+  //   res.send({});
 });
 
 module.exports = router;
