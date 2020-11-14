@@ -1,18 +1,10 @@
 
-var supertest = require('supertest');
-const app = require('../src/routes/user.js');
-const request = supertest('http://localhost:3000');
+var supertest = require('supertest-as-promised'); 
+const server = require('../../server.js');
+const request = supertest(server);
 
-beforeEach(() => {
+describe(" Test Suite: user", () => {
 
-});
-
-afterEach(() => {
-
-});
-
-describe(" Test Suite: [src/routes/user.js] ", () => {
-    
     it('User register success', async () => {
 
         const req = {
@@ -27,15 +19,23 @@ describe(" Test Suite: [src/routes/user.js] ", () => {
         }
 
         const res = await request.post('/profile-register').send(req);
-        expect(res.alias).toBe('cosmefulanito');
-        expect(res.email).toBe('cosmefulanito@gmail.com');
-        expect(res.name).toBe('Cosme');
-  
+        expect(res.status).toBe(200);
     });
 
-    xit('User register fail', () => {
-        
-         const req = {
+    it('User register bad request', async () => {
+
+        const req = {
+            "alias": "cosmefulanito",
+            "email": "cosmefulanito@gmail.com",
+        }
+
+        const res = await request.post('/profile-register').send(req);
+        expect(res.status).toBe(201);
+    });
+
+    it('User register duplicate', async () => {
+
+        const req = {
             "alias": "cosmefulanito",
             "email": "cosmefulanito@gmail.com",
             "first_name": "Cosme",
@@ -47,24 +47,30 @@ describe(" Test Suite: [src/routes/user.js] ", () => {
         }
 
         const res = await request.post('/profile-register').send(req);
-        expect(res.alias).toBe('cosmefulanito');
+        expect(res.status).toBe(200);
     });
 
-    xit('User login success', () => {
+    it('User login success', async () => {
+
         const req = {
             "email": "cosmefulanito@gmail.com",
             "password": "cosmefulanito1123",
         }
 
-        const res = request(app).post('/profile-login').send(req);
+        const res = await request.post('/profile-login').send(req);
+        expect(res.status).toBe(200);
     });
 
-    xit('User login fail', () => {
+
+    it('User login fail', async () => {
+
         const req = {
-            "email": "cosmefulanito@gmail.com"
+            "email": "cosmefulanito@gmail.com",
+            "password": "111",
         }
 
-        const res = request(app).post('/profile-login').send(req);
+        const res = await request.post('/profile-login').send(req);
+        expect(res.status).toBe(200);
     });
- 
+  
 });

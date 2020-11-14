@@ -9,7 +9,7 @@ app.set('port', process.env.PORT  || 3000);
 
 //midleware
 app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: false }));//only text, not files
+app.use(express.urlencoded({ extended: false })); //only text, not files
 app.use(express.json());
 
 
@@ -22,3 +22,4 @@ app.listen(app.get('port'), () => {
 app.use(require('./src/routes/index'));
 app.use(require('./src/routes/user'));
 
+module.exports = app;
