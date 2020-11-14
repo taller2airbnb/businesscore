@@ -1,6 +1,7 @@
 
-const request = require('supertest');
+var supertest = require('supertest');
 const app = require('../src/routes/user.js');
+const request = supertest('http://localhost:3000');
 
 beforeEach(() => {
 
@@ -19,38 +20,37 @@ describe(" Test Suite: [src/routes/user.js] ", () => {
             "email": "cosmefulanito@gmail.com",
             "first_name": "Cosme",
             "last_name": "Fulanito",
-            "national_id": "DNI",
-            "national_id_type": "11111111",
+            "national_id": "11111111",
+            "national_id_type": "DNI",
             "password": "cosmefulanito1123",
             "profile": 0
         }
 
-        const res = request(app).post('/profile-register').send(req);
-
-        // expect(res.code).toBe(200);
-        // expect(res.email).toBe('cosmefulanito@gmail.com');
-        // expect(res.alias).toBe('cosmefulanito');
-        // expect(res.name).toBe('Cosme');
-        // expect(res.toHaveProperty('id'));
-
+        const res = await request.post('/profile-register').send(req);
+        expect(res.alias).toBe('cosmefulanito');
+        expect(res.email).toBe('cosmefulanito@gmail.com');
+        expect(res.name).toBe('Cosme');
+  
     });
 
-    it('User register fail', () => {
-        const req = {
+    xit('User register fail', () => {
+        
+         const req = {
             "alias": "cosmefulanito",
             "email": "cosmefulanito@gmail.com",
             "first_name": "Cosme",
             "last_name": "Fulanito",
-            "national_id": "DNI",
-            "national_id_type": "11111111",
+            "national_id": "11111111",
+            "national_id_type": "DNI",
             "password": "cosmefulanito1123",
             "profile": 0
         }
 
-        const res = request(app).post('/profile-register').send(req);
+        const res = await request.post('/profile-register').send(req);
+        expect(res.alias).toBe('cosmefulanito');
     });
 
-    it('User login success', () => {
+    xit('User login success', () => {
         const req = {
             "email": "cosmefulanito@gmail.com",
             "password": "cosmefulanito1123",
@@ -59,10 +59,9 @@ describe(" Test Suite: [src/routes/user.js] ", () => {
         const res = request(app).post('/profile-login').send(req);
     });
 
-    it('User login fail', () => {
+    xit('User login fail', () => {
         const req = {
-            "email": "cosmefulanito@gmail.com",
-            "password": "cosmefulanito1123",
+            "email": "cosmefulanito@gmail.com"
         }
 
         const res = request(app).post('/profile-login').send(req);
