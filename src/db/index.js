@@ -20,24 +20,16 @@ exports.execSql = async function (sqlStore, ...args) {
 
 
   const db = pgp(connection.config);
-  const result = null;;
   let sco; // shared connection object;
-  let data1;
   try {
-    await db.connect()
+    return await db.connect()
       .then(obj => {
         sco = obj;
         return  obj.func(sqlStore, []);
       })
-      .then(data => {
-        console.log(data);
-        data1 = data;
-        return data;
-      })
       .catch(error => {
         console.log('ERROR:', error.message || error);
       });
-
   } catch (err) {
     return { err: err };
   }finally{
@@ -46,6 +38,5 @@ exports.execSql = async function (sqlStore, ...args) {
       // it will make the pool kill the physical connection.
       sco.done();
     }
-    return data1;
   }
 };
