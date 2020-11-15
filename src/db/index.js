@@ -1,26 +1,37 @@
-const { Pool } = require('pg')
-const config = require("./config");
+const initOptions = {
+  // global event notification;
+  error: (error, e) => {
+    if (e.cn) {
+      // A connection-related error;
+      //
+      // Connections are reported back with the password hashed,
+      // for safe errors logging, without exposing passwords.
+      console.log('CN:', e.cn);
+      console.log('EVENT:', error.message || error);
+    }
+  }
+};
+
+const pgp = require('pg-promise')(initOptions);
+const connection = require("./config");
+
 
 exports.execSql = async function (sqlStore, ...args) {
-  const pool =  new Pool(config)
-  pool.on("error", err => {
-    throw err;
-  });
 
+
+  const db = pgp(connection.config)
   try {
-    await pool.connect();
-    let request = pool.request();
+    db.connect()
 
-    args.forEach(element => {
-      request.input(element.nombre, element.valor);
-    });
-    //request.input("fechaDesde", sql.VarChar, fechaDesde);
 
-    let result = await request.execute(sqlStore);
-    return { success: result.recordset };
+      .then(obj => {
+        return obj.proc(sqlStore, [])
+      })
+      .catch(error => {
+        console.log('ERROR:', error.message || error);
+      });
+
   } catch (err) {
     return { err: err };
-  } finally {
-    pool.close(); //closing connection after request is finished.
   }
 };

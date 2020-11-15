@@ -1,6 +1,4 @@
-const { Client } = require('pg');
-
-const client = new Client({
+exports.config = {
     user: 'ckrxjjmpaieyvy',
     host: 'ec2-52-21-0-111.compute-1.amazonaws.com',
     database: 'd1jk8nlj82g299',
@@ -9,7 +7,4 @@ const client = new Client({
     ssl: {
         rejectUnauthorized: false
       }
-});
-
-
-client.connect();
+};

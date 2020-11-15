@@ -16,15 +16,15 @@ const dao = require("../db/index");
  */
 router.get("/posting", (req, res) => {
     debugger;
-    dao.execSql("get_all_posting", {})
-    .then(resultado => {
-      if (resultado.err) throw new Error(resultado.err.message);
-      else res.send(JSON.stringify({ result: resultado.success }));
+    let result =  dao.execSql("business_core_schema.get_all_posting", {})
+    // .then(resultado => {
+    //   if (resultado.err) throw new Error(resultado.err.message);
+    //   else res.send(JSON.stringify({ result: resultado.success }));
 
-    })
-    .catch(err => {
-      throw err;
-    });
+    // })
+    // .catch(err => {
+    //   throw err;
+    // });
 });
 
 
