@@ -1,5 +1,6 @@
 const initOptions = {
   // global event notification;
+  schema: ['public','business_core_schema'],
   error: (error, e) => {
     if (e.cn) {
       // A connection-related error;
@@ -15,17 +16,23 @@ const initOptions = {
 const pgp = require('pg-promise')(initOptions);
 const connection = require("./config");
 
-
 exports.execSql = async function (sqlStore, ...args) {
 
 
-  const db = pgp(connection.config)
+  const db = pgp(connection.config);
+  const result = null;;
+  let sco; // shared connection object;
+  let data1;
   try {
-    db.connect()
-
-
+    await db.connect()
       .then(obj => {
-        return obj.proc(sqlStore, [])
+        sco = obj;
+        return  obj.func(sqlStore, []);
+      })
+      .then(data => {
+        console.log(data);
+        data1 = data;
+        return data;
       })
       .catch(error => {
         console.log('ERROR:', error.message || error);
@@ -33,5 +40,12 @@ exports.execSql = async function (sqlStore, ...args) {
 
   } catch (err) {
     return { err: err };
+  }finally{
+    if (sco) {
+      // if you pass `true` into method done, i.e. done(true),
+      // it will make the pool kill the physical connection.
+      sco.done();
+    }
+    return data1;
   }
 };

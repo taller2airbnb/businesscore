@@ -14,18 +14,13 @@ const dao = require("../db/index");
  *          '200':
  *           description:  OK
  */
-router.get("/posting", (req, res) => {
-    debugger;
-    let result =  dao.execSql("business_core_schema.get_all_posting", {})
-    // .then(resultado => {
-    //   if (resultado.err) throw new Error(resultado.err.message);
-    //   else res.send(JSON.stringify({ result: resultado.success }));
-
-    // })
-    // .catch(err => {
-    //   throw err;
-    // });
+router.get("/posting", async (req, res) => {
+  const future =  dao.execSql("get_all_posting", []);
+  future.then(result => {
+    res.send(JSON.stringify({ result: result }));
+  });
 });
+
 
 
 module.exports = router;
