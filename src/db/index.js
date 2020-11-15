@@ -25,7 +25,7 @@ exports.execSql = async function (sqlStore, ...args) {
     return await db.connect()
       .then(obj => {
         sco = obj;
-        return  obj.func(sqlStore, []);
+        return  obj.func(sqlStore, args[0]);
       })
       .catch(error => {
         console.log('ERROR:', error.message || error);

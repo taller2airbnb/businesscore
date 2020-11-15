@@ -30,3 +30,27 @@
  *       password:
  *         type: string
  */
+
+
+ /**
+ * @swagger
+ * definitions:
+ *   PostingAdd:
+ *     properties:
+ *       price_day:
+ *         type: number
+ *       start_date:
+ *         type: string
+ *       end_date:
+ *         type: string
+ *       state:
+ *         type: string
+ *       features:
+ *         type: string
+ *       public:
+ *         type: boolean
+ *       content:
+ *         type: string
+ *       id_user:
+ *         type: integer
+ */
