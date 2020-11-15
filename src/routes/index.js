@@ -16,7 +16,15 @@ const swaggerOptions = {
             title: "swagger-airbnb-businesscore",
             description: "Swagger business core"
         },
-        servers: ["http://localhost:3000"]
+        servers: ["http://localhost:3000"],
+        securityDefinitions: {
+            bearerAuth: {
+                type: 'apiKey',
+                name: 'Authorization',
+                scheme: 'bearer',
+                in: 'header',
+            }
+        }
     },
     // ['.routes/*.js']
     apis: ["src/routes/*.js"],
@@ -51,21 +59,21 @@ const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
 
-/**
- * @swagger
- * /status-profile:
- *    get:
- *      description: status profile
- *      responses:
- *          '200':
- *           description: status profile server
- */
-router.get("/status-profile", (req, res, next) => {
-    futureResponse = apiClient.statusProfile(req.body, handlerResponse.handlerResponse);
-    futureResponse.then((result) => {
-        res.send(result);
+    /**
+     * @swagger
+     * /status-profile:
+     *    get:
+     *      description: status profile
+     *      responses:
+     *          '200':
+     *           description: status profile server
+     */
+    router.get("/status-profile", (req, res, next) => {
+        futureResponse = apiClient.statusProfile(req.body, handlerResponse.handlerResponse);
+        futureResponse.then((result) => {
+            res.send(result);
+        });
     });
-});
 
 
 /**
