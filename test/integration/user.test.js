@@ -5,7 +5,7 @@ const request = supertest('http://localhost:3000');
 
 describe(" Test Suite Api: user calls", () => {
 
-    it('User register success', async () => {
+    xit('User register success', async () => {
 
         const req = {
             "alias": "cosmefulanito",
@@ -22,7 +22,7 @@ describe(" Test Suite Api: user calls", () => {
         expect(res.status).toBe(200);
     });
 
-    it('User register duplicate', async () => {
+    xit('User register duplicate', async () => {
 
          const req = {
             "alias": "cosmefulanito",
@@ -39,7 +39,7 @@ describe(" Test Suite Api: user calls", () => {
         expect(res.status).toBe(200);
     });
 
-    it('User register bad request', async () => {
+    xit('User register bad request', async () => {
 
         const req = {
             "alias": "cosmefulanito",
@@ -50,7 +50,7 @@ describe(" Test Suite Api: user calls", () => {
         expect(res.status).toBe(201);
     });
 
-    it('User login success', async ()  => {
+    xit('User login success', async ()  => {
         const req = {
             "email": "cosmefulanito@gmail.com",
             "password": "cosmefulanito1123"
@@ -60,16 +60,16 @@ describe(" Test Suite Api: user calls", () => {
         expect(res.status).toBe(200);
     });
 
-    it('User login bad request', async ()  => {
+    xit('User login bad request', async ()  => {
         const req = {
-            "email": "cosmefulanito@gmail.com"
+        
         }
 
         const res = await request.post('/profile-login').send(req);
         expect(res.status).toBe(201);
     });
 
-    it('User login fail', async () => {
+    xit('User login fail', async () => {
         const req = {
             "email": "cosmefulanito@gmail.com",
             "password": "1111"

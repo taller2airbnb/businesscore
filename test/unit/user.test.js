@@ -27,10 +27,16 @@ describe(" Test Suite: user", () => {
         const req = {
             "alias": "cosmefulanito",
             "email": "cosmefulanito@gmail.com",
+            "first_name": "Cosme",
+            "last_name": "Fulanito",
+            "national_id": "11111111",
+            "national_id_type": "DNI",
+            "password": "cosmefulanito1123",
+            "profile": 0
         }
 
         const res = await request.post('/profile-register').send(req);
-        expect(res.status).toBe(201);
+        expect(res.status).toBe(200);
     });
 
     it('User register duplicate', async () => {
@@ -60,7 +66,6 @@ describe(" Test Suite: user", () => {
         const res = await request.post('/profile-login').send(req);
         expect(res.status).toBe(200);
     });
-
 
     it('User login fail', async () => {
 
