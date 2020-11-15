@@ -8,15 +8,17 @@
  *         type: string
  *       last_name:
  *         type: string
- *       age:
- *         type: string
  *       password:
  *         type: string
  *       national_id_type:
  *         type: string
+ *       national_id:
+ *         type: string
  *       alias:
  *         type: string
  *       profile:
+ *         type: number
+ *       email:
  *         type: string
  */
 
@@ -78,4 +80,23 @@
  *         type: string
  *       id_user:
  *         type: integer
+ /**
+ * @swagger
+ * definitions:
+ *   RegistrationAdmin:
+ *     properties:
+ *       first_name:
+ *         type: string
+ *       last_name:
+ *         type: string
+ *       age:
+ *         type: string
+ *       password:
+ *         type: string
+ *       national_id_type:
+ *         type: string
+ *       alias:
+ *         type: string
+ *       profile:
+ *         type: string
  */
