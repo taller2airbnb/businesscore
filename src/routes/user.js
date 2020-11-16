@@ -18,7 +18,7 @@ const apiClient = new ApiClient(requester);
  * /profile-register:
  *   post:
  *     tags:
- *       - profile-register
+ *       - user
  *     description: User registration
  *     produces:
  *       - application/json
@@ -47,7 +47,7 @@ router.post("/profile-register", (req, res, next) => {
  * /profile-login:
  *   post:
  *     tags:
- *       - profile-login
+ *       - user
  *     description: User login
  *     produces:
  *       - application/json
@@ -70,6 +70,37 @@ router.post("/profile-login", (req, res, next) => {
     res.send(result);
   });
 });
+
+/**
+ * @swagger
+ * /profile-login-googleAuth:
+ *   post:
+ *     tags:
+ *       - user
+ *     description: User login by google
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: name
+ *         description: Username to use for login.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/LoginGoogle'
+ *     responses:
+ *       200:
+ *         description: Successfully login by Google
+ *       500:
+ *         description: Server error
+ */
+router.post("/profile-login-googleAuth", (req, res, next) => {
+  futureResponse = apiClient.loginGoogle(req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.send(result);
+  });
+});
+
+
 
 
 module.exports = router;

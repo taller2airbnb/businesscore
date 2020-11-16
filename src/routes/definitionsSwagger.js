@@ -30,3 +30,12 @@
  *       password:
  *         type: string
  */
+
+ /**
+ * @swagger
+ * definitions:
+ *   LoginGoogle:
+ *     properties:
+ *       token:
+ *         type: string
+ */
