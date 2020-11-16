@@ -4,6 +4,7 @@ const  LoginEndpoint  = require('../endpoints/LoginEndpoint');
 const  LoginGoogleEndpoint  = require('../endpoints/LoginGoogleEndpoint');
 const RegisterEndpoint  = require('../endpoints/RegisterEndpoint');
 const StatusProfile  = require('../endpoints/StatusProfileEndpoint');
+const RegisterAdminEndpoint  = require('../endpoints/RegisterAdminEndpoint');
 
 
 'use strict';
@@ -63,4 +64,13 @@ module.exports = class ApiClient {
             data: data
         });
     }
+
+    registerAdmin(data, onResponse) {
+        return this._requester.call({
+            endpoint: new RegisterAdminEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
 }
