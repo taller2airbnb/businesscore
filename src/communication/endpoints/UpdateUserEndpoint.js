@@ -2,9 +2,9 @@ const Endpoint = require("./Endpoint.js");
 const LoginSuccessful = require("../responses/login/LoginSuccessful");
 const InvalidCredentials = require("../responses/login/InvalidCredentials");
 
-module.exports = class ProfileEndpoint extends Endpoint {
+module.exports = class AddProfileEndpoint extends Endpoint {
     static url() {
-        return '/profiles/'
+        return '/profiles/add/'
     }
 
     ownResponses() {
@@ -12,7 +12,7 @@ module.exports = class ProfileEndpoint extends Endpoint {
     }
 
     method() {
-        return 'GET'
+        return 'POST'
     }
 
     needsAuthorization() {

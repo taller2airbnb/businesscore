@@ -18,7 +18,7 @@ const apiClient = new ApiClient(requester);
 
 /**
  * @swagger
- * /profile-register:
+ * /user:
  *   post:
  *     tags:
  *       - user
@@ -38,7 +38,7 @@ const apiClient = new ApiClient(requester);
  *       500:
  *         description: Server error
  */
-router.post("/profile-register", (req, res, next) => {
+router.post("/user", (req, res, next) => {
   futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.send(result);
@@ -47,10 +47,42 @@ router.post("/profile-register", (req, res, next) => {
 
 /**
  * @swagger
- * /profile-login:
- *   post:
+ * /user:
+ *   put:
  *     tags:
  *       - user
+ *     description: User update
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: name
+ *         description: Username to use for update.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/UpdateUser'
+ *     responses:
+ *       200:
+ *         description: Successfully update
+ *       500:
+ *         description: Server error
+ */
+router.put("/user", (req, res, next) => {
+  validToken.validToken(req, res);
+  futureResponse = apiClient.updateUser(req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.send(result);
+  });
+});
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     tags:
+ *       - login
  *     description: User login
  *     produces:
  *       - application/json
@@ -75,7 +107,7 @@ router.post("/profile-register", (req, res, next) => {
  *       500:
  *         description: Server error
  */
-router.post("/profile-login", (req, res, next) => {
+router.post("/login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
 
@@ -102,10 +134,10 @@ router.post("/profile-login", (req, res, next) => {
 
 /**
  * @swagger
- * /profile-login-googleAuth:
+ * /login-googleAuth:
  *   post:
  *     tags:
- *       - user
+ *       - login
  *     description: User login by google
  *     produces:
  *       - application/json
@@ -122,7 +154,7 @@ router.post("/profile-login", (req, res, next) => {
  *       500:
  *         description: Server error
  */
-router.post("/profile-login-googleAuth", (req, res, next) => {
+router.post("/login-googleAuth", (req, res, next) => {
   futureResponse = apiClient.loginGoogle(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.send(result);
@@ -132,7 +164,7 @@ router.post("/profile-login-googleAuth", (req, res, next) => {
 
 /**
  * @swagger
- * /profile-register-admin:
+ * /register-admin:
  *   post:
  *     tags:
  *       - user
@@ -154,7 +186,7 @@ router.post("/profile-login-googleAuth", (req, res, next) => {
  *       500:
  *         description: Server error
  */
-router.post("/profile-register-admin", (req, res, next) => {
+router.post("/register-admin", (req, res, next) => {
   validToken.validToken(req, res);
 
   let tokenDecode = decodeToken.decodeToken(req);

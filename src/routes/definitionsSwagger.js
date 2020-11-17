@@ -22,6 +22,24 @@
  *         type: string
  */
 
+
+ /**
+ * @swagger
+ * definitions:
+ *   UpdateUser:
+ *     properties:
+ *       first_name:
+ *         type: string
+ *       last_name:
+ *         type: string
+ *       id:
+ *         type: string
+ *       national_id_type:
+ *         type: string
+ *       national_id:
+ *         type: string
+ */
+
  /**
  * @swagger
  * definitions:
@@ -36,9 +54,6 @@
  /**
  * @swagger
  * definitions:
- *   LoginGoogle:
- *     properties:
- *       token:
  *   RegistrationAdmin:
  *     properties:
  *       first_name:
@@ -55,8 +70,22 @@
  *         type: string
  *       profile:
  *         type: string
- *       email:
+ */
+
+ /**
+ * @swagger
+ * definitions:
+ *   LoginGoogle:
+ *     properties:
+ *       token:
  *         type: string
- *       national_id:
+ */
+
+/**
+ * @swagger
+ * definitions:
+ *   AddProfile:
+ *     properties:
+ *       description:
  *         type: string
  */
