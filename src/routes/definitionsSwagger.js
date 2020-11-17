@@ -22,6 +22,24 @@
  *         type: string
  */
 
+
+ /**
+ * @swagger
+ * definitions:
+ *   UpdateUser:
+ *     properties:
+ *       first_name:
+ *         type: string
+ *       last_name:
+ *         type: string
+ *       id:
+ *         type: string
+ *       national_id_type:
+ *         type: string
+ *       national_id:
+ *         type: string
+ */
+
  /**
  * @swagger
  * definitions:
@@ -51,5 +69,36 @@
  *       alias:
  *         type: string
  *       profile:
+ *         type: string
+ */
+
+ /**
+ * @swagger
+ * definitions:
+ *   LoginGoogle:
+ *     properties:
+ *       token:
+ *         type: string
+ */
+
+/**
+ * @swagger
+ * definitions:
+ *   AddProfile:
+ *     properties:
+ *       description:
+ *         type: string
+ */
+
+ /**
+ * @swagger
+ * definitions:
+ *   ChangePassword:
+ *     properties:
+ *       email:
+ *         type: string
+ *       password:
+ *         type: string
+ *       validate:
  *         type: string
  */

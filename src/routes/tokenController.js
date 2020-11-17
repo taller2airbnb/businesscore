@@ -17,10 +17,14 @@ module.exports.validToken = function (req, res) {
         res.status(401).send({
           error: 'Token inválido'
         })
-      } else {
-        res.send({
-          message: 'Awwwww yeah!!!!'
-        })
       }
     })
+};
+
+
+module.exports.decodeToken = function (req, res) {
+  var token = req.headers['authorization']
+  return jwt.decode(token, {
+    complete: true
+   });
 };

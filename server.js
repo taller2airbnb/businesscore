@@ -21,4 +21,6 @@ app.listen(app.get('port'), () => {
 //routes
 app.use(require('./src/routes/index'));
 app.use(require('./src/routes/user'));
+app.use(require('./src/routes/profile'));
+
 
