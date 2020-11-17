@@ -91,16 +91,22 @@ workflows:
       - build:
           filters:
             branches:
-              only: main
+              only: 
+               - main
+               - develop
       - publish:
           requires:
             - build
           filters:
             branches:
-              only: main
+              only: 
+               - main
+               - develop
       - deploy:
           requires:
             - publish
           filters:
             branches:
-              only: main
+              only: 
+               - main
+               - develop

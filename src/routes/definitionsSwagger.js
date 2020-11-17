@@ -89,3 +89,16 @@
  *       description:
  *         type: string
  */
+
+ /**
+ * @swagger
+ * definitions:
+ *   ChangePassword:
+ *     properties:
+ *       email:
+ *         type: string
+ *       password:
+ *         type: string
+ *       validate:
+ *         type: string
+ */

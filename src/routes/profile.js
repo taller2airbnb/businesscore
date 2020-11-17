@@ -64,7 +64,7 @@ router.post("/profile", (req, res, next) => {
  *           description:  OK
  */
 router.get("/profile", async (req, res) => {
-    futureResponse = apiClient.getProfile(req.body, handlerResponse.handlerResponse);
+    futureResponse = apiClient.getProfile(handlerResponse.handlerResponse);
       futureResponse.then((result) => {
         res.send(result);
       });

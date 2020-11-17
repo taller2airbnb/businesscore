@@ -191,8 +191,39 @@ router.post("/register-admin", (req, res, next) => {
 
   let tokenDecode = decodeToken.decodeToken(req);
   req.body["user_logged_id"] = tokenDecode.payload.id;
-  console.log(req.body);
   futureResponse = apiClient.registerAdmin(req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.send(result);
+  });
+});
+
+/**
+ * @swagger
+ * /change-password:
+ *   put:
+ *     tags:
+ *       - user
+ *     description: Change the password
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: name
+ *         description: Username of user that will change password.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/ChangePassword'
+ *     responses:
+ *       200:
+ *         description: Successfully update password
+ *       500:
+ *         description: Server error
+ */
+router.put("/change-password", (req, res, next) => {
+  validToken.validToken(req, res);
+  futureResponse = apiClient.changePassword(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.send(result);
   });
