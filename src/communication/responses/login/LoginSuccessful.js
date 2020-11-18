@@ -22,6 +22,10 @@ module.exports = class LoginSuccessful extends SuccessfulApiResponse {
     return "Login successful";
   }
 
+  getJson(){
+    return this._jsonResponse;
+  }
+
   hasError(){
     return false;
   }

@@ -28,4 +28,8 @@ module.exports = class ErrorApiResponse extends ApiResponse {
   message() {
     return this.errorMessages();
   }
+
+  statusCode(){
+    return 200;
+  }
 };

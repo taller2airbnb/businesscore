@@ -110,16 +110,14 @@ router.put("/user", (req, res, next) => {
 router.post("/login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-
-    var username = result.email
-    var password = result.password
-    var profile = result.profile
-    var id = result.id
+    resultJson = result["json"];
+    var username = resultJson.email;
+    var profile = resultJson.profile;
+    var id = resultJson.id;
 
 
     var tokenData = {
       username: username,
-      password: password,
       profile: profile,
       id: id
     }
@@ -189,8 +187,7 @@ router.post("/login-googleAuth", (req, res, next) => {
  *         description: Server error
  */
 router.post("/register-admin", (req, res, next) => {
-  validToken.validToken(req, res);
-
+  if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
   req.body["user_logged_id"] = tokenDecode.payload.id;
   futureResponse = apiClient.registerAdmin(req.body, handlerResponse.handlerResponse);
