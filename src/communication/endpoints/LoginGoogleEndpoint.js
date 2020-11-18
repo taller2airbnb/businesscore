@@ -1,5 +1,5 @@
 const Endpoint = require("./Endpoint.js");
-const LoginSuccessful = require("../responses/login/LoginSuccessful");
+const LoginGoogleSuccessful = require("../responses/login/LoginGoogleSuccessful");
 const InvalidCredentials = require("../responses/login/InvalidCredentials");
 
 module.exports = class LoginGoogleEndpoint extends Endpoint {
@@ -8,7 +8,7 @@ module.exports = class LoginGoogleEndpoint extends Endpoint {
     }
 
     ownResponses() {
-        return [LoginSuccessful, InvalidCredentials];
+        return [LoginGoogleSuccessful, InvalidCredentials];
     }
 
     method() {

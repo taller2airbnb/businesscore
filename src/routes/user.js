@@ -157,7 +157,7 @@ router.post("/login", (req, res, next) => {
 router.post("/login-googleAuth", (req, res, next) => {
   futureResponse = apiClient.loginGoogle(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.send(result);
+    res.status(result["status"]).send(result);
   });
 });
 
