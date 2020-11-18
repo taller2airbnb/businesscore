@@ -8,6 +8,11 @@ class SuccessfulApiResponse extends ApiResponse {
     static understandThis(jsonResponse) {
         return jsonResponse.error === undefined;
     }
+
+    constructor(jsonResponse) {
+        super(jsonResponse);
+        this._jsonResponse = jsonResponse;
+      }
 }
 
 module.exports = SuccessfulApiResponse

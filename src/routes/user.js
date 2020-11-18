@@ -128,7 +128,9 @@ router.post("/login", (req, res, next) => {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
 
-    res.send({token})
+    futureResponse.then((result) => {
+      res.status(result["status"]).send(token);
+    });
   });
 });
 
@@ -222,10 +224,10 @@ router.post("/register-admin", (req, res, next) => {
  *         description: Server error
  */
 router.put("/change-password", (req, res, next) => {
-  validToken.validToken(req, res);
+  if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.changePassword(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.send(result);
+    res.status(result["status"]).send(result["message"]);
   });
 });
 
