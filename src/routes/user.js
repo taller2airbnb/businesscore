@@ -110,25 +110,26 @@ router.put("/user", (req, res, next) => {
 router.post("/login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
+
+    if (result["status"] == 400){
+      res.status(result["status"]).send(result);
+    }
     resultJson = result["json"];
     var username = resultJson.email;
     var profile = resultJson.profile;
     var id = resultJson.id;
 
 
-    var tokenData = {
-      username: username,
-      profile: profile,
-      id: id
-    }
+      var tokenData = {
+        username: username,
+        profile: profile,
+        id: id
+      }
 
     var token = jwt.sign(tokenData, 'Secret Password', {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
-
-    futureResponse.then((result) => {
-      res.status(result["status"]).send(token);
-    });
+    res.status(result["status"]).send(token);
   });
 });
 

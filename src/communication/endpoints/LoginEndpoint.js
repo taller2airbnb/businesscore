@@ -4,7 +4,7 @@ const InvalidCredentials = require("../responses/login/InvalidCredentials");
 
 module.exports = class LoginEndpoint extends Endpoint {
     static url() {
-        return '/login'
+        return '/login/'
     }
 
     ownResponses() {

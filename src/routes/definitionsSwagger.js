@@ -72,8 +72,6 @@
  *         type: string
  *       alias:
  *         type: string
- *       profile:
- *         type: string
  */
 
  /**
