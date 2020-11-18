@@ -31,7 +31,7 @@ module.exports = class RemoteRequester extends Requester {
              *
              ***/
             .catch(exception => {
-                return onResponse(this._buildResponse(jsonResponse, endpoint));
+                return onResponse(new ErrorApiResponse());
             })
     }
 
