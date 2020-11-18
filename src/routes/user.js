@@ -70,10 +70,10 @@ router.post("/user", (req, res, next) => {
  *         description: Server error
  */
 router.put("/user", (req, res, next) => {
-  validToken.validToken(req, res);
+  if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.updateUser(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.send(result);
+    res.status(result["status"]).send(result);
   });
 });
 
