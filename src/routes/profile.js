@@ -38,14 +38,13 @@ const apiClient = new ApiClient(requester);
  *         description: Server error
  */
 router.post("/profile", (req, res, next) => {
-  validToken.validToken(req, res);
-
+  if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.addProfile(
     req.body,
     handlerResponse.handlerResponse
   );
   futureResponse.then((result) => {
-    res.send(result);
+    res.status(result["status"]).send(result);
   });
 });
 
@@ -64,9 +63,10 @@ router.post("/profile", (req, res, next) => {
  *           description:  OK
  */
 router.get("/profile", async (req, res) => {
+    if (!validToken.validToken(req, res)) return;
     futureResponse = apiClient.getProfile(handlerResponse.handlerResponse);
       futureResponse.then((result) => {
-        res.send(result);
+        res.status(result["status"]).send(result);
       });
   });
 

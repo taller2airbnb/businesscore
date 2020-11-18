@@ -1,14 +1,14 @@
 const Endpoint = require("./Endpoint.js");
-const LoginSuccessful = require("../responses/login/LoginSuccessful");
-const InvalidCredentials = require("../responses/login/InvalidCredentials");
+const NewProfileSuccessful = require("../responses/profiles/NewProfileSuccessful");
+const InvalidNewGetProfile = require("../responses/profiles/InvalidNewGetProfile");
 
-module.exports = class UpdateUserEndpoint extends Endpoint {
+module.exports = class AddProfileEndpoint extends Endpoint {
     static url() {
         return '/profiles/add/'
     }
 
     ownResponses() {
-        return [LoginSuccessful, InvalidCredentials];
+        return [NewProfileSuccessful, InvalidNewGetProfile];
     }
 
     method() {

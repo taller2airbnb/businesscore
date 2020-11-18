@@ -192,7 +192,7 @@ router.post("/register-admin", (req, res, next) => {
   req.body["user_logged_id"] = tokenDecode.payload.id;
   futureResponse = apiClient.registerAdmin(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.status(result);
+    res.status(result["status"]).send(result);
   });
 });
 
@@ -224,7 +224,7 @@ router.put("/change-password", (req, res, next) => {
   if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.changePassword(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.status(result);
+    res.status(result["status"]).send(result);
   });
 });
 
