@@ -32,6 +32,7 @@ module.exports = class RemoteRequester extends Requester {
              ***/
             .catch(exception => {
                 console.log(exception);
+                return onResponse(new ErrorApiResponse());
             })
     }
 
@@ -59,7 +60,7 @@ module.exports = class RemoteRequester extends Requester {
                 return responseType;
             } 
         }
-        return new ErrorApiResponse();
+        return new ErrorApiResponse(result[1]);
     }
 
     _buildHeadersFor(endpoint) {

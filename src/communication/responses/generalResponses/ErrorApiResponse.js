@@ -25,11 +25,19 @@ module.exports = class ErrorApiResponse extends ApiResponse {
     return "¡Ha ocurrido un error!";
   }
 
+  getMessage() {
+    return "Error en API";
+  }
+
   message() {
     return this.errorMessages();
   }
 
   statusCode(){
-    return 200;
+    return 500;
+  }
+
+  hasError(){
+    return true;
   }
 };
