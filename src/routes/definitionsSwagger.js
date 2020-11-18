@@ -56,6 +56,8 @@
  * definitions:
  *   RegistrationAdmin:
  *     properties:
+ *       email:
+ *         type: string
  *       first_name:
  *         type: string
  *       last_name:
@@ -66,9 +68,9 @@
  *         type: string
  *       national_id_type:
  *         type: string
- *       alias:
+ *       national_id:
  *         type: string
- *       profile:
+ *       alias:
  *         type: string
  */
 

@@ -70,10 +70,10 @@ router.post("/user", (req, res, next) => {
  *         description: Server error
  */
 router.put("/user", (req, res, next) => {
-  validToken.validToken(req, res);
+  if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.updateUser(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.send(result);
+    res.status(result["status"]).send(result);
   });
 });
 
@@ -111,24 +111,25 @@ router.post("/login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
 
-    var username = result.email
-    var password = result.password
-    var profile = result.profile
-    var id = result.id
-
-
-    var tokenData = {
-      username: username,
-      password: password,
-      profile: profile,
-      id: id
+    if (result["status"] == 400){
+      res.status(result["status"]).send(result);
     }
+    resultJson = result["json"];
+    var username = resultJson.email;
+    var profile = resultJson.profile;
+    var id = resultJson.id;
+
+
+      var tokenData = {
+        username: username,
+        profile: profile,
+        id: id
+      }
 
     var token = jwt.sign(tokenData, 'Secret Password', {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
-
-    res.send({token})
+    res.status(result["status"]).send(token);
   });
 });
 
@@ -157,7 +158,7 @@ router.post("/login", (req, res, next) => {
 router.post("/login-googleAuth", (req, res, next) => {
   futureResponse = apiClient.loginGoogle(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.send(result);
+    res.status(result["status"]).send(result);
   });
 });
 
@@ -187,13 +188,12 @@ router.post("/login-googleAuth", (req, res, next) => {
  *         description: Server error
  */
 router.post("/register-admin", (req, res, next) => {
-  validToken.validToken(req, res);
-
+  if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
   req.body["user_logged_id"] = tokenDecode.payload.id;
   futureResponse = apiClient.registerAdmin(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.send(result);
+    res.status(result["status"]).send(result);
   });
 });
 
@@ -222,10 +222,10 @@ router.post("/register-admin", (req, res, next) => {
  *         description: Server error
  */
 router.put("/change-password", (req, res, next) => {
-  validToken.validToken(req, res);
+  if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.changePassword(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
-    res.send(result);
+    res.status(result["status"]).send(result);
   });
 });
 

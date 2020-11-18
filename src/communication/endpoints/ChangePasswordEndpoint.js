@@ -1,5 +1,5 @@
 const Endpoint = require("./Endpoint.js");
-const LoginSuccessful = require("../responses/login/LoginSuccessful");
+const ChangePasswordSuccessful = require("../responses/user/ChangePasswordSuccessful");
 const InvalidCredentials = require("../responses/login/InvalidCredentials");
 
 module.exports = class ChangePasswordEndpoint extends Endpoint {
@@ -8,7 +8,7 @@ module.exports = class ChangePasswordEndpoint extends Endpoint {
     }
 
     ownResponses() {
-        return [LoginSuccessful, InvalidCredentials];
+        return [ChangePasswordSuccessful, InvalidCredentials];
     }
 
     method() {

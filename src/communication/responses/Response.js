@@ -13,7 +13,7 @@
     }
 
     errors() {
-        return this._jsonResponse.error;
+        return "Error desconocido";
     }
 
     content() {
