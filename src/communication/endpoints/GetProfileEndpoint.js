@@ -1,10 +1,14 @@
 const Endpoint = require("./Endpoint.js");
-const LoginSuccessful = require("../responses/login/LoginSuccessful");
-const InvalidCredentials = require("../responses/login/InvalidCredentials");
+const GetProfileSuccessful = require("../responses/profiles/GetProfileSuccessful");
+const InvalidGetProfile = require("../responses/profiles/InvalidGetProfile");
 
 module.exports = class ProfileEndpoint extends Endpoint {
     static url() {
         return '/profiles/'
+    }
+
+    ownResponses() {
+        return [GetProfileSuccessful, InvalidGetProfile];
     }
 
     method() {
