@@ -7,9 +7,9 @@ const router = Router();
 var cors = require("cors");
 router.use(cors());
 router.options('*', cors());
-var validToken = require('./tokenController.js')
-var decodeToken = require('./tokenController.js')
-var jwt = require('jsonwebtoken')
+var validToken = require('./tokenController.js');
+var decodeToken = require('./tokenController.js');
+var jwt = require('jsonwebtoken');
 
 
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
