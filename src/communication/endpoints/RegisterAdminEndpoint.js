@@ -1,0 +1,23 @@
+const Endpoint = require("./Endpoint.js");
+const RegisterSuccessful = require("../responses/user/RegisterSuccessful");
+const InvalidRegister = require("../responses/user/InvalidRegister");
+
+("use strict");
+
+module.exports = class RegisterAdminEndpoint extends Endpoint {
+  static url() {
+    return "/register_admin/";
+  }
+
+  method() {
+    return "POST";
+  }
+
+  needsAuthorization() {
+    return false;
+  }
+
+  ownResponses() {
+    return [RegisterSuccessful, InvalidRegister];
+}
+};
