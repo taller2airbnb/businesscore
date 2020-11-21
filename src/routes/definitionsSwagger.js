@@ -70,9 +70,7 @@
  *       public:
  *         type: boolean
  *       content:
- *         type: string
- *       id_user:
- *         type: integer
+ *         type: string 
  */
 
  /**

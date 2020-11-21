@@ -5,6 +5,7 @@ router.use(cors());
 router.options('*', cors());
 const dao = require("../db/index");
 var validToken = require('./tokenController.js');
+var decodeToken = require('./tokenController.js');
 
 /**
  * @swagger
@@ -56,9 +57,10 @@ router.get("/posting", async (req, res) => {
  */
 router.post("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
+  let tokenDecode = decodeToken.decodeToken(req);
   const future = dao.execSql("create_posting", [req.body.price_day,
   req.body.start_date, req.body.end_date, req.body.state,
-  req.body.features, req.body.public, req.body.content, req.body.id_user]);
+  req.body.features, req.body.public, req.body.content, tokenDecode.payload.id]);
   future.then(result => {
     res.send(JSON.stringify(result));
   }).catch(error => {
