@@ -9,7 +9,7 @@ app.set('port', process.env.PORT  || 3000);
 
 //midleware
 app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: false }));//only text, not files
+app.use(express.urlencoded({ extended: false })); //only text, not files
 app.use(express.json());
 
 
@@ -26,3 +26,4 @@ app.use(require('./src/routes/posting'));
 
 
 
+module.exports = app;
