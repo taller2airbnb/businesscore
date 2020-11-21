@@ -13,16 +13,21 @@ var decodeToken = require('./tokenController.js');
  *    get:
  *     tags:
  *       - posting
- *     description: all posting
+ *     description: get posting
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - name: idPosting
+ *         in: query
+ *         required: false
+ *         type: number
  *     responses:
  *          '200':
  *           description:  OK
  */
 router.get("/posting", async (req, res) => {
-  if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("get_all_posting", []);
+ // if (!validToken.validToken(req, res)) return;
+  const future = dao.execSql("get_posting", [req.query.idPosting]);
   future.then(result => {
     res.send(JSON.stringify(result));
   }).catch(error => {
