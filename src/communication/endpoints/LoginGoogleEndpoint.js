@@ -1,14 +1,14 @@
 const Endpoint = require("./Endpoint.js");
-const LoginSuccessful = require("../responses/login/LoginSuccessful");
+const LoginGoogleSuccessful = require("../responses/login/LoginGoogleSuccessful");
 const InvalidCredentials = require("../responses/login/InvalidCredentials");
 
-module.exports = class LoginEndpoint extends Endpoint {
+module.exports = class LoginGoogleEndpoint extends Endpoint {
     static url() {
-        return '/login/'
+        return '/google_auth/login'
     }
 
     ownResponses() {
-        return [LoginSuccessful, InvalidCredentials];
+        return [LoginGoogleSuccessful, InvalidCredentials];
     }
 
     method() {
