@@ -5,7 +5,7 @@ const request = supertest(server);
 
 describe(" Test Suite: user", () => {
 
-    it('User register success', async () => {
+    xit('User register success', async () => {
 
         const req = {
             "alias": "cosmefulanito",
@@ -22,7 +22,7 @@ describe(" Test Suite: user", () => {
         expect(res.status).toBe(200);
     });
 
-    it('User register bad request', async () => {
+    xit('User register bad request', async () => {
 
         const req = {
             "alias": "cosmefulanito",
