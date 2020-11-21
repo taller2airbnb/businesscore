@@ -39,7 +39,7 @@ describe(" Test Suite: user", () => {
         expect(res.status).toBe(200);
     });
 
-    it('User register duplicate', async () => {
+    xit('User register duplicate', async () => {
 
         const req = {
             "alias": "cosmefulanito",
@@ -56,7 +56,7 @@ describe(" Test Suite: user", () => {
         expect(res.status).toBe(200);
     });
 
-    it('User login success', async () => {
+    xit('User login success', async () => {
 
         const req = {
             "email": "cosmefulanito@gmail.com",
@@ -67,7 +67,7 @@ describe(" Test Suite: user", () => {
         expect(res.status).toBe(200);
     });
 
-    it('User login fail', async () => {
+    xit('User login fail', async () => {
 
         const req = {
             "email": "cosmefulanito@gmail.com",
