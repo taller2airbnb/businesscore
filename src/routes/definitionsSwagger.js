@@ -78,8 +78,6 @@
  * definitions:
  *   PostingPut:
  *     properties:
- *       id_posting:
- *         type: integer
  *       price_day:
  *         type: number
  *       start_date:
@@ -94,8 +92,6 @@
  *         type: boolean
  *       content:
  *         type: string
- *       id_user:
- *         type: integer
  */
 
  

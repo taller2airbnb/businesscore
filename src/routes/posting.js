@@ -72,7 +72,7 @@ router.post("/posting", async (req, res) => {
 
 /**
  * @swagger
- * /posting:
+ * /posting/{idPosting}:
  *   put:
  *     tags:
  *       - posting
@@ -82,8 +82,13 @@ router.post("/posting", async (req, res) => {
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: name
- *         description: New Posting
+ *       - name: idPosting
+ *         in: path
+ *         description: idposting
+ *         required: true
+ *         type: number
+ *       - name: body
+ *         description: Update Posting
  *         in: body
  *         required: true
  *         schema:
@@ -94,9 +99,9 @@ router.post("/posting", async (req, res) => {
  *       500:
  *         description: Server error
  */
-router.put("/posting", async (req, res) => {
+router.put("/posting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("update_posting", [req.body.id_posting, req.body.price_day,
+  const future = dao.execSql("update_posting", [req.params.idPosting, req.body.price_day,
   req.body.start_date, req.body.end_date, req.body.state,
   req.body.features, req.body.public, req.body.content]);
   future.then(result => {
