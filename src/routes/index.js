@@ -8,6 +8,9 @@ const handlerResponse = require("./hanlderResponse");
 const RemoteRequester = require("../../src/communication/requester/RemoteRequester");
 const ApiClient = require("../../src/communication/client/ApiClient");
 
+const db = require("../db/index");
+db.inicialize();
+
 
 // Extended: https://swagger.io/specification/#infoObject
 const swaggerOptions = {
