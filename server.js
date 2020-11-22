@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 dotenv.config();
 
+
 //settting
 app.set('port', process.env.PORT  || 3000);
 
@@ -22,5 +23,7 @@ app.listen(app.get('port'), () => {
 app.use(require('./src/routes/index'));
 app.use(require('./src/routes/user'));
 app.use(require('./src/routes/profile'));
+app.use(require('./src/routes/posting'));
+
 
 

@@ -20,3 +20,7 @@ docker push cordobacesar/taller2airbnb ## psuhea la imagen
 
 # test
 node run test
+
+
+# usage database postgres client
+http://vitaly-t.github.io/pg-promise/
