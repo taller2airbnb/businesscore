@@ -17,7 +17,7 @@ module.exports = class RemoteRequester extends Requester {
         // }
         return fetch(this._baseUrl + url, request)
         .then(result => {
-            return  [result.ok ? result.json() : "", result.status] ; 
+            return  [result.status != 400 && result.status && 500 ? result.json() : "", result.status] ; 
         }) 
         .then(result => {
             return onResponse(this._buildResponse(result, endpoint));
@@ -54,11 +54,14 @@ module.exports = class RemoteRequester extends Requester {
     _buildResponse(result, endpoint) {
         const availableResponsesForEndpoint = endpoint.responses();
         for (let responseType of availableResponsesForEndpoint) {
-            if (result[0] !== ""){
-                return new responseType(result[0])
-            } else if (responseType.understandThis(result[1])) {
-                return responseType;
-            } 
+            if (responseType.understandThis(result[1])) {
+                if (result[0] !== "") {
+                    return new responseType(result);
+
+                } else {
+                    return responseType;
+                }
+            }
         }
         return new ErrorApiResponse(result[1]);
     }

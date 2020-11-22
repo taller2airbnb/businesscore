@@ -7,30 +7,18 @@ module.exports = class LoginSuccessful extends SuccessfulApiResponse {
       token: "QpwL5tke4Pnpja7X4",
     };
   }
-
-  static understandThis(response) {
-    return response.status >= 200 && response.status < 300;
-  }
-
-
-  constructor(jsonResponse) {
-    super(jsonResponse);
-    this._jsonResponse = jsonResponse;
+  
+  constructor(result) {
+    super(result[0]);
+    this._jsonResponse = result[0];
+    this._statusCode = result[1];
   }
 
   getMessage() {
-    return "Login successful";
-  }
-
-  getJson(){
     return this._jsonResponse;
   }
 
-  hasError(){
-    return false;
-  }
-
-  statusCode(){
+  statusCode() {
     return 200;
   }
 };

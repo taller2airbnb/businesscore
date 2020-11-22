@@ -5,12 +5,18 @@ const InvalidRegister = require("../responses/user/InvalidRegister");
 ("use strict");
 
 module.exports = class RegisterAdminEndpoint extends Endpoint {
-  static url() {
-    return "/register_admin/";
+
+  constructor(userId) {
+    super();
+    this._userId = userId;
+  }
+  
+  url() {
+    return "/user/" + this._userId;
   }
 
   method() {
-    return "POST";
+    return "GET";
   }
 
   needsAuthorization() {

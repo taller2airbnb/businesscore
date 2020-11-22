@@ -4,7 +4,7 @@ const InvalidUpdate = require("../responses/user/InvalidUpdate");
 
 module.exports = class UpdateUserEndpoint extends Endpoint {
     static url() {
-        return '/user/modify/'
+        return '/user/'
     }
 
     ownResponses() {
@@ -12,7 +12,7 @@ module.exports = class UpdateUserEndpoint extends Endpoint {
     }
 
     method() {
-        return 'POST'
+        return 'PUT'
     }
 
     needsAuthorization() {
