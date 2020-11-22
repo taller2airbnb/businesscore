@@ -1,28 +1,3 @@
-
-// /**
-//  * @swagger
-//  * definitions:
-//  *   Registration:
-//  *     properties:
-//  *       first_name:
-//  *         type: string
-//  *       last_name:
-//  *         type: string
-//  *       password:
-//  *         type: string
-//  *       national_id_type:
-//  *         type: string
-//  *       national_id:
-//  *         type: string
-//  *       alias:
-//  *         type: string
-//  *       profile:
-//  *         type: number
-//  *       email:
-//  *         type: string
-//  */
-
-
  /**
  * @swagger
  * definitions:
@@ -48,6 +23,10 @@
  *       email:
  *         type: string
  *       password:
+ *         type: string
+ *       google_token:
+ *         type: string
+ *       user_type:
  *         type: string
  */
 
@@ -127,15 +106,6 @@
  *       profile:
  *         type: number
  *       user_logged_id:
- *         type: string
- */
-
- /**
- * @swagger
- * definitions:
- *   LoginGoogle:
- *     properties:
- *       token:
  *         type: string
  */
 

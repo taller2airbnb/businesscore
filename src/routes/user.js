@@ -111,10 +111,11 @@ router.post("/login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
 
-    if (result["status"] == 400){
+    if (result["status"] != 200){
       res.status(result["status"]).send(result);
+      return;
     }
-    resultJson = result["json"];
+    resultJson = result["message"];
     var username = resultJson.email;
     var profile = resultJson.profile;
     var id = resultJson.id;
@@ -129,35 +130,7 @@ router.post("/login", (req, res, next) => {
     var token = jwt.sign(tokenData, 'Secret Password', {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
-    res.status(result["status"]).send(token);
-  });
-});
-
-/**
- * @swagger
- * /login-googleAuth:
- *   post:
- *     tags:
- *       - login
- *     description: User login by google
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: name
- *         description: Username to use for login.
- *         in: body
- *         required: true
- *         schema:
- *           $ref: '#/definitions/LoginGoogle'
- *     responses:
- *       200:
- *         description: Successfully login by Google
- *       500:
- *         description: Server error
- */
-router.post("/login-googleAuth", (req, res, next) => {
-  futureResponse = apiClient.loginGoogle(req.body, handlerResponse.handlerResponse);
-  futureResponse.then((result) => {
+    result["token"] = token;
     res.status(result["status"]).send(result);
   });
 });

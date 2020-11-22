@@ -1,8 +1,6 @@
 const ServerErrorResponse  = require('../responses/generalResponses/ServerErrorResponse.js');
 const  GetProfileEndpoint  = require('../endpoints/GetProfileEndpoint.js');
 const  LoginEndpoint  = require('../endpoints/LoginEndpoint');
-const  LoginGoogleEndpoint  = require('../endpoints/LoginGoogleEndpoint');
-//const RegisterEndpoint  = require('../endpoints/RegisterEndpointDeprecated');
 const StatusProfile  = require('../endpoints/StatusProfileEndpoint');
 const RegisterEndpoint  = require('../endpoints/RegisterEndpoint');
 const UpdateUserEndpoint  = require('../endpoints/UpdateUserEndpoint');
@@ -31,14 +29,6 @@ module.exports = class ApiClient {
     login(data, onResponse) {
         return this._requester.call({
             endpoint: new LoginEndpoint(),
-            onResponse: (response) => this._handleResponse(response, onResponse),
-            data: data
-        });
-    }
-
-    loginGoogle(data, onResponse) {
-        return this._requester.call({
-            endpoint: new LoginGoogleEndpoint(),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: data
         });
