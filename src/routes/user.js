@@ -11,7 +11,6 @@ var validToken = require('./tokenController.js');
 var decodeToken = require('./tokenController.js');
 var jwt = require('jsonwebtoken');
 
-
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
@@ -172,6 +171,38 @@ router.post("/register", (req, res, next) => {
 router.put("/change-password", (req, res, next) => {
   if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.changePassword(req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.status(result["status"]).send(result);
+  });
+});
+
+
+/**
+ * @swagger
+ * /posting/{idUser}:
+ *   get:
+ *     tags:
+ *       - user
+ *     description: get user 
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: idUser
+ *         in: path
+ *         description: idUser
+ *         required: true
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: Successfully get user
+ *       500:
+ *         description: Server error
+ */
+router.get("/posting/:idUser", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  futureResponse = apiClient.getUser(req.params.idUser, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
   });
