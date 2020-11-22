@@ -26,7 +26,7 @@ var decodeToken = require('./tokenController.js');
  *           description:  OK
  */
 router.get("/posting", async (req, res) => {
- // if (!validToken.validToken(req, res)) return;
+  if (!validToken.validToken(req, res)) return;
   const future = dao.execSql("get_posting", [req.query.idPosting]);
   future.then(result => {
     res.send(JSON.stringify(result));
@@ -148,5 +148,54 @@ router.delete("/posting/:idPosting", async (req, res) => {
     res.status(500).send("Data base: " + error);
   });
 });
+
+
+/**
+ * @swagger
+ * /posting/search:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get posting
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: priceMin
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: priceMax
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: startDate
+ *         in: query
+ *         required: false
+ *         type: string
+ *         description: YYYY-MM-DD HH24:MI:SS
+ *       - name: endDate
+ *         in: query
+ *         required: false
+ *         type: string
+ *         description: YYYY-MM-DD HH24:MI:SS
+ *       - name: feature
+ *         in: query
+ *         required: false
+ *         type: string
+ *         description: '{id wifi, id tv, id baño}'
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/posting/search", async (req, res) => {
+  // if (!validToken.validToken(req, res)) return;
+   const future = dao.execSql("search_posting", [req.query.priceMin,
+    req.query.priceMax, req.query.startDate, req.query.endDate, req.query.feature]);
+   future.then(result => {
+     res.send(JSON.stringify(result));
+   }).catch(error => {
+     res.status(500).send("Data base: " + error);
+   });
+ });
 
 module.exports = router;
