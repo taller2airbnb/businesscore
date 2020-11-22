@@ -8,24 +8,14 @@ module.exports = class InvalidUpdate extends ErrorApiResponse {
     };
   }
 
-  constructor(jsonResponse) {
-    super(jsonResponse);
-    this._jsonResponse = jsonResponse;
+  constructor(result) {
+    super(result[0]);
+    this._jsonResponse = result[0];
+    this._statusCode = result[1];
   }
 
   static getMessage() {
-    return "Invalid data to update";
+    return "Invalid data to update user";
   }
 
-  static understandThis(status) {
-    return status == 400;
-  }
-
-  static hasError(){
-    return true;
-  }
-
-  static statusCode(){
-    return 400;
-  }
 };

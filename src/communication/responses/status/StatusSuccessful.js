@@ -8,28 +8,17 @@ module.exports = class StatusSuccessful extends SuccessfulApiResponse {
     };
   }
 
-  static understandThis(response) {
-    return response.status >= 200 && response.status < 300;
-  }
-
-  constructor(jsonResponse) {
-    super(jsonResponse);
-    this._jsonResponse = jsonResponse;
+  constructor(result) {
+    super(result[0]);
+    this._jsonResponse = result[0];
+    this._statusCode = result[1];
   }
 
   getMessage() {
-    return "Status successful";
-  }
-
-  hasError(){
-    return false;
-  }
-
-  statusCode(){
-    return 200;
-  }
-
-  getJson(){
     return this._jsonResponse;
+  }
+
+  statusCode() {
+    return 200;
   }
 };

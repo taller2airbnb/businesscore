@@ -7,30 +7,19 @@ module.exports = class UpdateSuccessful extends SuccessfulApiResponse {
       token: "QpwL5tke4Pnpja7X4",
     };
   }
-
-  static understandThis(response) {
-    return response.status >= 200 && response.status < 300;
-  }
-
-  constructor(jsonResponse) {
-    super(jsonResponse);
-    this._jsonResponse = jsonResponse;
+  
+  constructor(result) {
+    super(result[0]);
+    this._jsonResponse = result[0];
+    this._statusCode = result[1];
   }
 
   getMessage() {
-    return "Update successful";
-  }
-
-  hasError(){
-    return false;
-  }
-
-  statusCode(){
-    return 200;
-  }
-
-  getJson(){
     return this._jsonResponse;
+  }
+
+  statusCode() {
+    return 200;
   }
 
 };

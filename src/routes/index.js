@@ -74,7 +74,7 @@ const apiClient = new ApiClient(requester);
 router.get("/status-profile", (req, res, next) => {
     futureResponse = apiClient.statusProfile(req.body, handlerResponse.handlerResponse);
     futureResponse.then((result) => {
-        res.status(result["status"]).send(result["json"]);
+        res.status(result["status"]).send(result["message"]);
     });
 });
 
