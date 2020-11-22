@@ -1,8 +1,7 @@
 module.exports.handlerResponse = async function (response) {
   resp = {};
-  resp["message"] = response.getMessage();
   resp["status"] = response.statusCode();
-  if (!response.hasError())
-    resp["json"] = await response.getJson();
+  if (response.hasBodyMessage())  resp["message"] = await response.getMessage()
+  else resp["message"] = response.getMessage() 
   return resp;
 };

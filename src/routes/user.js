@@ -16,34 +16,34 @@ const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
 
-/**
- * @swagger
- * /user:
- *   post:
- *     tags:
- *       - user
- *     description: User registration
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: name
- *         description: Username to use for registration.
- *         in: body
- *         required: true
- *         schema:
- *           $ref: '#/definitions/Registration'
- *     responses:
- *       200:
- *         description: Successfully added
- *       500:
- *         description: Server error
- */
-router.post("/user", (req, res, next) => {
-  futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
-  futureResponse.then((result) => {
-    res.send(result);
-  });
-});
+// /**
+//  * @swagger
+//  * /user:
+//  *   post:
+//  *     tags:
+//  *       - user
+//  *     description: User registration
+//  *     produces:
+//  *       - application/json
+//  *     parameters:
+//  *       - name: name
+//  *         description: Username to use for registration.
+//  *         in: body
+//  *         required: true
+//  *         schema:
+//  *           $ref: '#/definitions/Registration'
+//  *     responses:
+//  *       200:
+//  *         description: Successfully added
+//  *       500:
+//  *         description: Server error
+//  */
+// router.post("/user", (req, res, next) => {
+//   futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
+//   futureResponse.then((result) => {
+//     res.send(result);
+//   });
+// });
 
 /**
  * @swagger
@@ -165,33 +165,36 @@ router.post("/login-googleAuth", (req, res, next) => {
 
 /**
  * @swagger
- * /register-admin:
+ * /register:
  *   post:
  *     tags:
  *       - user
- *     description: User registration admin
+ *     description: User registration
  *     produces:
  *       - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - name: name
- *         description: Username to use for register admin.
+ *         description: Username to use for register.
  *         in: body
  *         required: true
  *         schema:
- *           $ref: '#/definitions/RegistrationAdmin'
+ *           $ref: '#/definitions/Registration'
  *     responses:
  *       200:
  *         description: Successfully registration
  *       500:
  *         description: Server error
  */
-router.post("/register-admin", (req, res, next) => {
-  if (!validToken.validToken(req, res)) return;
-  let tokenDecode = decodeToken.decodeToken(req);
-  req.body["user_logged_id"] = tokenDecode.payload.id;
-  futureResponse = apiClient.registerAdmin(req.body, handlerResponse.handlerResponse);
+router.post("/register", (req, res, next) => {
+  if (req.body.user_type == "admin"){
+    if (!validToken.validToken(req, res)) return;
+    let tokenDecode = decodeToken.decodeToken(req);
+    req.body["user_logged_id"] = tokenDecode.payload.id;
+  }
+ 
+  futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
   });

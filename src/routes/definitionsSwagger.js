@@ -1,26 +1,26 @@
 
-/**
- * @swagger
- * definitions:
- *   Registration:
- *     properties:
- *       first_name:
- *         type: string
- *       last_name:
- *         type: string
- *       password:
- *         type: string
- *       national_id_type:
- *         type: string
- *       national_id:
- *         type: string
- *       alias:
- *         type: string
- *       profile:
- *         type: number
- *       email:
- *         type: string
- */
+// /**
+//  * @swagger
+//  * definitions:
+//  *   Registration:
+//  *     properties:
+//  *       first_name:
+//  *         type: string
+//  *       last_name:
+//  *         type: string
+//  *       password:
+//  *         type: string
+//  *       national_id_type:
+//  *         type: string
+//  *       national_id:
+//  *         type: string
+//  *       alias:
+//  *         type: string
+//  *       profile:
+//  *         type: number
+//  *       email:
+//  *         type: string
+//  */
 
 
  /**
@@ -54,15 +54,13 @@
  /**
  * @swagger
  * definitions:
- *   RegistrationAdmin:
+ *   Registration:
  *     properties:
  *       email:
  *         type: string
  *       first_name:
  *         type: string
  *       last_name:
- *         type: string
- *       age:
  *         type: string
  *       password:
  *         type: string
@@ -71,6 +69,14 @@
  *       national_id:
  *         type: string
  *       alias:
+ *         type: string  
+ *       google_token:
+ *         type: string   
+ *       user_type:
+ *         type: string
+ *       profile:
+ *         type: number
+ *       user_logged_id:
  *         type: string
  */
 
