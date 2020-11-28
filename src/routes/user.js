@@ -11,39 +11,10 @@ var validToken = require('./tokenController.js');
 var decodeToken = require('./tokenController.js');
 var jwt = require('jsonwebtoken');
 
-
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
 
-/**
- * @swagger
- * /user:
- *   post:
- *     tags:
- *       - user
- *     description: User registration
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: name
- *         description: Username to use for registration.
- *         in: body
- *         required: true
- *         schema:
- *           $ref: '#/definitions/Registration'
- *     responses:
- *       200:
- *         description: Successfully added
- *       500:
- *         description: Server error
- */
-router.post("/user", (req, res, next) => {
-  futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
-  futureResponse.then((result) => {
-    res.send(result);
-  });
-});
 
 /**
  * @swagger
@@ -111,10 +82,11 @@ router.post("/login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
 
-    if (result["status"] == 400){
+    if (result["status"] != 200){
       res.status(result["status"]).send(result);
+      return;
     }
-    resultJson = result["json"];
+    resultJson = result["message"];
     var username = resultJson.email;
     var profile = resultJson.profile;
     var id = resultJson.id;
@@ -129,35 +101,7 @@ router.post("/login", (req, res, next) => {
     var token = jwt.sign(tokenData, 'Secret Password', {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
-    res.status(result["status"]).send(token);
-  });
-});
-
-/**
- * @swagger
- * /login-googleAuth:
- *   post:
- *     tags:
- *       - login
- *     description: User login by google
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: name
- *         description: Username to use for login.
- *         in: body
- *         required: true
- *         schema:
- *           $ref: '#/definitions/LoginGoogle'
- *     responses:
- *       200:
- *         description: Successfully login by Google
- *       500:
- *         description: Server error
- */
-router.post("/login-googleAuth", (req, res, next) => {
-  futureResponse = apiClient.loginGoogle(req.body, handlerResponse.handlerResponse);
-  futureResponse.then((result) => {
+    result["token"] = token;
     res.status(result["status"]).send(result);
   });
 });
@@ -165,33 +109,36 @@ router.post("/login-googleAuth", (req, res, next) => {
 
 /**
  * @swagger
- * /register-admin:
+ * /register:
  *   post:
  *     tags:
  *       - user
- *     description: User registration admin
+ *     description: User registration
  *     produces:
  *       - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - name: name
- *         description: Username to use for register admin.
+ *         description: Username to use for register.
  *         in: body
  *         required: true
  *         schema:
- *           $ref: '#/definitions/RegistrationAdmin'
+ *           $ref: '#/definitions/Registration'
  *     responses:
  *       200:
  *         description: Successfully registration
  *       500:
  *         description: Server error
  */
-router.post("/register-admin", (req, res, next) => {
-  if (!validToken.validToken(req, res)) return;
-  let tokenDecode = decodeToken.decodeToken(req);
-  req.body["user_logged_id"] = tokenDecode.payload.id;
-  futureResponse = apiClient.registerAdmin(req.body, handlerResponse.handlerResponse);
+router.post("/register", (req, res, next) => {
+  if (req.body.user_type == "admin"){
+    if (!validToken.validToken(req, res)) return;
+    let tokenDecode = decodeToken.decodeToken(req);
+    req.body["user_logged_id"] = tokenDecode.payload.id;
+  }
+ 
+  futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
   });
@@ -224,6 +171,38 @@ router.post("/register-admin", (req, res, next) => {
 router.put("/change-password", (req, res, next) => {
   if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.changePassword(req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.status(result["status"]).send(result);
+  });
+});
+
+
+/**
+ * @swagger
+ * /posting/{idUser}:
+ *   get:
+ *     tags:
+ *       - user
+ *     description: get user 
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: idUser
+ *         in: path
+ *         description: idUser
+ *         required: true
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: Successfully get user
+ *       500:
+ *         description: Server error
+ */
+router.get("/posting/:idUser", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  futureResponse = apiClient.getUser(req.params.idUser, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
   });

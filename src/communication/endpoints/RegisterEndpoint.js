@@ -1,16 +1,13 @@
-const Endpoint  = require("./Endpoint.js");
+const Endpoint = require("./Endpoint.js");
 const RegisterSuccessful = require("../responses/user/RegisterSuccessful");
-const InvalidUserGetProfile = require("../responses/user/InvalidUserGetProfile");
+const InvalidRegister = require("../responses/user/InvalidRegister");
+
 ("use strict");
 
-module.exports = class RegisterEndpoint extends Endpoint {
+module.exports = class RegisterAdminEndpoint extends Endpoint {
   static url() {
-    return "/register/";
+    return "/register_admin/";
   }
-
-  ownResponses() {
-    return [RegisterSuccessful, InvalidUserGetProfile];
-}
 
   method() {
     return "POST";
@@ -19,4 +16,8 @@ module.exports = class RegisterEndpoint extends Endpoint {
   needsAuthorization() {
     return false;
   }
+
+  ownResponses() {
+    return [RegisterSuccessful, InvalidRegister];
+}
 };
