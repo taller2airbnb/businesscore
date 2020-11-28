@@ -61,11 +61,11 @@ router.get("/posting", async (req, res) => {
  *         description: Server error
  */
 router.post("/posting", async (req, res) => {
-  if (!validToken.validToken(req, res)) return;
-  let tokenDecode = decodeToken.decodeToken(req);
+  //if (!validToken.validToken(req, res)) return;
+  //let tokenDecode = decodeToken.decodeToken(req);
   const future = dao.execSql("create_posting", [req.body.price_day,
   req.body.start_date, req.body.end_date, req.body.state,
-  req.body.features, req.body.public, req.body.content, tokenDecode.payload.id]);
+  req.body.features, req.body.public, req.body.content, 1]);
   future.then(result => {
     res.send(JSON.stringify(result));
   }).catch(error => {
@@ -197,5 +197,28 @@ router.get("/posting/search", async (req, res) => {
      res.status(500).send("Data base: " + error);
    });
  });
+
+/**
+ * @swagger
+ * /feature:
+ *    get:
+ *     tags:
+ *       - feature
+ *     description: get feature
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/feature", async (req, res) => {
+  //if (!validToken.validToken(req, res)) return;
+  const future = dao.execSql("get_feature");
+  future.then(result => {
+    res.send(JSON.stringify(result));
+  }).catch(error => {
+    res.status(500).send("Data base: " + error);
+  });
+});
 
 module.exports = router;
