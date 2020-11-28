@@ -8,23 +8,14 @@ module.exports = class InvalidCredentials extends ErrorApiResponse {
     };
   }
 
-  static errorCodes() {
-    return ["user not found", "Missing email or username", "Missing password"];
+  constructor(result) {
+    super(result[0]);
+    this._jsonResponse = result[0];
+    this._statusCode = result[1];
   }
 
   static getMessage() {
-    return "Invalid credential: user not found or Missing email or username  or Missing password";
+    return "Invalid data to login";
   }
 
-  static understandThis(status) {
-    return status == 400;
-  }
-
-  static hasError(){
-    return true
-  }
-
-  static statusCode(){
-    return 400;
-  }
 };
