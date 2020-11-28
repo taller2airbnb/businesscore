@@ -1,24 +1,17 @@
-
-/**
+ /**
  * @swagger
  * definitions:
- *   Registration:
+ *   UpdateUser:
  *     properties:
  *       first_name:
  *         type: string
  *       last_name:
  *         type: string
- *       password:
+ *       id:
  *         type: string
  *       national_id_type:
  *         type: string
  *       national_id:
- *         type: string
- *       alias:
- *         type: string
- *       profile:
- *         type: number
- *       email:
  *         type: string
  */
 
@@ -30,6 +23,10 @@
  *       email:
  *         type: string
  *       password:
+ *         type: string
+ *       google_token:
+ *         type: string
+ *       user_type:
  *         type: string
  */
 
@@ -52,9 +49,7 @@
  *       public:
  *         type: boolean
  *       content:
- *         type: string
- *       id_user:
- *         type: integer
+ *         type: string 
  */
 
  /**
@@ -62,8 +57,6 @@
  * definitions:
  *   PostingPut:
  *     properties:
- *       id_posting:
- *         type: integer
  *       price_day:
  *         type: number
  *       start_date:
@@ -78,25 +71,56 @@
  *         type: boolean
  *       content:
  *         type: string
- *       id_user:
- *         type: integer
+ */
+
+ 
  /**
  * @swagger
  * definitions:
- *   RegistrationAdmin:
+ *   Registration:
  *     properties:
+ *       email:
+ *         type: string
  *       first_name:
  *         type: string
  *       last_name:
- *         type: string
- *       age:
  *         type: string
  *       password:
  *         type: string
  *       national_id_type:
  *         type: string
+ *       national_id:
+ *         type: string
  *       alias:
+ *         type: string  
+ *       google_token:
+ *         type: string   
+ *       user_type:
  *         type: string
  *       profile:
+ *         type: number
+ *       user_logged_id:
+ *         type: string
+ */
+
+/**
+ * @swagger
+ * definitions:
+ *   AddProfile:
+ *     properties:
+ *       description:
+ *         type: string
+ */
+
+ /**
+ * @swagger
+ * definitions:
+ *   ChangePassword:
+ *     properties:
+ *       email:
+ *         type: string
+ *       password:
+ *         type: string
+ *       validate:
  *         type: string
  */

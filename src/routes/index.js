@@ -8,6 +8,9 @@ const handlerResponse = require("./hanlderResponse");
 const RemoteRequester = require("../../src/communication/requester/RemoteRequester");
 const ApiClient = require("../../src/communication/client/ApiClient");
 
+const db = require("../db/index");
+db.inicialize();
+
 
 // Extended: https://swagger.io/specification/#infoObject
 const swaggerOptions = {
@@ -59,21 +62,21 @@ const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
 
-    /**
-     * @swagger
-     * /status-profile:
-     *    get:
-     *      description: status profile
-     *      responses:
-     *          '200':
-     *           description: status profile server
-     */
-    router.get("/status-profile", (req, res, next) => {
-        futureResponse = apiClient.statusProfile(req.body, handlerResponse.handlerResponse);
-        futureResponse.then((result) => {
-            res.send(result);
-        });
+/**
+ * @swagger
+ * /status-profile:
+ *    get:
+ *      description: status profile
+ *      responses:
+ *          '200':
+ *           description: status profile server
+ */
+router.get("/status-profile", (req, res, next) => {
+    futureResponse = apiClient.statusProfile(req.body, handlerResponse.handlerResponse);
+    futureResponse.then((result) => {
+        res.status(result["status"]).send(result["message"]);
     });
+});
 
 
 /**

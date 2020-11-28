@@ -1,9 +1,7 @@
-module.exports.handlerResponse = function (response) {
-  if (response.hasError()) {
-    console.log(response.errorMessages());
-    return response.errorMessages();
-  } else {
-    console.log(response._jsonResponse);
-    return response._jsonResponse;
-  }
+module.exports.handlerResponse = async function (response) {
+  resp = {};
+  resp["status"] = response.statusCode();
+  if (response.hasBodyMessage())  resp["message"] = await response.getMessage()
+  else resp["message"] = response.getMessage() 
+  return resp;
 };

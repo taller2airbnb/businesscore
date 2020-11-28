@@ -1,7 +1,7 @@
 const SuccessfulApiResponse = require("../generalResponses/SuccessfulApiResponse.js");
 ("use strict");
 
-module.exports = class GetProfileSuccessful extends SuccessfulApiResponse {
+module.exports = class NewProfileSuccessful extends SuccessfulApiResponse {
   static defaultResponse() {
     return {
       token: "QpwL5tke4Pnpja7X4",
@@ -18,7 +18,7 @@ module.exports = class GetProfileSuccessful extends SuccessfulApiResponse {
   }
 
   getMessage() {
-    return "Get profile successful";
+    return "New profile successful";
   }
 
   hasError(){

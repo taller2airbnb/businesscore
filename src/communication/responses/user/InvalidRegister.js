@@ -1,10 +1,10 @@
-const ErrorApiResponse = require("../generalResponses/ErrorApiResponse");
+const ErrorApiResponse = require("../generalResponses/ErrorApiResponse.js");
 ("use strict");
 
-module.exports = class InvalidCredentials extends ErrorApiResponse {
+module.exports = class InvalidRegister extends ErrorApiResponse {
   static defaultResponse() {
     return {
-      error: "Missing password",
+      token: "QpwL5tke4Pnpja7X4",
     };
   }
 
@@ -15,7 +15,8 @@ module.exports = class InvalidCredentials extends ErrorApiResponse {
   }
 
   static getMessage() {
-    return "Invalid data to login";
+    return "Invalid data to registration";
   }
+
 
 };

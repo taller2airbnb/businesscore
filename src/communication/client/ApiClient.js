@@ -1,8 +1,12 @@
 const ServerErrorResponse  = require('../responses/generalResponses/ServerErrorResponse.js');
 const  GetProfileEndpoint  = require('../endpoints/GetProfileEndpoint.js');
 const  LoginEndpoint  = require('../endpoints/LoginEndpoint');
-const RegisterEndpoint  = require('../endpoints/RegisterEndpoint');
 const StatusProfile  = require('../endpoints/StatusProfileEndpoint');
+const RegisterEndpoint  = require('../endpoints/RegisterEndpoint');
+const UpdateUserEndpoint  = require('../endpoints/UpdateUserEndpoint');
+const AddProfileEndpoint  = require('../endpoints/AddProfileEndpoint');
+const ChangePasswordEndpoint  = require('../endpoints/ChangePasswordEndpoint');
+const GetUserEndpoint  = require('../endpoints/GetUserEndpoint');
 
 
 'use strict';
@@ -54,4 +58,45 @@ module.exports = class ApiClient {
             data: data
         });
     }
+
+    registerAdmin(data, onResponse) {
+        return this._requester.call({
+            endpoint: new RegisterAdminEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
+    updateUser(data, onResponse) {
+        return this._requester.call({
+            endpoint: new UpdateUserEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
+    addProfile(data, onResponse) {
+        return this._requester.call({
+            endpoint: new AddProfileEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
+    changePassword(data, onResponse) {
+        return this._requester.call({
+            endpoint: new ChangePasswordEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
+    getUser(idUser, onResponse) {
+        return this._requester.call({
+            endpoint: new GetUserEndpoint(idUser),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: idUser
+        });
+    }
+
 }

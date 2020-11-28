@@ -10,13 +10,6 @@ module.exports = class ErrorApiResponse extends ApiResponse {
     throw new Error("You have to implement the method");
   }
 
-  static understandThis(jsonResponse) {
-    return (
-      jsonResponse.error !== undefined &&
-      this.errorCodes().includes(jsonResponse.error)
-    );
-  }
-
   errorMessages() {
     return this.errors();
   }
@@ -25,7 +18,45 @@ module.exports = class ErrorApiResponse extends ApiResponse {
     return "¡Ha ocurrido un error!";
   }
 
+
+
   message() {
     return this.errorMessages();
+  }
+
+  statusCode() {
+    return 400;
+  }
+
+  hasError() {
+    return true;
+  }
+
+  getMessage() {
+    return this._jsonResponse;
+  }
+
+  statusCode() {
+    return this._statusCode;
+  }
+
+  static understandThis(status) {
+    return (status == 400 || status == 403 || status == 404 || status == 409 || status == 401);
+  }
+
+  static hasError() {
+    return true
+  }
+
+  static statusCode() {
+    return 400;
+  }
+
+  hasBodyMessage() {
+    return true;
+  }
+
+  static hasBodyMessage() {
+    return false;
   }
 };

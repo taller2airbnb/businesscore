@@ -15,9 +15,12 @@ module.exports = class RemoteRequester extends Requester {
         // if (endpoint.method() === 'GET' && data) {
         //     url += "?" + this._dataToQueryString(data);
         // }
-        return fetch(this._baseUrl + url, request).then(result => result.json())
-        .then(jsonResponse => {
-            return onResponse(this._buildResponse(jsonResponse, endpoint));
+        return fetch(this._baseUrl + url, request)
+        .then(result => {
+            return  [result.status != 400 && result.status && 500 ? result.json() : "", result.status] ; 
+        }) 
+        .then(result => {
+            return onResponse(this._buildResponse(result, endpoint));
         })
             /***
              * https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#Checking_that_the_fetch_was_successful
@@ -28,7 +31,8 @@ module.exports = class RemoteRequester extends Requester {
              *
              ***/
             .catch(exception => {
-                console.log("Exception in API request: ", exception);
+                console.log(exception);
+                return onResponse(new ErrorApiResponse());
             })
     }
 
@@ -47,20 +51,19 @@ module.exports = class RemoteRequester extends Requester {
         return requestOptions;
     }
 
-    _buildResponse(jsonResponse, endpoint) {
-        let endpointResponse;
-
+    _buildResponse(result, endpoint) {
         const availableResponsesForEndpoint = endpoint.responses();
         for (let responseType of availableResponsesForEndpoint) {
-            if (responseType.understandThis(jsonResponse)) {
-                endpointResponse = new responseType(jsonResponse);
-                break;
-            } else {
-                endpointResponse = new ErrorApiResponse(jsonResponse);
+            if (responseType.understandThis(result[1])) {
+                if (result[0] !== "") {
+                    return new responseType(result);
+
+                } else {
+                    return responseType;
+                }
             }
         }
-
-        return endpointResponse;
+        return new ErrorApiResponse(result[1]);
     }
 
     _buildHeadersFor(endpoint) {
