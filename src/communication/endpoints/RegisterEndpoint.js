@@ -6,7 +6,7 @@ const InvalidRegister = require("../responses/user/InvalidRegister");
 
 module.exports = class RegisterAdminEndpoint extends Endpoint {
   static url() {
-    return "/register_admin/";
+    return "/user/";
   }
 
   method() {
