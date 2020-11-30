@@ -29,9 +29,9 @@ router.get("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   const future = dao.execSql("get_posting", [req.query.idPosting]);
   future.then(result => {
-    res.send(JSON.stringify(result));
+    res.status(200).send({ "message": result, "status": 200, "error": false });
   }).catch(error => {
-    res.status(500).send("Data base: " + error);
+    res.status(500).send({ "message": "Data base: " + error, "status": 500, "error": true });
   });
 });
 
@@ -67,9 +67,9 @@ router.post("/posting", async (req, res) => {
   req.body.start_date, req.body.end_date, req.body.state,
   req.body.features, req.body.public, req.body.content, tokenDecode.payload.id]);
   future.then(result => {
-    res.send(JSON.stringify(result));
+    res.status(200).send({ "message": result, "status": 200, "error": false });
   }).catch(error => {
-    res.status(500).send("Data base: " + error);
+    res.status(500).send({ "message": "Data base: " + error, "status": 500, "error": true });
   });
 
 });
@@ -110,9 +110,9 @@ router.put("/posting/:idPosting", async (req, res) => {
   req.body.start_date, req.body.end_date, req.body.state,
   req.body.features, req.body.public, req.body.content]);
   future.then(result => {
-    res.send(JSON.stringify(result));
+    res.status(200).send({ "message": result, "status": 200, "error": false });
   }).catch(error => {
-    res.status(500).send("Data base: " + error);
+    res.status(500).send({ "message": "Data base: " + error, "status": 500, "error": true });
   });
 });
 
@@ -143,9 +143,9 @@ router.delete("/posting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   const future = dao.execSql("delete_posting", [req.params.idPosting]);
   future.then(result => {
-    res.send(JSON.stringify(result));
+    res.status(200).send({ "message": result, "status": 200, "error": false });
   }).catch(error => {
-    res.status(500).send("Data base: " + error);
+    res.status(500).send({ "message": "Data base: " + error, "status": 500, "error": true });
   });
 });
 
@@ -189,13 +189,13 @@ router.delete("/posting/:idPosting", async (req, res) => {
  */
 router.get("/posting/search", async (req, res) => {
   // if (!validToken.validToken(req, res)) return;
-   const future = dao.execSql("search_posting", [req.query.priceMin,
-    req.query.priceMax, req.query.startDate, req.query.endDate, req.query.feature]);
-   future.then(result => {
-     res.send(JSON.stringify(result));
-   }).catch(error => {
-     res.status(500).send("Data base: " + error);
-   });
- });
+  const future = dao.execSql("search_posting", [req.query.priceMin,
+  req.query.priceMax, req.query.startDate, req.query.endDate, req.query.feature]);
+  future.then(result => {
+    res.send({ "message": result, "status": 200, "error": false });
+  }).catch(error => {
+    res.status(500).send({ "message": "Data base: " + error, "status": 500, "error": true });
+  });
+});
 
 module.exports = router;

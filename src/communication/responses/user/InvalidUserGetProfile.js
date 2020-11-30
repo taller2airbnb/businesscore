@@ -20,11 +20,7 @@ module.exports = class InvalidNewGetProfile extends ErrorApiResponse {
   static understandThis(status) {
     return status == 400;
   }
-
-  static hasError(){
-    return true
-  }
-
+  
   static statusCode(){
     return 400;
   }

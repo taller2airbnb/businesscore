@@ -8,28 +8,7 @@ module.exports = class NewProfileSuccessful extends SuccessfulApiResponse {
     };
   }
 
-  static understandThis(response) {
-    return response.status >= 200 && response.status < 300;
-  }
-
-  constructor(jsonResponse) {
-    super(jsonResponse);
-    this._jsonResponse = jsonResponse;
-  }
-
-  getMessage() {
-    return "New profile successful";
-  }
-
-  hasError(){
-    return false;
-  }
-
-  statusCode(){
-    return 200;
-  }
-
-  getJson(){
-    return this._jsonResponse;
+  constructor(result) {
+    super(result[0], result[1]);
   }
 };

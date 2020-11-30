@@ -8,9 +8,8 @@ module.exports = class InvalidGetProfile extends ErrorApiResponse {
     };
   }
 
-  constructor(jsonResponse) {
-    super(jsonResponse);
-    this._jsonResponse = jsonResponse;
+  constructor(result) {
+    super(result[0], result[1]);
   }
 
   static getMessage() {
@@ -19,13 +18,5 @@ module.exports = class InvalidGetProfile extends ErrorApiResponse {
 
   static understandThis(status) {
     return status == 400;
-  }
-
-  static hasError(){
-    return true
-  }
-
-  static statusCode(){
-    return 400;
   }
 };
