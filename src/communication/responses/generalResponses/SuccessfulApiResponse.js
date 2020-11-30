@@ -9,36 +9,13 @@ class SuccessfulApiResponse extends ApiResponse {
         return status >= 200 && status < 300;
     }
 
-    constructor(jsonResponse) {
-        super(jsonResponse);
-        this._jsonResponse = jsonResponse;
+    constructor(jsonResponse, _statusCode) {
+        super(jsonResponse, _statusCode);
     }
 
-    statusCode() {
-        return 200;
-    }
-
-    hasError() {
-        return false;
-    }
-
-    getMessage() {
-        return this._jsonResponse;
-    }
-
-    statusCode() {
-        return this._statusCode;
-    }
-
-    static hasError() {
-        return false
-    }
-
-
-    hasBodyMessage() {
+    static isError() {
         return true;
     }
-
 }
 
 module.exports = SuccessfulApiResponse

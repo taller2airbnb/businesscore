@@ -9,17 +9,7 @@ module.exports = class UpdateSuccessful extends SuccessfulApiResponse {
   }
   
   constructor(result) {
-    super(result[0]);
-    this._jsonResponse = result[0];
-    this._statusCode = result[1];
-  }
-
-  getMessage() {
-    return this._jsonResponse;
-  }
-
-  statusCode() {
-    return 200;
+    super(result[0], result[1]);
   }
 
 };

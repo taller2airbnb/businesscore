@@ -14,12 +14,4 @@ module.exports = class RegisterSuccessful extends SuccessfulApiResponse {
     this._statusCode = result[1];
   }
 
-  getMessage() {
-    return this._jsonResponse;
-  }
-
-  statusCode() {
-    return 200;
-  }
-
 };
