@@ -7,7 +7,7 @@ const UpdateUserEndpoint  = require('../endpoints/UpdateUserEndpoint');
 const AddProfileEndpoint  = require('../endpoints/AddProfileEndpoint');
 const ChangePasswordEndpoint  = require('../endpoints/ChangePasswordEndpoint');
 const GetUserEndpoint  = require('../endpoints/GetUserEndpoint');
-
+const RegisterUserWalletEndpoint = require('../endpoints/RegisterUserWalletEndpoint');
 
 'use strict';
 
@@ -96,6 +96,14 @@ module.exports = class ApiClient {
             endpoint: new GetUserEndpoint(idUser),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: idUser
+        });
+    }
+
+    createIdentity(data, onResponse) {
+        return this._requester.call({
+            endpoint: new RegisterUserWalletEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
         });
     }
 

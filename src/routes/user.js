@@ -1,9 +1,11 @@
 const ApiClient = require("../../src/communication/client/ApiClient");
 const getSettingProfile = require("../../settings.js");
+const getSettingSC = require("../../settings.js");
 const handlerResponse = require("./hanlderResponse");
 const RemoteRequester = require("../../src/communication/requester/RemoteRequester");
 const { Router } = require("express");
 const router = Router();
+const dao = require("../db/index");
 var cors = require("cors");
 router.use(cors());
 router.options('*', cors());
@@ -14,6 +16,10 @@ var jwt = require('jsonwebtoken');
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
+
+const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
+const requesterSC = new RemoteRequester(remoteApiUrlSC);
+const apiClientSC = new ApiClient(requesterSC);
 
 
 /**
@@ -139,9 +145,26 @@ router.post("/register", (req, res, next) => {
   }
  
   futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
-  futureResponse.then((result) => {
+  futureResponse.then(async (result) => {
+    
+    if (result["status"] != 200){
+      res.status(result["status"]).send(result);
+      return;
+    }
+
+    futureResponseSC = await apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
+      res.send({ message: "SmartContract create identity failed: " + error, status: 500, error: true });
+    });
+
+    const future = await dao.execSql("insert_user_wallet", [
+        futureResponseSC.message.id,
+        futureResponseSC.message.address
+    ]);
+
+    result.message.address = futureResponseSC.message.address;
     res.status(result["status"]).send(result);
   });
+
 });
 
 /**
