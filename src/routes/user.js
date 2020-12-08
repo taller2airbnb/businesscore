@@ -137,33 +137,32 @@ router.post("/login", (req, res, next) => {
  *       500:
  *         description: Server error
  */
-router.post("/register", (req, res, next) => {
+router.post("/register", async (req, res, next) => {
   if (req.body.user_type == "admin"){
     if (!validToken.validToken(req, res)) return;
     let tokenDecode = decodeToken.decodeToken(req);
     req.body["user_logged_id"] = tokenDecode.payload.id;
   }
  
-  futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
-  futureResponse.then(async (result) => {
+  result = await apiClient.register(req.body, handlerResponse.handlerResponse);
     
-    if (result["status"] != 200){
-      res.status(result["status"]).send(result);
-      return;
-    }
-
-    futureResponseSC = await apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
-      res.send({ message: "SmartContract create identity failed: " + error, status: 500, error: true });
-    });
-
-    const future = await dao.execSql("insert_user_wallet", [
-        futureResponseSC.message.id,
-        futureResponseSC.message.address
-    ]);
-
-    result.message.address = futureResponseSC.message.address;
+  if (result["status"] != 200){
     res.status(result["status"]).send(result);
+    return;
+  }
+
+  futureResponseSC =  apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
+    res.send({ message: "SmartContract create identity failed: " + error, status: 500, error: true });
   });
+
+  const future =  dao.execSql("insert_user_wallet", [
+      result.message.id,
+      futureResponseSC.message.id,
+      futureResponseSC.message.address
+  ]);
+
+  result.message.address = futureResponseSC.message.address;
+  res.status(result["status"]).send(result);
 
 });
 

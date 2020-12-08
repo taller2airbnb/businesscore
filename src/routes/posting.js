@@ -6,6 +6,14 @@ router.options("*", cors());
 const dao = require("../db/index");
 var validToken = require("./tokenController.js");
 var decodeToken = require("./tokenController.js");
+const RemoteRequester = require("../../src/communication/requester/RemoteRequester");
+const ApiClient = require("../../src/communication/client/ApiClient");
+const getSettingSC = require("../../settings.js");
+const handlerResponse = require("./hanlderResponse");
+
+const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
+const requesterSC = new RemoteRequester(remoteApiUrlSC);
+const apiClientSC = new ApiClient(requesterSC);
 
 /**
  * @swagger
@@ -66,6 +74,15 @@ router.get("/posting", async (req, res) => {
 router.post("/posting", async (req, res) => {
   //if (!validToken.validToken(req, res)) return;
   //let tokenDecode = decodeToken.decodeToken(req);
+
+  body = {creatorId: req.body.creatorId, price: req.body.price_day};
+  
+  futureResponseSC = await apiClientSC.createRoom(body, handlerResponse.handlerResponse).then((result) => {
+    res.status(200).send({ message: result, status: 200, error: false });
+  }).catch((error) => {
+    res.status(500).send({ message: "SmartContract create room failed: " + error, error: true });
+  });
+
   const future = dao.execSql("create_posting", [
     req.body.price_day,
     req.body.start_date,
@@ -74,8 +91,9 @@ router.post("/posting", async (req, res) => {
     req.body.features,
     req.body.public,
     req.body.content,
-    1,
+    req.body.creatorId,
   ]);
+
   future
     .then((result) => {
       res.status(200).send({ message: result, status: 200, error: false });

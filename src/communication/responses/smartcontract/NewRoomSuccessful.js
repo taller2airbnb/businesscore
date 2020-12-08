@@ -1,7 +1,7 @@
 const SuccessfulApiResponse = require("../generalResponses/SuccessfulApiResponse.js");
 ("use strict");
 
-module.exports = class NewIdentitySuccessful extends SuccessfulApiResponse {
+module.exports = class NewRoomSuccessful extends SuccessfulApiResponse {
 
   constructor(_jsonResponse, _statusCode) {
       super(_jsonResponse, _statusCode);
@@ -14,9 +14,8 @@ module.exports = class NewIdentitySuccessful extends SuccessfulApiResponse {
   static getMessage() {
     return this._jsonResponse;
   }
-
+  
   static getStatusCode() {
     return this._statusCode;
   }
-
 };
