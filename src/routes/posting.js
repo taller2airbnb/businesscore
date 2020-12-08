@@ -83,6 +83,7 @@ router.post("/posting", async (req, res) => {
     res.status(500).send({ message: "SmartContract create room failed: " + error, error: true });
   });
 
+  // TODO: poner tokenDecode.payload.id en el idUser
   const future = dao.execSql("create_posting", [
     req.body.price_day,
     req.body.start_date,
@@ -91,7 +92,7 @@ router.post("/posting", async (req, res) => {
     req.body.features,
     req.body.public,
     req.body.content,
-    req.body.creatorId,
+    1
   ]);
 
   future
