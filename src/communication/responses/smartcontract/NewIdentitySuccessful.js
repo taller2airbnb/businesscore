@@ -3,20 +3,8 @@ const SuccessfulApiResponse = require("../generalResponses/SuccessfulApiResponse
 
 module.exports = class NewIdentitySuccessful extends SuccessfulApiResponse {
 
-  constructor(_jsonResponse, _statusCode) {
-      super(_jsonResponse, _statusCode);
-  }
-
-  static understandThis(status) {
-    return status == 200;
-  }
-
-  static getMessage() {
-    return this._jsonResponse;
-  }
-
-  static getStatusCode() {
-    return this._statusCode;
+  constructor(result) {
+    super(result[0], result[1]);
   }
 
 };

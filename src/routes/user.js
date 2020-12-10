@@ -151,7 +151,7 @@ router.post("/register", async (req, res, next) => {
     return;
   }
 
-  futureResponseSC = apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
+  futureResponseSC = await apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
     res.send({ message: "SmartContract create identity failed: " + error, status: 500, error: true });
   });
 
