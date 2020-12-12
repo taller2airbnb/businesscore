@@ -179,7 +179,7 @@ router.put("/change-password", (req, res, next) => {
 
 /**
  * @swagger
- * /posting/{idUser}:
+ * /user/{idUser}:
  *   get:
  *     tags:
  *       - user
@@ -200,9 +200,34 @@ router.put("/change-password", (req, res, next) => {
  *       500:
  *         description: Server error
  */
-router.get("/posting/:idUser", async (req, res) => {
+router.get("/user/:idUser", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.getUser(req.params.idUser, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.status(result["status"]).send(result);
+  });
+});
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     tags:
+ *       - user
+ *     description: get all users
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully get users
+ *       500:
+ *         description: Server error
+ */
+router.get("/user", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  futureResponse = apiClient.getUsers(handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
   });
