@@ -4,15 +4,14 @@ const InvalidGetUser = require("../responses/user/InvalidGetUser");
 
 ("use strict");
 
-module.exports = class GetUserEndpoint extends Endpoint {
+module.exports = class GetUsersEndpoint extends Endpoint {
 
-  constructor(userId) {
+  constructor() {
     super();
-    this._userId = userId;
   }
   
   url() {
-    return "/user/" + this._userId;
+    return "/user/";
   }
 
   method() {
