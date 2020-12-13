@@ -6,7 +6,7 @@ dotenv.config();
 
 
 //settting
-app.set('port', process.env.PORT  || 3001);
+app.set('port', process.env.PORT  || 3000);
 
 //midleware
 app.use(morgan('dev'));
