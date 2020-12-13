@@ -4,9 +4,7 @@ const SuccessfulApiResponse = require("../generalResponses/SuccessfulApiResponse
 module.exports = class NewIdentitySuccessful extends SuccessfulApiResponse {
 
   constructor(result) {
-    super(result[0]);
-    this._jsonResponse = result[0];
-    this._statusCode = result[1];
+    super(result[0], result[1]);
   }
 
 
