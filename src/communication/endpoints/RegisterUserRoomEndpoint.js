@@ -1,6 +1,5 @@
 const Endpoint = require("./Endpoint.js");
 const NewRoomSuccessful = require("../responses/smartcontract/NewRoomSuccessful");
-const InvalidUpdate = require("../responses/user/InvalidUpdate");
 
 module.exports = class RegisterUserRoomEndpoint extends Endpoint {
     static url() {

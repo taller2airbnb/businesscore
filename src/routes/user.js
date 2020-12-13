@@ -88,7 +88,7 @@ router.post("/login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
 
-    if (result["status"] != 200){
+    if (result["status"] != 200) {
       res.status(result["status"]).send(result);
       return;
     }
@@ -98,11 +98,11 @@ router.post("/login", (req, res, next) => {
     var id = resultJson.id;
 
 
-      var tokenData = {
-        username: username,
-        profile: profile,
-        id: id
-      }
+    var tokenData = {
+      username: username,
+      profile: profile,
+      id: id
+    }
 
     var token = jwt.sign(tokenData, 'Secret Password', {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
@@ -138,31 +138,57 @@ router.post("/login", (req, res, next) => {
  *         description: Server error
  */
 router.post("/register", async (req, res, next) => {
-  if (req.body.user_type == "admin"){
+
+  let finalResult = {}
+
+  //valido el token
+  if (req.body.user_type == "admin") {
     if (!validToken.validToken(req, res)) return;
     let tokenDecode = decodeToken.decodeToken(req);
     req.body["user_logged_id"] = tokenDecode.payload.id;
   }
- 
-  result = await apiClient.register(req.body, handlerResponse.handlerResponse);
-    
-  if (result["status"] != 200){
-    res.status(result["status"]).send(result);
-    return;
-  }
 
-  futureResponseSC = apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
-    res.send({ message: "SmartContract create identity failed: " + error, status: 500, error: true });
+  //profile server valida la registracion
+  futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
+
+  futureResponse.then((result) => {
+
+    if (result["status"] != 200) {
+      res.status(result["status"]).send(result);
+      return;
+    }
+
+    Object.assign(finalResult, result["message"]);
+
+    //Se crea la wallet
+    futureResponseSC = apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
+      res.send({ message: "SmartContract create identity failed: " + error, status: 500, error: true });
+      return;
+    });
+
+    //Se guarda la relacion wallet vs usuario
+    // pregunta para cesar: porque se guarda el mismo ID 2 veces?
+    futureResponseSC.then((resultSC) => {
+      const futureDB = dao.execSql("insert_user_wallet", [
+        resultSC.message.id,
+        resultSC.message.id,
+        resultSC.message.address
+      ]);
+
+      Object.assign(finalResult, resultSC.message)
+
+      futureDB.then((resultDB) => {
+        Object.assign(finalResult, resultDB);
+        res.status(200).send({ message: finalResult, status: 200, error: false });
+
+        return;
+      });
+
+    });
+
   });
 
-  const future =  dao.execSql("insert_user_wallet", [
-      result.message.id,
-      futureResponseSC.message.id,
-      futureResponseSC.message.address
-  ]);
 
-  result.message.address = futureResponseSC.message.address;
-  res.status(result["status"]).send(result);
 
 });
 

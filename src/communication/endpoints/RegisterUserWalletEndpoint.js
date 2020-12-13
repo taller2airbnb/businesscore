@@ -1,6 +1,8 @@
 const Endpoint = require("./Endpoint.js");
 const NewIdentitySuccessful = require("../responses/smartcontract/NewIdentitySuccessful");
-const InvalidUpdate = require("../responses/user/InvalidUpdate");
+const InvalidNewIdentidy = require("../responses/smartcontract/InvalidNewIdentidy");
+
+
 
 module.exports = class RegisterUserWalletEndpoint extends Endpoint {
     static url() {
@@ -8,7 +10,7 @@ module.exports = class RegisterUserWalletEndpoint extends Endpoint {
     }
 
     ownResponses() {
-        return [NewIdentitySuccessful];
+        return [NewIdentitySuccessful,InvalidNewIdentidy];
     }
 
     method() {

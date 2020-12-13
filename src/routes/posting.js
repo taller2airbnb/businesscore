@@ -75,35 +75,36 @@ router.post("/posting", async (req, res) => {
   //if (!validToken.validToken(req, res)) return;
   //let tokenDecode = decodeToken.decodeToken(req);
 
-  body = {creatorId: req.body.creatorId, price: req.body.price_day};
-  
-  futureResponseSC = await apiClientSC.createRoom(body, handlerResponse.handlerResponse).then((result) => {
-    res.status(200).send({ message: result, status: 200, error: false });
+  body = { creatorId: 10, price: req.body.price_day };
+
+  futureResponseSC = apiClientSC.createRoom(body, handlerResponse.handlerResponse).then((result) => {
+    const future = dao.execSql("create_posting", [
+      req.body.price_day,
+      req.body.start_date,
+      req.body.end_date,
+      req.body.state,
+      req.body.features,
+      req.body.public,
+      req.body.content,
+      10
+    ]);
+
+    future
+      .then((result) => {
+        res.status(200).send({ message: result, status: 200, error: false });
+      })
+      .catch((error) => {
+        res
+          .status(500)
+          .send({ message: "Data base: " + error, status: 500, error: true });
+      });
+
+
   }).catch((error) => {
     res.status(500).send({ message: "SmartContract create room failed: " + error, error: true });
   });
 
-  // TODO: poner tokenDecode.payload.id en el idUser
-  const future = dao.execSql("create_posting", [
-    req.body.price_day,
-    req.body.start_date,
-    req.body.end_date,
-    req.body.state,
-    req.body.features,
-    req.body.public,
-    req.body.content,
-    1
-  ]);
 
-  future
-    .then((result) => {
-      res.status(200).send({ message: result, status: 200, error: false });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-    });
 });
 
 /**
