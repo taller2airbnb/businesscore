@@ -1,14 +1,15 @@
-const ServerErrorResponse  = require('../responses/generalResponses/ServerErrorResponse.js');
-const  GetProfileEndpoint  = require('../endpoints/GetProfileEndpoint.js');
-const  LoginEndpoint  = require('../endpoints/LoginEndpoint');
-const StatusProfile  = require('../endpoints/StatusProfileEndpoint');
-const RegisterEndpoint  = require('../endpoints/RegisterEndpoint');
-const UpdateUserEndpoint  = require('../endpoints/UpdateUserEndpoint');
-const AddProfileEndpoint  = require('../endpoints/AddProfileEndpoint');
-const ChangePasswordEndpoint  = require('../endpoints/ChangePasswordEndpoint');
-const GetUserEndpoint  = require('../endpoints/GetUserEndpoint');
+const ServerErrorResponse = require('../responses/generalResponses/ServerErrorResponse.js');
+const GetProfileEndpoint = require('../endpoints/GetProfileEndpoint.js');
+const LoginEndpoint = require('../endpoints/LoginEndpoint');
+const StatusProfile = require('../endpoints/StatusProfileEndpoint');
+const RegisterEndpoint = require('../endpoints/RegisterEndpoint');
+const UpdateUserEndpoint = require('../endpoints/UpdateUserEndpoint');
+const AddProfileEndpoint = require('../endpoints/AddProfileEndpoint');
+const ChangePasswordEndpoint = require('../endpoints/ChangePasswordEndpoint');
+const GetUserEndpoint = require('../endpoints/GetUserEndpoint');
 const RegisterUserWalletEndpoint = require('../endpoints/RegisterUserWalletEndpoint');
 const RegisterUserRoomEndpoint = require('../endpoints/RegisterUserRoomEndpoint');
+const GetUsersEndpoint = require('../endpoints/GetUsersEndpoint');
 
 'use strict';
 
@@ -113,6 +114,13 @@ module.exports = class ApiClient {
             endpoint: new RegisterUserRoomEndpoint(),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: data
+        });
+    }
+
+    getUsers(onResponse) {
+        return this._requester.call({
+            endpoint: new GetUsersEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse)
         });
     }
 

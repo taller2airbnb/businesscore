@@ -8,7 +8,7 @@
  *       last_name:
  *         type: string
  *       id:
- *         type: string
+ *         type: number
  *       national_id_type:
  *         type: string
  *       national_id:
@@ -50,6 +50,8 @@
  *         type: boolean
  *       content:
  *         type: string 
+ *       name:
+ *         type: string 
  */
 
  /**
@@ -70,6 +72,8 @@
  *       public:
  *         type: boolean
  *       content:
+ *         type: string
+ *       name:
  *         type: string
  */
 

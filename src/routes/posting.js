@@ -144,9 +144,11 @@ router.put("/posting/:idPosting", async (req, res) => {
     req.body.start_date,
     req.body.end_date,
     req.body.state,
-    req.body.features,
+    //TODO: req.body.features,
     req.body.public,
     req.body.content,
+    req.body.name
+
   ]);
   future
     .then((result) => {
@@ -229,6 +231,11 @@ router.delete("/posting/:idPosting", async (req, res) => {
  *         required: false
  *         type: string
  *         description: '{id wifi, id tv, id baño}'
+ *       - name: name
+ *         in: query
+ *         required: false
+ *         type: string
+ *         description: '{hotel condor}'
  *     responses:
  *          '200':
  *           description:  OK
@@ -241,6 +248,7 @@ router.get("/posting/search", async (req, res) => {
     req.query.startDate,
     req.query.endDate,
     req.query.feature,
+    req.query.name,
   ]);
   future
     .then((result) => {

@@ -151,14 +151,14 @@ router.post("/register", async (req, res, next) => {
   //profile server valida la registracion
   futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
 
-  futureResponse.then((result) => {
+  futureResponse.then((resultProfileServer) => {
 
-    if (result["status"] != 200) {
-      res.status(result["status"]).send(result);
+    if (resultProfileServer["status"] != 200) {
+      res.status(resultProfileServer["status"]).send(resultProfileServer);
       return;
     }
 
-    Object.assign(finalResult, result["message"]);
+    Object.assign(finalResult, resultProfileServer["message"]);
 
     //Se crea la wallet
     futureResponseSC = apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
@@ -170,7 +170,7 @@ router.post("/register", async (req, res, next) => {
     // pregunta para cesar: porque se guarda el mismo ID 2 veces?
     futureResponseSC.then((resultSC) => {
       const futureDB = dao.execSql("insert_user_wallet", [
-        resultSC.message.id,
+        resultProfileServer.message.id,
         resultSC.message.id,
         resultSC.message.address
       ]);
@@ -227,7 +227,7 @@ router.put("/change-password", (req, res, next) => {
 
 /**
  * @swagger
- * /posting/{idUser}:
+ * /user/{idUser}:
  *   get:
  *     tags:
  *       - user
@@ -248,9 +248,34 @@ router.put("/change-password", (req, res, next) => {
  *       500:
  *         description: Server error
  */
-router.get("/posting/:idUser", async (req, res) => {
+router.get("/user/:idUser", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   futureResponse = apiClient.getUser(req.params.idUser, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.status(result["status"]).send(result);
+  });
+});
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     tags:
+ *       - user
+ *     description: get all users
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully get users
+ *       500:
+ *         description: Server error
+ */
+router.get("/user", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  futureResponse = apiClient.getUsers(handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
   });
