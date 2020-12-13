@@ -64,8 +64,8 @@ router.get("/posting", async (req, res) => {
  *         description: Server error
  */
 router.post("/posting", async (req, res) => {
-  //if (!validToken.validToken(req, res)) return;
-  //let tokenDecode = decodeToken.decodeToken(req);
+  if (!validToken.validToken(req, res)) return;
+  let tokenDecode = decodeToken.decodeToken(req);
   const future = dao.execSql("create_posting", [
     req.body.price_day,
     req.body.start_date,
@@ -74,7 +74,8 @@ router.post("/posting", async (req, res) => {
     req.body.features,
     req.body.public,
     req.body.content,
-    1,
+    tokenDecode.payload.id,
+    req.body.name
   ]);
   future
     .then((result) => {
