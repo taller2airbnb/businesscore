@@ -50,6 +50,8 @@
  *         type: boolean
  *       content:
  *         type: string 
+ *       name:
+ *         type: string 
  */
 
  /**
@@ -70,6 +72,8 @@
  *       public:
  *         type: boolean
  *       content:
+ *         type: string
+ *       name:
  *         type: string
  */
 
