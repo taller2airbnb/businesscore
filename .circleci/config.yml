@@ -94,6 +94,7 @@ workflows:
               only: 
                - main
                - develop
+               - mergeSmart
       - publish:
           requires:
             - build
@@ -102,6 +103,7 @@ workflows:
               only: 
                - main
                - develop
+               - mergeSmart
       - deploy:
           requires:
             - publish
@@ -110,3 +112,4 @@ workflows:
               only: 
                - main
                - develop
+               - mergeSmart
