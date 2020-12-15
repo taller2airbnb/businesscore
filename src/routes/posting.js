@@ -75,6 +75,7 @@ router.post("/posting", async (req, res) => {
 });
 
 
+
 /**
  * @swagger
  * /posting/{idPosting}:
