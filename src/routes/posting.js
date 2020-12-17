@@ -81,7 +81,7 @@ router.post("/posting", async (req, res) => {
     body = { creatorId: result[0]["get_creator_id"], price: req.body.price_day };
       
     futureResponseSC = apiClientSC.createRoom(body, handlerResponse.handlerResponse).then((result) => {
-      const future = dao.execSql("create_posting", [
+      const future = dao.execSql("create_posting_sc", [
         req.body.price_day,
         req.body.start_date,
         req.body.end_date,
@@ -90,6 +90,7 @@ router.post("/posting", async (req, res) => {
         req.body.public,
         req.body.content,
         tokenDecode.payload.id,
+        req.body.name,
         result["message"]["roomTransactionHash"]
       ]);
 
