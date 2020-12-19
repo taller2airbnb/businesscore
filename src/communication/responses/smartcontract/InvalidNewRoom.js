@@ -1,5 +1,4 @@
 const ErrorApiResponse = require("../generalResponses/ErrorApiResponse.js");
-("use strict");
 
 module.exports = class InvalidNewRoom extends ErrorApiResponse {
   static defaultResponse() {
@@ -10,6 +9,8 @@ module.exports = class InvalidNewRoom extends ErrorApiResponse {
 
   constructor(result) {
     super(result[0], result[1]);
+    this._jsonResponse = result[0];
+    this._statusCode = result[1];
   }
 
   static getMessage() {

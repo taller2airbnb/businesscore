@@ -171,8 +171,7 @@ router.post("/register", async (req, res, next) => {
     futureResponseSC.then((resultSC) => {
       const futureDB = dao.execSql("insert_user_wallet", [
         resultProfileServer.message.id,
-        resultSC.message.id,
-        resultSC.message.address
+        resultSC.message.id
       ]);
 
       Object.assign(finalResult, resultSC.message)
