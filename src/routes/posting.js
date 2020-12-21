@@ -84,7 +84,7 @@ router.post("/posting", async (req, res) => {
       return;
     }
 
-    const infoDBCreateRoom = await dao.execSql("create_posting_sc", [
+    const infoDBCreateRoom = await dao.execSql("create_posting", [
       req.body.price_day,
       req.body.start_date,
       req.body.end_date,
@@ -104,6 +104,8 @@ router.post("/posting", async (req, res) => {
       .send({ message: "SmartContract create room failed: " + error, status: 500, error: true });
   };
 });
+
+
 
 /**
  * @swagger
