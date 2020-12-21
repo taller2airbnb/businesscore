@@ -19,7 +19,7 @@ module.exports = class InvalidNewRoom extends ErrorApiResponse {
 
   static understandThis(status) {
     return (status == 400 || status == 403 || status == 404
-         || status == 409 || status == 401 || status == 500);
+         || status == 409 || status == 401 || status == 402);
 }
 
 

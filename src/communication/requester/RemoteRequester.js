@@ -17,7 +17,7 @@ module.exports = class RemoteRequester extends Requester {
         // }
         return fetch(this._baseUrl + url, request)
         .then(result => {
-            return  [result.status != 400 && result.status && 500 ? result.json() : "", result.status] ; 
+            return  [result.status != 400 && result.status != 500 ? result.json() : "", result.status] ; 
         }) 
         .then(result => {
             return onResponse(this._buildResponse(result, endpoint));

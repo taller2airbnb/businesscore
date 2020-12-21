@@ -75,45 +75,34 @@ router.post("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
 
-  const futureCreatorID = dao.execSql("get_creator_id", [tokenDecode.payload.id]);
+  try {
+    const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
+    body = { creatorId: get_creator_id, price: req.body.price_day };
+    const messageSmartContract = await apiClientSC.createRoom(body, handlerResponse.handlerResponse)
+    if (messageSmartContract.error){
+      res.status(messageSmartContract.status).send(messageSmartContract);
+      return;
+    }
 
-  futureCreatorID.then((result) => {
-    body = { creatorId: result[0]["get_creator_id"], price: req.body.price_day };
-      
-    futureResponseSC = apiClientSC.createRoom(body, handlerResponse.handlerResponse).then((result) => {
-      const future = dao.execSql("create_posting_sc", [
-        req.body.price_day,
-        req.body.start_date,
-        req.body.end_date,
-        req.body.state,
-        req.body.features,
-        req.body.public,
-        req.body.content,
-        tokenDecode.payload.id,
-        req.body.name,
-        result["message"]["roomTransactionHash"]
-      ]);
+    const infoDBCreateRoom = await dao.execSql("create_posting_sc", [
+      req.body.price_day,
+      req.body.start_date,
+      req.body.end_date,
+      req.body.state,
+      req.body.features,
+      req.body.public,
+      req.body.content,
+      tokenDecode.payload.id,
+      req.body.name,
+      messageSmartContract.message.roomTransactionHash
+    ]);
 
-      future
-        .then((result) => {
-          res.status(200).send({ message: result, status: 200, error: false });
-        })
-        .catch((error) => {
-          res
-            .status(500)
-            .send({ message: "Data base: " + error, status: 500, error: true });
-        });
-
-
-    }).catch((error) => {
-      res.status(500).send({ message: "SmartContract create room failed: " + error, error: true });
-    });
-
-  });  
-
-
-
-
+    res.status(200).send({ message: infoDBCreateRoom[0], status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "SmartContract create room failed: " + error, status: 500, error: true });
+  };
 });
 
 /**
