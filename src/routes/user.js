@@ -1,9 +1,11 @@
 const ApiClient = require("../../src/communication/client/ApiClient");
 const getSettingProfile = require("../../settings.js");
+const getSettingSC = require("../../settings.js");
 const handlerResponse = require("./hanlderResponse");
 const RemoteRequester = require("../../src/communication/requester/RemoteRequester");
 const { Router } = require("express");
 const router = Router();
+const dao = require("../db/index");
 var cors = require("cors");
 router.use(cors());
 router.options('*', cors());
@@ -14,6 +16,10 @@ var jwt = require('jsonwebtoken');
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
+
+const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
+const requesterSC = new RemoteRequester(remoteApiUrlSC);
+const apiClientSC = new ApiClient(requesterSC);
 
 
 /**
@@ -82,7 +88,7 @@ router.post("/login", (req, res, next) => {
   futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
 
-    if (result["status"] != 200){
+    if (result["status"] != 200) {
       res.status(result["status"]).send(result);
       return;
     }
@@ -92,11 +98,11 @@ router.post("/login", (req, res, next) => {
     var id = resultJson.id;
 
 
-      var tokenData = {
-        username: username,
-        profile: profile,
-        id: id
-      }
+    var tokenData = {
+      username: username,
+      profile: profile,
+      id: id
+    }
 
     var token = jwt.sign(tokenData, 'Secret Password', {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
@@ -131,17 +137,58 @@ router.post("/login", (req, res, next) => {
  *       500:
  *         description: Server error
  */
-router.post("/register", (req, res, next) => {
-  if (req.body.user_type == "admin"){
+router.post("/register", async (req, res, next) => {
+
+  let finalResult = {}
+
+  //valido el token
+  if (req.body.user_type == "admin") {
     if (!validToken.validToken(req, res)) return;
     let tokenDecode = decodeToken.decodeToken(req);
     req.body["user_logged_id"] = tokenDecode.payload.id;
   }
- 
+
+  //profile server valida la registracion
   futureResponse = apiClient.register(req.body, handlerResponse.handlerResponse);
-  futureResponse.then((result) => {
-    res.status(result["status"]).send(result);
+
+  futureResponse.then((resultProfileServer) => {
+
+    if (resultProfileServer["status"] != 200) {
+      res.status(resultProfileServer["status"]).send(resultProfileServer);
+      return;
+    }
+
+    Object.assign(finalResult, resultProfileServer["message"]);
+
+    //Se crea la wallet
+    futureResponseSC = apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
+      res.send({ message: "SmartContract create identity failed: " + error, status: 500, error: true });
+      return;
+    });
+
+    //Se guarda la relacion wallet vs usuario
+    // pregunta para cesar: porque se guarda el mismo ID 2 veces?
+    futureResponseSC.then((resultSC) => {
+      const futureDB = dao.execSql("insert_user_wallet", [
+        resultProfileServer.message.id,
+        resultSC.message.id
+      ]);
+
+      Object.assign(finalResult, resultSC.message)
+
+      futureDB.then((resultDB) => {
+        Object.assign(finalResult, resultDB);
+        res.status(200).send({ message: finalResult, status: 200, error: false });
+
+        return;
+      });
+
+    });
+
   });
+
+
+
 });
 
 /**

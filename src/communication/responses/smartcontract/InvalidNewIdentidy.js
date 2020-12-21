@@ -1,7 +1,7 @@
 const ErrorApiResponse = require("../generalResponses/ErrorApiResponse.js");
 ("use strict");
 
-module.exports = class InvalidRegister extends ErrorApiResponse {
+module.exports = class InvalidNewIdentidy extends ErrorApiResponse {
   static defaultResponse() {
     return {
       token: "QpwL5tke4Pnpja7X4",
@@ -9,12 +9,13 @@ module.exports = class InvalidRegister extends ErrorApiResponse {
   }
 
   constructor(result) {
-    super(result[0], result[1]);
-
+    super(result[0]);
+    this._jsonResponse = result[0];
+    this._statusCode = result[1];
   }
 
   static getMessage() {
-    return "Invalid data to registration";
+    return "Invalid create wallet";
   }
 
 

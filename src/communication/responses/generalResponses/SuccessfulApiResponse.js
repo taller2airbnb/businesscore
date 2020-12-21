@@ -14,7 +14,7 @@ class SuccessfulApiResponse extends ApiResponse {
     }
 
     static isError() {
-        return true;
+        return false;
     }
 }
 

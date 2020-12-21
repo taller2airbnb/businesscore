@@ -16,11 +16,11 @@ module.exports = class ErrorApiResponse extends ApiResponse {
 
   static isError() {
     return true;
-}
+  }
 
-getMessage() {
-  return this._jsonResponse;
-}
+  getMessage() {
+    return this._jsonResponse;
+  }
 
 
 };

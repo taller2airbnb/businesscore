@@ -6,6 +6,14 @@ router.options("*", cors());
 const dao = require("../db/index");
 var validToken = require("./tokenController.js");
 var decodeToken = require("./tokenController.js");
+const RemoteRequester = require("../../src/communication/requester/RemoteRequester");
+const ApiClient = require("../../src/communication/client/ApiClient");
+const getSettingSC = require("../../settings.js");
+const handlerResponse = require("./hanlderResponse");
+
+const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
+const requesterSC = new RemoteRequester(remoteApiUrlSC);
+const apiClientSC = new ApiClient(requesterSC);
 
 /**
  * @swagger
@@ -66,26 +74,35 @@ router.get("/posting", async (req, res) => {
 router.post("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
-  const future = dao.execSql("create_posting", [
-    req.body.price_day,
-    req.body.start_date,
-    req.body.end_date,
-    req.body.state,
-    req.body.features,
-    req.body.public,
-    req.body.content,
-    tokenDecode.payload.id,
-    req.body.name
-  ]);
-  future
-    .then((result) => {
-      res.status(200).send({ message: result, status: 200, error: false });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-    });
+
+  try {
+    const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
+    body = { creatorId: get_creator_id, price: req.body.price_day };
+    const messageSmartContract = await apiClientSC.createRoom(body, handlerResponse.handlerResponse)
+    if (messageSmartContract.error){
+      res.status(messageSmartContract.status).send(messageSmartContract);
+      return;
+    }
+
+    const infoDBCreateRoom = await dao.execSql("create_posting", [
+      req.body.price_day,
+      req.body.start_date,
+      req.body.end_date,
+      req.body.state,
+      req.body.features,
+      req.body.public,
+      req.body.content,
+      tokenDecode.payload.id,
+      req.body.name,
+      messageSmartContract.message.roomTransactionHash
+    ]);
+
+    res.status(200).send({ message: infoDBCreateRoom[0], status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "SmartContract create room failed: " + error, status: 500, error: true });
+  };
 });
 
 
