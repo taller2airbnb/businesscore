@@ -128,3 +128,17 @@
  *       validate:
  *         type: string
  */
+
+
+ /**
+ * @swagger
+ * definitions:
+ *   intentBooking:
+ *     properties:
+ *       initialDate:
+ *         type: string
+ *       lastDate:
+ *         type: string
+ *       roomTransactionHash:
+ *         type: string
+ */
