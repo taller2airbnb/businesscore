@@ -121,10 +121,17 @@
  * definitions:
  *   ChangePassword:
  *     properties:
- *       email:
+ *       new_password:
  *         type: string
- *       password:
+ *       token:
  *         type: string
- *       validate:
- *         type: string
+ */
+
+ /**
+ * @swagger
+ * definitions:
+ *   BlockedStatus:
+ *     properties:
+ *       new_status:
+ *         type: boolean
  */

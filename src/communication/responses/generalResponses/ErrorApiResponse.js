@@ -22,5 +22,9 @@ module.exports = class ErrorApiResponse extends ApiResponse {
     return this._jsonResponse;
   }
 
+  static understandThis(status) {
+    return (! (status >=200 && status <= 300) );
+}
+
 
 };
