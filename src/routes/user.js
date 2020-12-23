@@ -193,17 +193,21 @@ router.post("/register", async (req, res, next) => {
 
 /**
  * @swagger
- * /change-password:
+ * /user/{user_mail}/password/:
  *   put:
  *     tags:
  *       - user
- *     description: Change the password
+ *     description: Change Password for user's by id and token
  *     produces:
  *       - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: name
+ *       - name: user_mail 
+ *         description: users mail
+ *         in: path
+ *         required: true
+ *       - name: body
  *         description: Username of user that will change password.
  *         in: body
  *         required: true
@@ -215,9 +219,8 @@ router.post("/register", async (req, res, next) => {
  *       500:
  *         description: Server error
  */
-router.put("/change-password", (req, res, next) => {
-  if (!validToken.validToken(req, res)) return;
-  futureResponse = apiClient.changePassword(req.body, handlerResponse.handlerResponse);
+router.put("/user/:user_mail/password/", (req, res, next) => {
+  futureResponse = apiClient.changePassword(req.params.user_mail, req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
   });
@@ -279,5 +282,76 @@ router.get("/user", async (req, res) => {
     res.status(result["status"]).send(result);
   });
 });
+
+
+/**
+ * @swagger
+ * /recover_token/{userMail}:
+ *   post:
+ *     tags:
+ *       - user
+ *     description: Rocover token
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: userMail
+ *         description: Mail of user 
+ *         in: path
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Successfully recover token
+ *       500:
+ *         description: Server error
+ */
+router.post("/recover_token/:userMail", (req, res, next) => {
+  futureResponse = apiClient.recoverToken(req.params.userMail, req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.status(result["status"]).send(result);
+  });
+});
+
+
+/**
+ * @swagger
+ * /user/{user_id}/blocked_status:
+ *   put:
+ *     tags:
+ *       - user
+ *     description: Block status of a user
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: user_id
+ *         description: Id of user 
+ *         in: path
+ *         required: true
+ *       - name: body
+ *         description: status.
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/BlockedStatus'
+ *     responses:
+ *       200:
+ *         description: Successfully block status
+ *       500:
+ *         description: Server error
+ */
+router.put("/user/:user_id/blocked_status/", (req, res, next) => {
+  if (!validToken.validToken(req, res)) return;
+  futureResponse = apiClient.blockedStatus(req.params.user_id, req.body, handlerResponse.handlerResponse);
+  futureResponse.then((result) => {
+    res.status(result["status"]).send(result);
+  });
+});
+
+
+
+
 
 module.exports = router;
