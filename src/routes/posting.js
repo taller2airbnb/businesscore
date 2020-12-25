@@ -76,7 +76,9 @@ router.post("/posting", async (req, res) => {
   let tokenDecode = decodeToken.decodeToken(req);
 
   try {
+    //TODO: validar contra que el profile server que es un perfil del tipo que crear rooms
     const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
+    
     body = { creatorId: get_creator_id, price: req.body.price_day };
     const messageSmartContract = await apiClientSC.createRoom(body, handlerResponse.handlerResponse)
     if (messageSmartContract.error){
@@ -286,63 +288,6 @@ router.get("/feature", async (req, res) => {
         .status(500)
         .send({ message: "Data base: " + error, status: 500, error: true });
     });
-});
-
-
-/**
- * @swagger
- * /intentBooking:
- *   post:
- *     tags:
- *       - posting
- *     description: Intent booking a room (YYYY-MM-DD HH24:MI:SS)
- *     produces:
- *       - application/json
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: name
- *         description: New Intent Booking
- *         in: body
- *         required: true
- *         schema:
- *           $ref: '#/definitions/intentBooking'
- *     responses:
- *       200:
- *         description: Successfully intent booking a room
- *       500:
- *         description: Server error
- */
-router.post("/intentBooking", async (req, res) => {
-  if (!validToken.validToken(req, res)) return;
-  let tokenDecode = decodeToken.decodeToken(req);
-  // roomId es la transaccion hash
-  try {
-
-    const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
-
-
-    let  initialDate = new Date(req.body.initialDate);
-    let  lastDate = new Date(req.body.lastDate);
-
-    body = {};
-    body["creatorId"] = get_creator_id;
-    body["roomId"] = req.body.roomTransactionHash;
-    body["initialDay"] = initialDate.getDate();
-    body["initialMonth"] = initialDate.getMonth() + 1;
-    body["initialYear"] = initialDate.getFullYear();
-    body["lastDay"] = lastDate.getDate();
-    body["lastMonth"] = lastDate.getMonth() + 1;
-    body["lastYear"] = lastDate.getFullYear();
-
-    const messageSmartContract = await apiClientSC.intentBooking(body, handlerResponse.handlerResponse)
-    //TODO VER QUE HACER CUANDO LLEGO ACA
-    res.status(200).send({ message: messageSmartContract, status: 200, error: false });
-  } catch (error) {
-    res
-      .status(500)
-      .send({ message: "SmartContract create room failed: " + error, status: 500, error: true });
-  };
 });
 
 module.exports = router;

@@ -135,10 +135,10 @@
  * definitions:
  *   intentBooking:
  *     properties:
+ *       idPosting:
+ *         type: number
  *       initialDate:
  *         type: string
  *       lastDate:
- *         type: string
- *       roomTransactionHash:
  *         type: string
  */
