@@ -76,7 +76,9 @@ router.post("/posting", async (req, res) => {
   let tokenDecode = decodeToken.decodeToken(req);
   //TODO: validacion precio minimo
   try {
+    //TODO: validar contra que el profile server que es un perfil del tipo que crear rooms
     const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
+    
     body = { creatorId: get_creator_id, price: req.body.price_day };
     const messageSmartContract = await apiClientSC.createRoom(body, handlerResponse.handlerResponse)
     if (messageSmartContract.error){

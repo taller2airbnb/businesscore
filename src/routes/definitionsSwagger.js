@@ -139,6 +139,21 @@
  *         type: string
  */
 
+
+ /**
+ * @swagger
+ * definitions:
+ *   intentBooking:
+ *     properties:
+ *       idPosting:
+ *         type: number
+ *       initialDate:
+ *         type: string
+ *       lastDate:
+ *         type: string
+ */
+
+ 
  /**
  * @swagger
  * definitions:
