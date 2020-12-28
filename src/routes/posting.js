@@ -74,7 +74,7 @@ router.get("/posting", async (req, res) => {
 router.post("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
-
+  //TODO: validacion precio minimo
   try {
     const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
     body = { creatorId: get_creator_id, price: req.body.price_day };
@@ -138,6 +138,7 @@ router.post("/posting", async (req, res) => {
  */
 router.put("/posting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
+  //TODO: validacion precio minimo
   const future = dao.execSql("update_posting", [
     req.params.idPosting,
     req.body.price_day,
