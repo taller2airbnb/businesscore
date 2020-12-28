@@ -10,7 +10,7 @@ class ApiResponse {
     }
 
     static understandThis(status) {
-        return (status == 400 || status == 403 || status == 404 || status == 409 || status == 401);
+        return (status == 400 || status == 403 || status == 404 || status == 409 || status == 401 || status == 500);
     }
 
 

@@ -63,7 +63,7 @@ module.exports = class RemoteRequester extends Requester {
                 }
             }
         }
-        return new ErrorApiResponse(result[1]);
+        return new ErrorApiResponse(result[0],result[1]);
     }
 
     _buildHeadersFor(endpoint) {

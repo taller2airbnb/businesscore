@@ -11,7 +11,8 @@ const RegisterUserWalletEndpoint = require('../endpoints/RegisterUserWalletEndpo
 const RegisterUserRoomEndpoint = require('../endpoints/RegisterUserRoomEndpoint');
 const GetUsersEndpoint = require('../endpoints/GetUsersEndpoint');
 const IntentBookingEndpoint = require('../endpoints/IntentBookingEndpoint');
-
+const RecoverTokenEndpoint = require('../endpoints/RecoverTokenEndpoint');
+const BlockedStatusEndpoint = require('../endpoints/BlockedStatusEndpoint');
 
 'use strict';
 
@@ -87,9 +88,9 @@ module.exports = class ApiClient {
         });
     }
 
-    changePassword(data, onResponse) {
+    changePassword(user_mail, data, onResponse) {
         return this._requester.call({
-            endpoint: new ChangePasswordEndpoint(),
+            endpoint: new ChangePasswordEndpoint(user_mail),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: data
         });
@@ -129,6 +130,22 @@ module.exports = class ApiClient {
     intentBooking(data, onResponse) {
         return this._requester.call({
             endpoint: new IntentBookingEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
+    recoverToken(mail, data, onResponse) {
+        return this._requester.call({
+            endpoint: new RecoverTokenEndpoint(mail),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+    
+    blockedStatus(user_id, data, onResponse) {
+        return this._requester.call({
+            endpoint: new BlockedStatusEndpoint(user_id),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: data
         });
