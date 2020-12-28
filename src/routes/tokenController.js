@@ -1,7 +1,7 @@
 var jwt = require('jsonwebtoken')
 
 module.exports.validToken = function (req, res) {
-
+  let validToken = true;
   var token = req.headers['authorization']
   if (!token) {
     res.status(401).send({
@@ -9,7 +9,7 @@ module.exports.validToken = function (req, res) {
       status:401,
       error:true
     })
-    return false;
+    validToken = false;
   }
 
   token = token.replace('Bearer ', '')
@@ -20,12 +20,12 @@ module.exports.validToken = function (req, res) {
         status:401,
         error:true
       })
-      return false;
+      validToken = false;
     }
 
   })
 
-  return true;
+  return validToken;
 };
 
 

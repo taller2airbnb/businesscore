@@ -43,17 +43,22 @@ const apiClientSC = new ApiClient(requesterSC);
 router.post("/intentBooking", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
-  // roomId es la transaccion hash
   try {
 
 
     //TODO: validar contra que el profile server que es un perfil del tipo que puede hacer reservas
-    //TODO: validacion que la fecha no esta ocupada, o sea revisar en la tabla booking
+    //TODO: validar que no sea el mismo tipo que creo la room
+    const { booking_date_range_available } = (await dao.execSql("booking_date_range_available", [req.body.initialDate, req.body.lastDate, req.body.idPosting, tokenDecode.payload.id]))[0];
+    if (!booking_date_range_available) {
+      res.status(400).send({ message: "Dates not avaible", status: 400, error: true });
+      return;
+    }
+
     const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
     const { get_transaction_hash_room } = (await dao.execSql("get_transaction_hash_room", [req.body.idPosting]))[0];
 
-    let  initialDate = new Date(req.body.initialDate);
-    let  lastDate = new Date(req.body.lastDate);
+    let initialDate = new Date(req.body.initialDate);
+    let lastDate = new Date(req.body.lastDate);
 
     body = {};
     body["transaction_hash"] = get_transaction_hash_room;
@@ -65,13 +70,28 @@ router.post("/intentBooking", async (req, res) => {
     body["lastMonth"] = lastDate.getMonth() + 1;
     body["lastYear"] = lastDate.getFullYear();
 
-    const messageSmartContract = await apiClientSC.intentBooking(body, handlerResponse.handlerResponse)
-    //TODO VER QUE HACER CUANDO LLEGO ACA
-    res.status(200).send({ message: messageSmartContract, status: 200, error: false });
+    const messageBooking = await apiClientSC.intentBooking(body, handlerResponse.handlerResponse)
+
+    if (messageBooking.error) {
+      res.status(messageBooking.status).send(messageBooking);
+      return;
+    }
+
+
+    const infoDBCreateBooking = await dao.execSql("create_booking", [
+      "INTENT_BOOKING",
+      req.body.initialDate,
+      req.body.lastDate,
+      messageBooking.message.bookingTransactionHash,
+      tokenDecode.payload.id,
+      req.body.idPosting
+    ]);
+
+    res.status(200).send({ message: infoDBCreateBooking[0], status: 200, error: false });
   } catch (error) {
     res
       .status(500)
-      .send({ message: "SmartContract create room failed: " + error, status: 500, error: true });
+      .send({ message: "SmartContract create booking failed: " + error, status: 500, error: true });
   };
 });
 
