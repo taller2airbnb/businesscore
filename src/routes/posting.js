@@ -96,7 +96,10 @@ router.post("/posting", async (req, res) => {
       req.body.content,
       tokenDecode.payload.id,
       req.body.name,
-      messageSmartContract.message.roomTransactionHash
+      messageSmartContract.message.roomTransactionHash,
+      req.body.country,
+      req.body.city,
+      req.body.max_number_guests
     ]);
 
     res.status(200).send({ message: infoDBCreateRoom[0], status: 200, error: false });
@@ -150,8 +153,10 @@ router.put("/posting/:idPosting", async (req, res) => {
     //TODO: req.body.features,
     req.body.public,
     req.body.content,
-    req.body.name
-
+    req.body.name,
+    req.body.country,
+    req.body.city,
+    req.body.max_number_guests
   ]);
   future
     .then((result) => {
