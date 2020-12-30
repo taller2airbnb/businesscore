@@ -144,6 +144,8 @@ router.post("/posting", async (req, res) => {
 router.put("/posting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   //TODO: validacion precio minimo
+  //TODO: validacion solo el dueño del posting puede modificarlo
+  //TODO:si el precio se modifica tiene que ir al changePrice del smart contract
   const future = dao.execSql("update_posting", [
     req.params.idPosting,
     req.body.price_day,
