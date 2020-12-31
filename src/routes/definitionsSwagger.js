@@ -150,3 +150,14 @@
  *       new_status:
  *         type: boolean
  */
+
+
+ /**
+ * @swagger
+ * definitions:
+ *   AcceptBooking:
+ *     properties:
+ *       transactionHash:
+ *         type: string
+ */
+

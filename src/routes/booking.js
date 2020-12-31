@@ -10,10 +10,17 @@ const RemoteRequester = require("../communication/requester/RemoteRequester");
 const ApiClient = require("../communication/client/ApiClient");
 const getSettingSC = require("../../settings.js");
 const handlerResponse = require("./hanlderResponse");
+const getSettingProfile = require("../../settings.js");
+
 
 const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
 const requesterSC = new RemoteRequester(remoteApiUrlSC);
 const apiClientSC = new ApiClient(requesterSC);
+
+
+const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
+const requester = new RemoteRequester(remoteApiUrl);
+const apiClient = new ApiClient(requester);
 
 
 /**
@@ -61,6 +68,7 @@ router.post("/intentBooking", async (req, res) => {
     let lastDate = new Date(req.body.lastDate);
 
     body = {};
+    //TODO: ojo revisar los days, que vienen defasados en algunos casos
     body["transaction_hash"] = get_transaction_hash_room;
     body["creatorId"] = get_creator_id;
     body["initialDay"] = initialDate.getDate();
@@ -92,6 +100,85 @@ router.post("/intentBooking", async (req, res) => {
     res
       .status(500)
       .send({ message: "SmartContract create booking failed: " + error, status: 500, error: true });
+  };
+});
+
+
+/**
+ * @swagger
+ * /myOffers:
+ *    get:
+ *     tags:
+ *       - booking
+ *     description: get offers
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/myOffers", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    let tokenDecode = decodeToken.decodeToken(req);
+    let myOffers = await dao.execSql("my_offers", [tokenDecode.payload.id]);
+
+    await Promise.all(myOffers.map(async infoBooking => {
+      let { message } = await apiClient.getUser(infoBooking.booker, handlerResponse.handlerResponse);
+      infoBooking["first_name_booker"] = message.first_name;
+      infoBooking["last_name_booker"] = message.last_name;
+      infoBooking["alias_booker"] = message.alias;
+    }));
+
+    res.status(200).send({ message: myOffers, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Get my offers failed: " + error, status: 500, error: true });
+  };
+});
+
+/**
+ * @swagger
+ * /acceptBooking:
+ *   post:
+ *     tags:
+ *       - booking
+ *     description: Accept a Booking 
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: transactionHash
+ *         description:  Accept a Booking
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/AcceptBooking'
+ *     responses:
+ *       200:
+ *         description: Successfully intent booking a room
+ *       500:
+ *         description: Server error
+ */
+router.post("/acceptBooking", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+
+  try {
+    let requestAcceptBooking = (await dao.execSql("get_request_accept_booking", [req.body.transactionHash]))[0];
+    requestAcceptBooking["transaction_booking"] = req.body.transactionHash;
+    const acceptBooking = await apiClientSC.acceptBooking(requestAcceptBooking, handlerResponse.handlerResponse)
+    if (acceptBooking.error) {
+      res.status(acceptBooking.status).send(acceptBooking);
+      return;
+    }
+
+    res.status(200).send({ message: acceptBooking, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "SmartContract accept booking failed: " + error, status: 500, error: true });
   };
 });
 

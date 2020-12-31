@@ -13,6 +13,10 @@ const GetUsersEndpoint = require('../endpoints/GetUsersEndpoint');
 const IntentBookingEndpoint = require('../endpoints/IntentBookingEndpoint');
 const RecoverTokenEndpoint = require('../endpoints/RecoverTokenEndpoint');
 const BlockedStatusEndpoint = require('../endpoints/BlockedStatusEndpoint');
+const AcceptBookingEndpoint = require('../endpoints/AcceptBookingEndpoint');
+
+
+
 
 'use strict';
 
@@ -146,6 +150,16 @@ module.exports = class ApiClient {
     blockedStatus(user_id, data, onResponse) {
         return this._requester.call({
             endpoint: new BlockedStatusEndpoint(user_id),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
+    
+
+    acceptBooking(data, onResponse) {
+        return this._requester.call({
+            endpoint: new AcceptBookingEndpoint(),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: data
         });
