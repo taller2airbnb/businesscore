@@ -64,19 +64,19 @@ router.post("/intentBooking", async (req, res) => {
     const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
     const { get_transaction_hash_room } = (await dao.execSql("get_transaction_hash_room", [req.body.idPosting]))[0];
 
-    let initialDate = new Date(req.body.initialDate);
-    let lastDate = new Date(req.body.lastDate);
+
+    const [initialYear, initialMonth, initialDay] = req.body.initialDate.split('-');
+    const [lastYear, lastMonth, lastDay] = req.body.lastDate.split('-');
 
     body = {};
-    //TODO: ojo revisar los days, que vienen defasados en algunos casos
     body["transaction_hash"] = get_transaction_hash_room;
-    body["creatorId"] = get_creator_id;
-    body["initialDay"] = initialDate.getDate();
-    body["initialMonth"] = initialDate.getMonth() + 1;
-    body["initialYear"] = initialDate.getFullYear();
-    body["lastDay"] = lastDate.getDate();
-    body["lastMonth"] = lastDate.getMonth() + 1;
-    body["lastYear"] = lastDate.getFullYear();
+    body["creatorId"] =  parseInt(get_creator_id); 
+    body["initialDay"] = parseInt(initialDay);
+    body["initialMonth"] = parseInt(initialMonth);
+    body["initialYear"] = parseInt(initialYear);
+    body["lastDay"] = parseInt(lastDay);
+    body["lastMonth"] = parseInt(lastMonth);
+    body["lastYear"] = parseInt(lastYear);
 
     const messageBooking = await apiClientSC.intentBooking(body, handlerResponse.handlerResponse)
 
