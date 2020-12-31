@@ -52,6 +52,12 @@
  *         type: string 
  *       name:
  *         type: string 
+ *       country:
+ *         type: string
+ *       city:
+ *         type: string  
+ *       max_number_guests:
+ *         type: number  
  */
 
  /**
@@ -75,6 +81,12 @@
  *         type: string
  *       name:
  *         type: string
+ *       country:
+ *         type: string
+ *       city:
+ *         type: string  
+ *       max_number_guests:
+ *         type: number  
  */
 
  

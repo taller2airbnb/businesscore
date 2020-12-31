@@ -74,7 +74,7 @@ router.get("/posting", async (req, res) => {
 router.post("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
-
+  //TODO: validacion precio minimo
   try {
     //TODO: validar contra que el profile server que es un perfil del tipo que crear rooms
     const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
@@ -96,7 +96,10 @@ router.post("/posting", async (req, res) => {
       req.body.content,
       tokenDecode.payload.id,
       req.body.name,
-      messageSmartContract.message.roomTransactionHash
+      messageSmartContract.message.roomTransactionHash,
+      req.body.country,
+      req.body.city,
+      req.body.max_number_guests
     ]);
 
     res.status(200).send({ message: infoDBCreateRoom[0], status: 200, error: false });
@@ -140,6 +143,9 @@ router.post("/posting", async (req, res) => {
  */
 router.put("/posting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
+  //TODO: validacion precio minimo
+  //TODO: validacion solo el dueño del posting puede modificarlo
+  //TODO:si el precio se modifica tiene que ir al changePrice del smart contract
   const future = dao.execSql("update_posting", [
     req.params.idPosting,
     req.body.price_day,
@@ -149,8 +155,10 @@ router.put("/posting/:idPosting", async (req, res) => {
     //TODO: req.body.features,
     req.body.public,
     req.body.content,
-    req.body.name
-
+    req.body.name,
+    req.body.country,
+    req.body.city,
+    req.body.max_number_guests
   ]);
   future
     .then((result) => {
