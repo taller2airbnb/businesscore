@@ -178,7 +178,7 @@ router.post("/acceptBooking", async (req, res) => {
 
     await dao.execSql("update_booking_accepted", [req.body.transactionHash])
 
-    res.status(200).send({ message: acceptBooking, status: 200, error: false });
+    res.status(200).send({ message: acceptBooking.message, status: 200, error: false });
   } catch (error) {
     res
       .status(500)
