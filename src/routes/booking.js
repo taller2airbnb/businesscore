@@ -167,12 +167,16 @@ router.post("/acceptBooking", async (req, res) => {
 
   try {
     let requestAcceptBooking = (await dao.execSql("get_request_accept_booking", [req.body.transactionHash]))[0];
-    requestAcceptBooking["transaction_booking"] = req.body.transactionHash;
+    requestAcceptBooking["transaction_booking_intent"] = req.body.transactionHash;
+
     const acceptBooking = await apiClientSC.acceptBooking(requestAcceptBooking, handlerResponse.handlerResponse)
+    
     if (acceptBooking.error) {
       res.status(acceptBooking.status).send(acceptBooking);
       return;
     }
+
+    await dao.execSql("update_booking_accepted", [req.body.transactionHash])
 
     res.status(200).send({ message: acceptBooking, status: 200, error: false });
   } catch (error) {
