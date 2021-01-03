@@ -130,6 +130,7 @@ router.get("/myOffers", async (req, res) => {
       infoBooking["alias_booker"] = message.alias;
     }));
 
+
     res.status(200).send({ message: myOffers, status: 200, error: false });
   } catch (error) {
     res
@@ -158,7 +159,7 @@ router.get("/myOffers", async (req, res) => {
  *           $ref: '#/definitions/AcceptBooking'
  *     responses:
  *       200:
- *         description: Successfully intent booking a room
+ *         description: Successfully accept booking a room
  *       500:
  *         description: Server error
  */
@@ -166,19 +167,63 @@ router.post("/acceptBooking", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
 
   try {
-    let requestAcceptBooking = (await dao.execSql("get_request_accept_booking", [req.body.transactionHash]))[0];
+    let requestAcceptBooking = (await dao.execSql("get_request_accept_or_reject_booking", [req.body.transactionHash]))[0];
     requestAcceptBooking["transaction_booking_intent"] = req.body.transactionHash;
-
-    const acceptBooking = await apiClientSC.acceptBooking(requestAcceptBooking, handlerResponse.handlerResponse)
-    
+    const acceptBooking = await apiClientSC.acceptBooking(requestAcceptBooking, handlerResponse.handlerResponse);
     if (acceptBooking.error) {
       res.status(acceptBooking.status).send(acceptBooking);
       return;
     }
 
-    await dao.execSql("update_booking_accepted", [req.body.transactionHash])
+    await dao.execSql("update_booking", ["ACCEPTED_BOOKING", req.body.transactionHash])
 
     res.status(200).send({ message: acceptBooking.message, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "SmartContract accept booking failed: " + error, status: 500, error: true });
+  };
+});
+
+/**
+ * @swagger
+ * /rejectBooking:
+ *   post:
+ *     tags:
+ *       - booking
+ *     description: Reject a Booking 
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: transactionHash
+ *         description:  Reject a Booking
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/RejectBooking'
+ *     responses:
+ *       200:
+ *         description: Successfully reject booking a room
+ *       500:
+ *         description: Server error
+ */
+router.post("/rejectBooking", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+
+  try {
+    let requestRejectBooking = (await dao.execSql("get_request_accept_or_reject_booking", [req.body.transactionHash]))[0];
+    requestRejectBooking["transaction_booking_intent"] = req.body.transactionHash;
+    const rejectBooking = await apiClientSC.rejectBooking(requestRejectBooking, handlerResponse.handlerResponse)
+    if (rejectBooking.error) {
+      res.status(rejectBooking.status).send(rejectBooking.message);
+      return;
+    }
+
+    await dao.execSql("update_booking", ["REJECTED_BOOKING", req.body.transactionHash])
+
+    res.status(200).send({ message: rejectBooking.message, status: 200, error: false });
   } catch (error) {
     res
       .status(500)

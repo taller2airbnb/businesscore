@@ -14,6 +14,8 @@ const IntentBookingEndpoint = require('../endpoints/IntentBookingEndpoint');
 const RecoverTokenEndpoint = require('../endpoints/RecoverTokenEndpoint');
 const BlockedStatusEndpoint = require('../endpoints/BlockedStatusEndpoint');
 const AcceptBookingEndpoint = require('../endpoints/AcceptBookingEndpoint');
+const RejectBookingEndpoint = require('../endpoints/RejectBookingEndpoint');
+
 
 
 
@@ -160,6 +162,14 @@ module.exports = class ApiClient {
     acceptBooking(data, onResponse) {
         return this._requester.call({
             endpoint: new AcceptBookingEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
+    rejectBooking(data, onResponse) {
+        return this._requester.call({
+            endpoint: new RejectBookingEndpoint(),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: data
         });
