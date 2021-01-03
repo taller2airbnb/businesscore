@@ -173,3 +173,12 @@
  *         type: string
  */
 
+/**
+ * @swagger
+ * definitions:
+ *   RejectBooking:
+ *     properties:
+ *       transactionHash:
+ *         type: string
+ */
+
