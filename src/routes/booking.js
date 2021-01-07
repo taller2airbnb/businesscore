@@ -230,4 +230,40 @@ router.post("/rejectBooking", async (req, res) => {
   };
 });
 
+/**
+ * @swagger
+ * /myIntentBookings:
+ *    get:
+ *     tags:
+ *       - booking
+ *     description: get my intent bookings
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/myIntentBookings", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    let tokenDecode = decodeToken.decodeToken(req);
+    let myBookings = await dao.execSql("my_booking_intents", [tokenDecode.payload.id]);
+
+    await Promise.all(myBookings.map(async infoBooking => {
+      let { message } = await apiClient.getUser(infoBooking.owner, handlerResponse.handlerResponse);
+      infoBooking["first_name_booker"] = message.first_name;
+      infoBooking["last_name_booker"] = message.last_name;
+      infoBooking["alias_booker"] = message.alias;
+    }));
+
+
+    res.status(200).send({ message: myBookings, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Get my offers failed: " + error, status: 500, error: true });
+  };
+});
+
+
 module.exports = router;
