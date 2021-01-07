@@ -143,9 +143,14 @@ router.post("/posting", async (req, res) => {
  */
 router.put("/posting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-  //TODO: validacion precio minimo
-  //TODO: validacion solo el dueño del posting puede modificarlo
-  //TODO:si el precio se modifica tiene que ir al changePrice del smart contract
+  let tokenDecode = decodeToken.decodeToken(req);
+  const { is_owner } = (await dao.execSql("is_owner", [ req.params.idPosting, tokenDecode.payload.id]))[0];
+    if (!is_owner) {
+      res.status(400).send({ message: "You are not the owner of the room", status: 400, error: true });
+      return;
+    }
+
+
   const future = dao.execSql("update_posting", [
     req.params.idPosting,
     req.body.price_day,

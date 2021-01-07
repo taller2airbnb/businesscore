@@ -54,7 +54,6 @@ router.post("/intentBooking", async (req, res) => {
 
 
     //TODO: validar contra que el profile server que es un perfil del tipo que puede hacer reservas
-    //TODO: validar que no sea el mismo tipo que creo la room
     const { booking_date_range_available } = (await dao.execSql("booking_date_range_available", [req.body.initialDate, req.body.lastDate, req.body.idPosting, tokenDecode.payload.id]))[0];
     if (!booking_date_range_available) {
       res.status(400).send({ message: "Dates not avaible", status: 400, error: true });
