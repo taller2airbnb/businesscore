@@ -143,9 +143,14 @@ router.post("/posting", async (req, res) => {
  */
 router.put("/posting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-  //TODO: validacion precio minimo
-  //TODO: validacion solo el dueño del posting puede modificarlo
-  //TODO:si el precio se modifica tiene que ir al changePrice del smart contract
+  let tokenDecode = decodeToken.decodeToken(req);
+
+  const { is_owner } = (await dao.execSql("is_owner", [req.params.idPosting, tokenDecode.payload.id]))[0];
+  if (!is_owner) {
+    res.status(400).send({ message: "You are not the owner of the room", status: 400, error: true });
+    return;
+  }
+
   const future = dao.execSql("update_posting", [
     req.params.idPosting,
     req.body.price_day,
@@ -297,5 +302,69 @@ router.get("/feature", async (req, res) => {
         .send({ message: "Data base: " + error, status: 500, error: true });
     });
 });
+
+
+/**
+ * @swagger
+ * /priceRoom/{idPosting}:
+ *   put:
+ *     tags:
+ *       - posting
+ *     description: Change price Room
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: idPosting
+ *         in: path
+ *         description: idposting
+ *         required: true
+ *         type: number
+ *       - name: body
+ *         description: Update price room
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/PricePut'
+ *     responses:
+ *       200:
+ *         description: Successfully update posting
+ *       500:
+ *         description: Server error
+ */
+router.put("/priceRoom/:idPosting", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  let tokenDecode = decodeToken.decodeToken(req);
+  try {
+    const { is_owner } = (await dao.execSql("is_owner", [req.params.idPosting, tokenDecode.payload.id]))[0];
+    if (!is_owner) {
+      res.status(400).send({ message: "You are not the owner of the room", status: 400, error: true });
+      return;
+    }
+
+    const { get_transaction_hash_room } = (await dao.execSql("get_transaction_hash_room", [req.params.idPosting]))[0];
+
+    let request = {}
+    request["transaction_hash_room"] = get_transaction_hash_room;
+    request["newPrice"] = req.body.priceRoom;
+
+    const messagePriceRoomChanged = await apiClientSC.changePriceRoom(request, handlerResponse.handlerResponse)
+    if (messagePriceRoomChanged.error) {
+      res.status(messagePriceRoomChanged.status).send(messagePriceRoomChanged);
+      return;
+    }
+
+    await dao.execSql("update_posting", [
+      req.params.idPosting, req.body.priceRoom, null, null, null, null, null, null, null, null, null]);
+      
+    res.status(200).send(messagePriceRoomChanged);
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
 
 module.exports = router;

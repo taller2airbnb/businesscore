@@ -11,10 +11,6 @@ module.exports = class RemoteRequester extends Requester {
     call({endpoint, onResponse, data = undefined}) {
         const request = this._buildRequest(endpoint, data);
         let url = endpoint.url();
-        //TODO: implementar el post 
-        // if (endpoint.method() === 'GET' && data) {
-        //     url += "?" + this._dataToQueryString(data);
-        // }
         return fetch(this._baseUrl + url, request)
         .then(result => {
             return  [result.status != 400 && result.status != 500 ? result.json() : "", result.status] ; 

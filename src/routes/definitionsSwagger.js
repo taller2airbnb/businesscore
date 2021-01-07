@@ -65,8 +65,6 @@
  * definitions:
  *   PostingPut:
  *     properties:
- *       price_day:
- *         type: number
  *       start_date:
  *         type: string
  *       end_date:
@@ -182,3 +180,12 @@
  *         type: string
  */
 
+
+/**
+ * @swagger
+ * definitions:
+ *   PricePut:
+ *     properties:
+ *       priceRoom:
+ *         type: number
+ */
