@@ -54,7 +54,6 @@ router.post("/intentBooking", async (req, res) => {
 
 
     //TODO: validar contra que el profile server que es un perfil del tipo que puede hacer reservas
-    //TODO: validar que no sea el mismo tipo que creo la room
     const { booking_date_range_available } = (await dao.execSql("booking_date_range_available", [req.body.initialDate, req.body.lastDate, req.body.idPosting, tokenDecode.payload.id]))[0];
     if (!booking_date_range_available) {
       res.status(400).send({ message: "Dates not avaible", status: 400, error: true });
@@ -230,5 +229,41 @@ router.post("/rejectBooking", async (req, res) => {
       .send({ message: "SmartContract accept booking failed: " + error, status: 500, error: true });
   };
 });
+
+/**
+ * @swagger
+ * /myBookingIntents:
+ *    get:
+ *     tags:
+ *       - booking
+ *     description: get my booking intents
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/myBookingIntents", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    let tokenDecode = decodeToken.decodeToken(req);
+    let myBookings = await dao.execSql("my_booking_intents", [tokenDecode.payload.id]);
+
+    await Promise.all(myBookings.map(async infoBooking => {
+      let { message } = await apiClient.getUser(infoBooking.owner, handlerResponse.handlerResponse);
+      infoBooking["first_name_booker"] = message.first_name;
+      infoBooking["last_name_booker"] = message.last_name;
+      infoBooking["alias_booker"] = message.alias;
+    }));
+
+
+    res.status(200).send({ message: myBookings, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Get my offers failed: " + error, status: 500, error: true });
+  };
+});
+
 
 module.exports = router;
