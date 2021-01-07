@@ -232,18 +232,18 @@ router.post("/rejectBooking", async (req, res) => {
 
 /**
  * @swagger
- * /myIntentBookings:
+ * /myBookingIntents:
  *    get:
  *     tags:
  *       - booking
- *     description: get my intent bookings
+ *     description: get my booking intents
  *     security:
  *       - bearerAuth: []
  *     responses:
  *          '200':
  *           description:  OK
  */
-router.get("/myIntentBookings", async (req, res) => {
+router.get("/myBookingIntents", async (req, res) => {
   try {
     if (!validToken.validToken(req, res)) return;
     let tokenDecode = decodeToken.decodeToken(req);
