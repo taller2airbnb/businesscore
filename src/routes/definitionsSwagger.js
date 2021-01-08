@@ -189,3 +189,14 @@
  *       priceRoom:
  *         type: number
  */
+
+ /**
+ * @swagger
+ * definitions:
+ *   RatingAdd:
+ *     properties:
+ *       score:
+ *         type: number
+ *       content:
+ *         type: string
+ */
