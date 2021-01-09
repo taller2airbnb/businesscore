@@ -366,5 +366,67 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
   };
 });
 
+/**
+ * @swagger
+ * /posting/searchLiked:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get posting
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: priceMin
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: priceMax
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: startDate
+ *         in: query
+ *         required: false
+ *         type: string
+ *         description: YYYY-MM-DD HH24:MI:SS
+ *       - name: endDate
+ *         in: query
+ *         required: false
+ *         type: string
+ *         description: YYYY-MM-DD HH24:MI:SS
+ *       - name: feature
+ *         in: query
+ *         required: false
+ *         type: string
+ *         description: '{id wifi, id tv, id baño}'
+ *       - name: name
+ *         in: query
+ *         required: false
+ *         type: string
+ *         description: '{hotel condor}'
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/posting/searchLiked", async (req, res) => {
+  // if (!validToken.validToken(req, res)) return;
+  const future = dao.execSql("search_posting_liked", [
+    req.query.priceMin,
+    req.query.priceMax,
+    req.query.startDate,
+    req.query.endDate,
+    req.query.feature,
+    req.query.name,
+  ]);
+  future
+    .then((result) => {
+      res.send({ message: result, status: 200, error: false });
+    })
+    .catch((error) => {
+      res
+        .status(500)
+        .send({ message: "Data base: " + error, status: 500, error: true });
+    });
+});
 
 module.exports = router;
