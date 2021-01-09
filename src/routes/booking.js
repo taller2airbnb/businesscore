@@ -302,5 +302,40 @@ router.get("/myBookings", async (req, res) => {
 });
 
 
+/**
+ * @swagger
+ * /transactions:
+ *    get:
+ *     tags:
+ *       - booking
+ *     description: get all transactions
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/transactions", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    const transactions = await apiClientSC.transactions({}, handlerResponse.handlerResponse)
+
+
+    // await Promise.all(myOffers.map(async infoBooking => {
+    //   let { message } = await apiClient.getUser(infoBooking.booker, handlerResponse.handlerResponse);
+    //   infoBooking["first_name_booker"] = message.first_name;
+    //   infoBooking["last_name_booker"] = message.last_name;
+    //   infoBooking["alias_booker"] = message.alias;
+    // }));
+
+
+    res.status(200).send(transactions);
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Get all transactions failed: " + error, status: 500, error: true });
+  };
+});
+
 
 module.exports = router;

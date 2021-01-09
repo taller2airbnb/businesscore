@@ -16,7 +16,7 @@ const BlockedStatusEndpoint = require('../endpoints/BlockedStatusEndpoint');
 const AcceptBookingEndpoint = require('../endpoints/AcceptBookingEndpoint');
 const RejectBookingEndpoint = require('../endpoints/RejectBookingEndpoint');
 const ChangePriceRoomEndpoint = require('../endpoints/ChangePriceRoomEndpoint');
-
+const TransactionsEndpoint = require('../endpoints/TransactionsEndpoint');
 
 'use strict';
 
@@ -176,6 +176,14 @@ module.exports = class ApiClient {
     changePriceRoom(data, onResponse) {
         return this._requester.call({
             endpoint: new ChangePriceRoomEndpoint(),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
+        });
+    }
+
+    transactions(data, onResponse) {
+        return this._requester.call({
+            endpoint: new TransactionsEndpoint(),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: data
         });
