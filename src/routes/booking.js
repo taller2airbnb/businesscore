@@ -12,12 +12,10 @@ const getSettingSC = require("../../settings.js");
 const handlerResponse = require("./hanlderResponse");
 const getSettingProfile = require("../../settings.js");
 
-
 const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
 const requesterSC = new RemoteRequester(remoteApiUrlSC);
 const apiClientSC = new ApiClient(requesterSC);
-
-
+const BigNumber = require('bignumber.js');
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
@@ -301,6 +299,57 @@ router.get("/myBookings", async (req, res) => {
   };
 });
 
+
+/**
+ * @swagger
+ * /transactions:
+ *    get:
+ *     tags:
+ *       - booking
+ *     description: get all transactions
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/transactions", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    const transactionsResponse = await apiClientSC.transactions({}, handlerResponse.handlerResponse)
+    let transactions = transactionsResponse.message.transactions;
+
+    await Promise.all(transactions.map(async infoTransactions => {
+
+      const owner_id = (await dao.execSql("get_user_id", [infoTransactions.creator_id_booker]))[0];
+      const booker_id = (await dao.execSql("get_user_id", [infoTransactions.creator_id_booker]))[0];
+      const { get_name_posting } = (await dao.execSql("get_name_posting", [infoTransactions.transaction_hash_room]))[0];
+
+
+      let booker = (await apiClient.getUser(owner_id.get_user_id, handlerResponse.handlerResponse)).message;
+      let owner = ( await apiClient.getUser(booker_id.get_user_id, handlerResponse.handlerResponse)).message;
+
+      infoTransactions["name_posting"] = get_name_posting;
+      infoTransactions["first_name_booker"] = booker.first_name;
+      infoTransactions["last_name_booker"] = booker.last_name;
+      infoTransactions["alias_booker"] = booker.alias;
+
+      infoTransactions["first_name_owner"] = owner.first_name;
+      infoTransactions["last_name_owner"] = owner.last_name;
+      infoTransactions["alias_owner"] = owner.alias;
+
+      const ETHER_IN_ETHER = BigNumber(10).pow(18);
+      infoTransactions["payment"]  = BigNumber(infoTransactions["payment"] ).dividedBy(ETHER_IN_ETHER).toFixed();
+    }));
+
+
+    res.status(200).send(transactions);
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Get all transactions failed: " + error, status: 500, error: true });
+  };
+});
 
 
 module.exports = router;
