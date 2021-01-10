@@ -12,12 +12,10 @@ const getSettingSC = require("../../settings.js");
 const handlerResponse = require("./hanlderResponse");
 const getSettingProfile = require("../../settings.js");
 
-
 const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
 const requesterSC = new RemoteRequester(remoteApiUrlSC);
 const apiClientSC = new ApiClient(requesterSC);
-
-
+const BigNumber = require('bignumber.js');
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
@@ -331,7 +329,7 @@ router.get("/transactions", async (req, res) => {
       let booker = (await apiClient.getUser(owner_id.get_user_id, handlerResponse.handlerResponse)).message;
       let owner = ( await apiClient.getUser(booker_id.get_user_id, handlerResponse.handlerResponse)).message;
 
-      infoTransactions["name_posting"] = get_name_posting.name;
+      infoTransactions["name_posting"] = get_name_posting;
       infoTransactions["first_name_booker"] = booker.first_name;
       infoTransactions["last_name_booker"] = booker.last_name;
       infoTransactions["alias_booker"] = booker.alias;
@@ -340,7 +338,8 @@ router.get("/transactions", async (req, res) => {
       infoTransactions["last_name_owner"] = owner.last_name;
       infoTransactions["alias_owner"] = owner.alias;
 
-
+      const ETHER_IN_ETHER = BigNumber(10).pow(18);
+      infoTransactions["payment"]  = BigNumber(infoTransactions["payment"] ).dividedBy(ETHER_IN_ETHER).toFixed();
     }));
 
 
