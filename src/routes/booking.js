@@ -318,15 +318,30 @@ router.get("/myBookings", async (req, res) => {
 router.get("/transactions", async (req, res) => {
   try {
     if (!validToken.validToken(req, res)) return;
-    const transactions = await apiClientSC.transactions({}, handlerResponse.handlerResponse)
+    const transactionsResponse = await apiClientSC.transactions({}, handlerResponse.handlerResponse)
+    let transactions = transactionsResponse.message.transactions;
+
+    await Promise.all(transactions.map(async infoTransactions => {
+
+      const owner_id = (await dao.execSql("get_user_id", [infoTransactions.creator_id_booker]))[0];
+      const booker_id = (await dao.execSql("get_user_id", [infoTransactions.creator_id_booker]))[0];
+      const { get_name_posting } = (await dao.execSql("get_name_posting", [infoTransactions.transaction_hash_room]))[0];
 
 
-    // await Promise.all(myOffers.map(async infoBooking => {
-    //   let { message } = await apiClient.getUser(infoBooking.booker, handlerResponse.handlerResponse);
-    //   infoBooking["first_name_booker"] = message.first_name;
-    //   infoBooking["last_name_booker"] = message.last_name;
-    //   infoBooking["alias_booker"] = message.alias;
-    // }));
+      let booker = (await apiClient.getUser(owner_id.get_user_id, handlerResponse.handlerResponse)).message;
+      let owner = ( await apiClient.getUser(booker_id.get_user_id, handlerResponse.handlerResponse)).message;
+
+      infoTransactions["name_posting"] = get_name_posting.name;
+      infoTransactions["first_name_booker"] = booker.first_name;
+      infoTransactions["last_name_booker"] = booker.last_name;
+      infoTransactions["alias_booker"] = booker.alias;
+
+      infoTransactions["first_name_owner"] = owner.first_name;
+      infoTransactions["last_name_owner"] = owner.last_name;
+      infoTransactions["alias_owner"] = owner.alias;
+
+
+    }));
 
 
     res.status(200).send(transactions);
