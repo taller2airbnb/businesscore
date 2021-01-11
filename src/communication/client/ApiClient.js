@@ -17,6 +17,7 @@ const AcceptBookingEndpoint = require('../endpoints/AcceptBookingEndpoint');
 const RejectBookingEndpoint = require('../endpoints/RejectBookingEndpoint');
 const ChangePriceRoomEndpoint = require('../endpoints/ChangePriceRoomEndpoint');
 const TransactionsEndpoint = require('../endpoints/TransactionsEndpoint');
+const GetWalletEndpoint = require('../endpoints/GetWalletEndpoint');
 
 'use strict';
 
@@ -186,6 +187,14 @@ module.exports = class ApiClient {
             endpoint: new TransactionsEndpoint(),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: data
+        });
+    }
+
+    getWallet(creator_id, onResponse) {
+        return this._requester.call({
+            endpoint: new GetWalletEndpoint(creator_id),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: creator_id
         });
     }
 
