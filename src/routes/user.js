@@ -84,19 +84,20 @@ router.put("/user", (req, res, next) => {
  *       500:
  *         description: Server error
  */
-router.post("/login", (req, res, next) => {
-  futureResponse = apiClient.login(req.body, handlerResponse.handlerResponse);
-  futureResponse.then((result) => {
+router.post("/login", async (req, res, next) => {
 
-    if (result["status"] != 200) {
-      res.status(result["status"]).send(result);
+  try {
+    loginResponse = await apiClient.login(req.body, handlerResponse.handlerResponse);
+
+    if (loginResponse["status"] != 200) {
+      res.status(loginResponse["status"]).send(loginResponse);
       return;
     }
-    resultJson = result["message"];
+
+    resultJson = loginResponse["message"];
     var username = resultJson.email;
     var profile = resultJson.profile;
     var id = resultJson.id;
-
 
     var tokenData = {
       username: username,
@@ -107,9 +108,26 @@ router.post("/login", (req, res, next) => {
     var token = jwt.sign(tokenData, 'Secret Password', {
       expiresIn: 60 * 60 * 24 // expires in 24 hours
     })
-    result["token"] = token;
-    res.status(result["status"]).send(result);
-  });
+
+
+    loginResponse["token"] = token;
+
+    const { get_creator_id } = (await dao.execSql("get_creator_id", [id]))[0];
+    const messageWallet = await apiClientSC.getWallet(get_creator_id, handlerResponse.handlerResponse);
+
+    if (messageWallet["status"] != 200) {
+      res.status(messageWallet["status"]).send(messageWallet);
+      return;
+    }
+
+    loginResponse.message["wallet"] = messageWallet.message.wallet;
+    res.status(loginResponse["status"]).send(loginResponse);
+
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "SmartContract get wallet address: " + error, status: 500, error: true });
+  };
 });
 
 
