@@ -270,10 +270,15 @@ router.put("/user/:user_mail/password/", (req, res, next) => {
  */
 router.get("/user/:idUser", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-  futureResponse = apiClient.getUser(req.params.idUser, handlerResponse.handlerResponse);
-  futureResponse.then((result) => {
-    res.status(result["status"]).send(result);
-  });
+  userResponse = await apiClient.getUser(req.params.idUser, handlerResponse.handlerResponse);
+  const { get_creator_id } = (await dao.execSql("get_creator_id", [req.params.idUser]))[0];
+  const messageWallet = await apiClientSC.getWallet(get_creator_id, handlerResponse.handlerResponse);
+  if (messageWallet["status"] != 200) {
+    res.status(messageWallet["status"]).send(messageWallet);
+    return;
+  }
+  userResponse.message["wallet"] = messageWallet.message.wallet;
+  res.status(userResponse["status"]).send(userResponse);
 });
 
 /**
