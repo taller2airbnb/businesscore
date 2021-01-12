@@ -200,3 +200,16 @@
  *       content:
  *         type: string
  */
+
+  /**
+ * @swagger
+ * definitions:
+ *   CommentAdd:
+ *     properties:
+ *       idUser:
+ *         type: number
+ *       content:
+ *         type: string
+ *       linkedComment:
+ *         type: number
+ */

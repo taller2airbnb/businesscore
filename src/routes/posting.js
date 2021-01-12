@@ -463,4 +463,91 @@ router.get("/posting/comment/:idPosting", async (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /posting/comment/{idPosting}:
+ *   delete:
+ *     tags:
+ *       - posting
+ *     description: delete comments
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: idPosting
+ *         in: path
+ *         description: idposting
+ *         required: true
+ *         type: number
+*       - name: idUser
+ *         in: body
+ *         description: idposting
+ *         required: true
+ *         type: number
+ *     responses:
+ *       200:
+ *         description: Successfully delete comments
+ *       500:
+ *         description: Server error
+ */
+router.delete("/posting/comment/:idPosting", async (req, res) => {
+  //if (!validToken.validToken(req, res)) return;
+  const future = dao.execSql("delete_comment", [req.param.idPosting ,req.body.idUser]);
+  future
+    .then((result) => {
+      res.status(200).send({ message: result, status: 200, error: false });
+    })
+    .catch((error) => {
+      res
+        .status(500)
+        .send({ message: "Data base: " + error, status: 500, error: true });
+    });
+});
+
+/**
+ * @swagger
+ * /posting/comment/{idPosting}:
+ *    post:
+ *     tags:
+ *       - posting
+ *     description: post comment
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: idPosting
+ *         in: path
+ *         description: idPosting
+ *         required: true
+ *         type: number
+ *       - name: name
+ *         description: New comment to posting
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/CommentAdd'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully insert comment
+ *       500:
+ *         description: Server error
+ */
+router.post("/posting/comment/:idPosting", async (req, res) => {
+  //if (!validToken.validToken(req, res)) return;
+  const future = dao.execSql("insert_comment", [req.param.idPosting ,req.body.idUser,
+  req.body.content, true, req.body.linkedComment]);
+
+  future
+    .then((result) => {
+      res.status(200).send({ message: result, status: 200, error: false });
+    })
+    .catch((error) => {
+      res
+        .status(500)
+        .send({ message: "Data base: " + error, status: 500, error: true });
+    });
+});
+
 module.exports = router;
