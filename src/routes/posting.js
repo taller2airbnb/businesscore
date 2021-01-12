@@ -251,6 +251,11 @@ router.delete("/posting/:idPosting", async (req, res) => {
  *         required: false
  *         type: string
  *         description: '{hotel condor}'
+ *       - name: max_number_guests
+ *         in: query
+ *         required: false
+ *         type: number
+ *         description: '2'
  *     responses:
  *          '200':
  *           description:  OK
@@ -264,6 +269,7 @@ router.get("/posting/search", async (req, res) => {
     req.query.endDate,
     req.query.feature,
     req.query.name,
+    req.query.max_number_guests
   ]);
   future
     .then((result) => {
@@ -404,6 +410,11 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
  *         required: false
  *         type: string
  *         description: '{hotel condor}'
+ *       - name: max_number_guests
+ *         in: query
+ *         required: false
+ *         type: number
+ *         description: '2'
  *     responses:
  *          '200':
  *           description:  OK
@@ -417,6 +428,7 @@ router.get("/posting/searchLiked", async (req, res) => {
     req.query.endDate,
     req.query.feature,
     req.query.name,
+    req.query.max_number_guests
   ]);
   future
     .then((result) => {
