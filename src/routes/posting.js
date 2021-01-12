@@ -429,4 +429,38 @@ router.get("/posting/searchLiked", async (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /posting/comment/{idPosting}:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get comment
+ *     parameters:
+ *       - name: idPosting
+ *         in: path
+ *         description: idposting
+ *         required: true
+ *         type: number
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/posting/comment/:idPosting", async (req, res) => {
+  //if (!validToken.validToken(req, res)) return;
+  const future = dao.execSql("get_comments", [req.params.idPosting]);
+
+  future
+    .then((result) => {
+      res.send({ message: result, status: 200, error: false });
+    })
+    .catch((error) => {
+      res
+        .status(500)
+        .send({ message: "Data base: " + error, status: 500, error: true });
+    });
+});
+
 module.exports = router;
