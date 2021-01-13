@@ -57,7 +57,11 @@
  *       city:
  *         type: string  
  *       max_number_guests:
- *         type: number  
+ *         type: number
+ *       latitude:
+ *         type: number
+ *       longitude:
+ *         type: number     
  */
 
  /**
@@ -85,6 +89,11 @@
  *         type: string  
  *       max_number_guests:
  *         type: number  
+ *       latitude:
+ *         type: number
+ *       longitude:
+ *         type: number  
+ 
  */
 
  
