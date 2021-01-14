@@ -445,4 +445,49 @@ router.get("/posting/searchLiked", async (req, res) => {
     });
 });
 
+
+/**
+ * @swagger
+ * /posting/nearbyHotels:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get nearby hotels
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: MyLatitude
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: MyLongitude
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: numberPostings
+ *         in: query
+ *         required: false
+ *         type: number
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/posting/nearbyHotels", async (req, res) => {
+  if (!validToken.validToken(req, res)) return
+  try {
+    if (!validToken.validToken(req, res)) return;
+    const postings = await dao.execSql("nearby_hotels", [
+      req.query.MyLatitude,
+      req.query.MyLongitude,
+      req.query.numberPostings
+    ]);
+
+    res.status(200).send({ message: postings, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
 module.exports = router;
