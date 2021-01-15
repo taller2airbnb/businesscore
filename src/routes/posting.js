@@ -475,11 +475,54 @@ router.get("/posting/searchLiked", async (req, res) => {
 router.get("/posting/nearbyHotels", async (req, res) => {
   if (!validToken.validToken(req, res)) return
   try {
-    if (!validToken.validToken(req, res)) return;
     const postings = await dao.execSql("nearby_hotels", [
       req.query.MyLatitude,
       req.query.MyLongitude,
       req.query.numberPostings
+    ]);
+
+    res.status(200).send({ message: postings, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
+
+/**
+ * @swagger
+ * /posting/hotelsInArea:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get hotels in specific area
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: latitude
+ *         in: query
+ *         required: true
+ *         type: number
+ *       - name: longitude
+ *         in: query
+ *         required: true
+ *         type: number
+ *       - name: radioArea
+ *         in: query
+ *         required: true
+ *         type: number
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/posting/hotelsInArea", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    const postings = await dao.execSql("hotels_in_area", [
+      req.query.latitude,
+      req.query.longitude,
+      req.query.radioArea
     ]);
 
     res.status(200).send({ message: postings, status: 200, error: false });
