@@ -469,7 +469,7 @@ router.get("/posting/comment/:idPosting", async (req, res) => {
  *   delete:
  *     tags:
  *       - posting
- *     description: delete comments
+ *     description: delete comment
  *     produces:
  *       - application/json
  *     security:
@@ -480,20 +480,22 @@ router.get("/posting/comment/:idPosting", async (req, res) => {
  *         description: idposting
  *         required: true
  *         type: number
-*       - name: idUser
+*       - name: idComment
  *         in: body
- *         description: idposting
+ *         description: idComment
  *         required: true
  *         type: number
+ *         schema:
+ *           $ref: '#/definitions/CommentDel'
  *     responses:
  *       200:
- *         description: Successfully delete comments
+ *         description: Successfully delete comment
  *       500:
  *         description: Server error
  */
 router.delete("/posting/comment/:idPosting", async (req, res) => {
   //if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("delete_comment", [req.param.idPosting ,req.body.idUser]);
+  const future = dao.execSql("delete_comment", [req.body.idComment, req.params.idPosting]);
   future
     .then((result) => {
       res.status(200).send({ message: result, status: 200, error: false });
@@ -501,7 +503,7 @@ router.delete("/posting/comment/:idPosting", async (req, res) => {
     .catch((error) => {
       res
         .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
+        .send({ message: "Imposible eliminar un comentario linkeado. Data base: " + error, status: 500, error: true });
     });
 });
 
@@ -536,7 +538,7 @@ router.delete("/posting/comment/:idPosting", async (req, res) => {
  */
 router.post("/posting/comment/:idPosting", async (req, res) => {
   //if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("insert_comment", [req.param.idPosting ,req.body.idUser,
+  const future = dao.execSql("insert_comment", [req.params.idPosting ,req.body.idUser,
   req.body.content, true, req.body.linkedComment]);
 
   future

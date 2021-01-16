@@ -213,3 +213,12 @@
  *       linkedComment:
  *         type: number
  */
+
+   /**
+ * @swagger
+ * definitions:
+ *   CommentDel:
+ *     properties:
+ *       idComment:
+ *         type: number
+ */
