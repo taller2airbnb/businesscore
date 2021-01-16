@@ -240,3 +240,14 @@
  *         type: string
  */
 
+ /**
+ * @swagger
+ * definitions:
+ *   PushNotification:
+ *     properties:
+ *       content:
+ *         type: string
+ */
+
+
+
