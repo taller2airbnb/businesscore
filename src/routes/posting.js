@@ -99,7 +99,9 @@ router.post("/posting", async (req, res) => {
       messageSmartContract.message.roomTransactionHash,
       req.body.country,
       req.body.city,
-      req.body.max_number_guests
+      req.body.max_number_guests,
+      req.body.latitude,
+      req.body.longitude
     ]);
 
     res.status(200).send({ message: infoDBCreateRoom[0], status: 200, error: false });
@@ -163,7 +165,9 @@ router.put("/posting/:idPosting", async (req, res) => {
     req.body.name,
     req.body.country,
     req.body.city,
-    req.body.max_number_guests
+    req.body.max_number_guests,
+    req.body.latitude,
+    req.body.longitude
   ]);
   future
     .then((result) => {
@@ -251,6 +255,11 @@ router.delete("/posting/:idPosting", async (req, res) => {
  *         required: false
  *         type: string
  *         description: '{hotel condor}'
+ *       - name: max_number_guests
+ *         in: query
+ *         required: false
+ *         type: number
+ *         description: '2'
  *     responses:
  *          '200':
  *           description:  OK
@@ -264,6 +273,7 @@ router.get("/posting/search", async (req, res) => {
     req.query.endDate,
     req.query.feature,
     req.query.name,
+    req.query.max_number_guests
   ]);
   future
     .then((result) => {
@@ -404,6 +414,11 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
  *         required: false
  *         type: string
  *         description: '{hotel condor}'
+ *       - name: max_number_guests
+ *         in: query
+ *         required: false
+ *         type: number
+ *         description: '2'
  *     responses:
  *          '200':
  *           description:  OK
@@ -417,6 +432,7 @@ router.get("/posting/searchLiked", async (req, res) => {
     req.query.endDate,
     req.query.feature,
     req.query.name,
+    req.query.max_number_guests
   ]);
   future
     .then((result) => {
@@ -480,7 +496,7 @@ router.get("/posting/comment/:idPosting", async (req, res) => {
  *         description: idposting
  *         required: true
  *         type: number
-*       - name: idComment
+ *       - name: idComment
  *         in: body
  *         description: idComment
  *         required: true
@@ -550,6 +566,89 @@ router.post("/posting/comment/:idPosting", async (req, res) => {
         .status(500)
         .send({ message: "Data base: " + error, status: 500, error: true });
     });
+});
+
+ /**
+ * @swagger
+ * /posting/nearbyHotels:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get nearby hotels
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: MyLatitude
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: MyLongitude
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: numberPostings
+ *         in: query
+ *         required: false
+ *         type: number
+ */
+router.get("/posting/nearbyHotels", async (req, res) => {
+  if (!validToken.validToken(req, res)) return
+  try {
+    const postings = await dao.execSql("nearby_hotels", [
+      req.query.MyLatitude,
+      req.query.MyLongitude,
+      req.query.numberPostings
+    ]);
+
+    res.status(200).send({ message: postings, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
+/**
+ * @swagger
+ * /posting/hotelsInArea:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get hotels in specific area
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: latitude
+ *         in: query
+ *         required: true
+ *         type: number
+ *       - name: longitude
+ *         in: query
+ *         required: true
+ *         type: number
+ *       - name: radioArea
+ *         in: query
+ *         required: true
+ *         type: number
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/posting/hotelsInArea", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    const postings = await dao.execSql("hotels_in_area", [
+      req.query.latitude,
+      req.query.longitude,
+      req.query.radioArea
+    ]);
+
+    res.status(200).send({ message: postings, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
 });
 
 module.exports = router;
