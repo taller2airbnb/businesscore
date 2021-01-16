@@ -553,19 +553,17 @@ router.delete("/posting/comment/:idPosting", async (req, res) => {
  *         description: Server error
  */
 router.post("/posting/comment/:idPosting", async (req, res) => {
-  //if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("insert_comment", [req.params.idPosting ,req.body.idUser,
-  req.body.content, true, req.body.linkedComment]);
+  try {
+    //if (!validToken.validToken(req, res)) return;
+    const comments = await dao.execSql("insert_comment", [req.params.idPosting ,req.body.idUser,
+    req.body.content, true, req.body.linkedComment]);
 
-  future
-    .then((result) => {
-      res.status(200).send({ message: result, status: 200, error: false });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-    });
+    res.status(200).send({ message: comments, status: 200, error: false });
+  } catch (error) {
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
 });
 
  /**
