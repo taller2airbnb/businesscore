@@ -465,7 +465,7 @@ router.get("/posting/searchLiked", async (req, res) => {
  *           description:  OK
  */
 router.get("/posting/comment/:idPosting", async (req, res) => {
-  //if (!validToken.validToken(req, res)) return;
+  if (!validToken.validToken(req, res)) return;
   const future = dao.execSql("get_comments", [req.params.idPosting]);
 
   future
@@ -510,7 +510,7 @@ router.get("/posting/comment/:idPosting", async (req, res) => {
  *         description: Server error
  */
 router.delete("/posting/comment/:idPosting", async (req, res) => {
-  //if (!validToken.validToken(req, res)) return;
+  if (!validToken.validToken(req, res)) return;
   const future = dao.execSql("delete_comment", [req.body.idComment, req.params.idPosting]);
   future
     .then((result) => {
@@ -554,8 +554,8 @@ router.delete("/posting/comment/:idPosting", async (req, res) => {
  */
 router.post("/posting/comment/:idPosting", async (req, res) => {
   try {
-    //if (!validToken.validToken(req, res)) return;
-    const comments = await dao.execSql("insert_comment", [req.params.idPosting ,req.body.idUser,
+    if (!validToken.validToken(req, res)) return;
+    const comments = await dao.execSql("insert_comments", [req.params.idPosting ,req.body.idUser,
     req.body.content, true, req.body.linkedComment]);
 
     res.status(200).send({ message: comments, status: 200, error: false });
