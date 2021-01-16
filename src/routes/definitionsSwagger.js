@@ -215,8 +215,6 @@
  * definitions:
  *   CommentAdd:
  *     properties:
- *       idUser:
- *         type: number
  *       content:
  *         type: string
  *       linkedComment:
