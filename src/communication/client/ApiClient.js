@@ -18,6 +18,8 @@ const RejectBookingEndpoint = require('../endpoints/RejectBookingEndpoint');
 const ChangePriceRoomEndpoint = require('../endpoints/ChangePriceRoomEndpoint');
 const TransactionsEndpoint = require('../endpoints/TransactionsEndpoint');
 const GetWalletEndpoint = require('../endpoints/GetWalletEndpoint');
+const PutPushTokenEndpoint = require('../endpoints/PutPushTokenEndpoint');
+
 
 'use strict';
 
@@ -195,6 +197,14 @@ module.exports = class ApiClient {
             endpoint: new GetWalletEndpoint(creator_id),
             onResponse: (response) => this._handleResponse(response, onResponse),
             data: creator_id
+        });
+    }
+
+    putPushToken(userId, data, onResponse) {
+        return this._requester.call({
+            endpoint: new PutPushTokenEndpoint(userId),
+            onResponse: (response) => this._handleResponse(response, onResponse),
+            data: data
         });
     }
 

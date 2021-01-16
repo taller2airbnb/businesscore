@@ -229,3 +229,14 @@
  *       idComment:
  *         type: number
  */
+
+
+ /**
+ * @swagger
+ * definitions:
+ *   ChangePushToken:
+ *     properties:
+ *       push_token:
+ *         type: string
+ */
+
