@@ -2,4 +2,3 @@ node_modules/
 coverage
 .vscode/
 .vscode/launch.json
-package-lock.json
