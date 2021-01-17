@@ -1,7 +1,7 @@
 const ErrorApiResponse = require("../generalResponses/ErrorApiResponse.js");
 ("use strict");
 
-module.exports = class InvalidPutPushToken extends ErrorApiResponse {
+module.exports = class InvalidSendNotification extends ErrorApiResponse {
   static defaultResponse() {
     return {
       token: "QpwL5tke4Pnpja7X4",
@@ -13,7 +13,7 @@ module.exports = class InvalidPutPushToken extends ErrorApiResponse {
   }
 
   static getMessage() {
-    return "Invalid change pushToken";
+    return "Invalid send notification";
   }
 
   static understandThis(status) {

@@ -245,7 +245,9 @@
  * definitions:
  *   PushNotification:
  *     properties:
- *       content:
+ *       body:
+ *         type: string
+ *       title:
  *         type: string
  */
 

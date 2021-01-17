@@ -2,7 +2,7 @@ const { Expo } = require("expo-server-sdk");
 
 const ApiClient = require("../../src/communication/client/ApiClient");
 const getSettingProfile = require("../../settings.js");
-const getSettingSC = require("../../settings.js");
+const getSettingNT = require("../../settings.js");
 const handlerResponse = require("./hanlderResponse");
 const RemoteRequester = require("../../src/communication/requester/RemoteRequester");
 const { Router } = require("express");
@@ -18,6 +18,13 @@ var jwt = require("jsonwebtoken");
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
 const requester = new RemoteRequester(remoteApiUrl);
 const apiClient = new ApiClient(requester);
+
+const remoteApiUrlNT = getSettingNT.getSettingNT("API_URL");
+const requesterNT = new RemoteRequester(remoteApiUrlNT);
+const apiClientNT = new ApiClient(requesterNT);
+
+
+
 
 let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
 
@@ -38,7 +45,7 @@ let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
  *         in: query
  *         required: true
  *       - name: body
- *         description: Update push token
+ *         description: Content notification
  *         in: body
  *         required: true
  *         schema:
@@ -60,22 +67,17 @@ router.post("/notification", async (req, res, next) => {
     );
 
     if (!Expo.isExpoPushToken(userResponse.message.push_token)) {
-      console.error(`Push token ${pushToken} is not a valid Expo push token`);
+      console.error(`Push token ${userResponse.message.push_token} is not a valid Expo push token`);
       throw "error valid PushToken";
     };
 
-    let messages = [];
+    let requestNotification = {}
+    requestNotification["to"] = userResponse.message.push_token;
+    requestNotification["title"] = req.body.title;
+    requestNotification["body"] = req.body.body;
 
-    // Construct a message (see https://docs.expo.io/push-notifications/sending-notifications/)
-    messages.push({
-      to: userResponse.message.push_token,
-      sound: "default",
-      body: req.body.content,
-      data: { withSome: "data" },
-    });
-
-    let chunks = expo.chunkPushNotifications(messages);
-    res.status(200).send({ message: chunks, status: 200, error: false });
+    let notificationReponse = await apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
+    res.status(200).send(notificationReponse);
   } catch (error) {
     res
       .status(500)
