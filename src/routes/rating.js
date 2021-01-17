@@ -6,7 +6,8 @@ router.options("*", cors());
 const dao = require("../db/index");
 var validToken = require("./tokenController.js");
 var decodeToken = require("./tokenController.js");
-const handlerResponse = require("./hanlderResponse");
+
+const { logger } = require("../config/logger.js");
 
 /**
  * @swagger
@@ -45,7 +46,9 @@ router.post("/ratingPosting/:idPosting", async (req, res) => {
     const infoRating = await dao.execSql("rating_posting", [tokenDecode.payload.id, req.params.idPosting, req.body.score, req.body.content]);
 
     res.status(200).send({ message: infoRating[0], status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: infoRating[0] });
   } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
       .send({ message: "Posting rating failed: " + error, status: 500, error: true });
@@ -90,7 +93,9 @@ router.post("/ratingBooker/:idUser", async (req, res) => {
     const infoRating = await dao.execSql("rating_booker", [tokenDecode.payload.id, req.params.idUser, req.body.score, req.body.content]);
 
     res.status(200).send({ message: infoRating[0], status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: infoRating[0] });
   } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
       .send({ message: "User rating failed: " + error, status: 500, error: true });
