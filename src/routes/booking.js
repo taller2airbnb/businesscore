@@ -92,7 +92,7 @@ router.post("/intentBooking", async (req, res) => {
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: infoDBCreateBooking[0]});
     res.status(200).send({ message: infoDBCreateBooking[0], status: 200, error: false });
   } catch (error) {
-    logger.log({service: req.method + ": "  + req.originalUrl , level: 'error', message: error});
+    logger.log({service: req.method + ": "  + req.originalUrl , level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "SmartContract create booking failed: " + error, status: 500, error: true });
@@ -129,7 +129,7 @@ router.get("/myOffers", async (req, res) => {
     res.status(200).send({ message: myOffers, status: 200, error: false });
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: myOffers});
   } catch (error) {
-    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error});
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "Get my offers failed: " + error, status: 500, error: true });
@@ -174,7 +174,7 @@ router.post("/acceptBooking", async (req, res) => {
     res.status(200).send({ message: acceptBooking.message, status: 200, error: false });
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: acceptBooking.message});
   } catch (error) {
-    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error});
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "SmartContract accept booking failed: " + error, status: 500, error: true });
@@ -220,7 +220,7 @@ router.post("/rejectBooking", async (req, res) => {
     res.status(200).send({ message: rejectBooking.message, status: 200, error: false });
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: rejectBooking.message});
   } catch (error) {
-    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error});
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "SmartContract accept booking failed: " + error, status: 500, error: true });
@@ -256,7 +256,7 @@ router.get("/myBookingIntents", async (req, res) => {
     res.status(200).send({ message: myBookings, status: 200, error: false });
     logger.log({service: req.method + ": "  + req.originalUrl,  level: 'info', message: myBookings});
   } catch (error) {
-    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error});
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "Get my offers failed: " + error, status: 500, error: true });
@@ -293,7 +293,7 @@ router.get("/myBookings", async (req, res) => {
     res.status(200).send({ message: myBookings, status: 200, error: false });
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: myBookings});
   } catch (error) {
-    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error});
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "Get my offers failed: " + error, status: 500, error: true });
@@ -346,7 +346,7 @@ router.get("/transactions", async (req, res) => {
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: transactions});
     res.status(200).send(transactions);
   } catch (error) {
-    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error});
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "Get all transactions failed: " + error, status: 500, error: true });
