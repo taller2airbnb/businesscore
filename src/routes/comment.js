@@ -30,21 +30,15 @@ const { logger } = require("../config/logger.js");
  */
 router.get("/comment/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("get_comments", [req.params.idPosting]);
-
-  future
-    .then((result) => {
-      res.send({ message: result, status: 200, error: false });
-      
-      logger.log({level: 'info', message: result});
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-      
-      logger.log({level: 'error', message: error});
-    });
+  try {
+    const response = await dao.execSql("get_comments", [req.params.idPosting]);
+    res.send({ message: response[0], status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response[0]});
+  } catch (error) {
+    res.status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+    logger.log({service: req.method + ": " + req.originalUrl, level: 'error', message: error });
+  };
 });
 
 /**
