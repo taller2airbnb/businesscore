@@ -20,3 +20,10 @@ module.exports.getSettingSC = function getSettingSC(variableName) {
     return process.env[variableFullName];
 }
 
+module.exports.getSettingNT = function getSettingSC(variableName) {
+    const variablePrefix = 'NOTIFICATION_';
+    const variableFullName = variablePrefix + variableName;
+    
+    return process.env[variableFullName];
+}
+
