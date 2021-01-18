@@ -10,7 +10,9 @@ router.options("*", cors());
 var validToken = require("./tokenController.js");
 
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
+const apiKeyProfileServer = getSettingProfile.getSettingProfile("API_KEY");
 const requester = new RemoteRequester(remoteApiUrl);
+requester.setApiKey(apiKeyProfileServer);
 const apiClient = new ApiClient(requester);
 
 /**

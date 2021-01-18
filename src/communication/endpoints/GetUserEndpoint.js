@@ -20,7 +20,7 @@ module.exports = class GetUserEndpoint extends Endpoint {
   }
 
   needsAuthorization() {
-    return false;
+    return true;
   }
 
   ownResponses() {

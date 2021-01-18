@@ -8,6 +8,10 @@ module.exports = class RemoteRequester extends Requester {
         this._baseUrl = url;
     }
 
+    setApiKey(apikey){
+        this._apiKey = apikey;
+    }
+
     call({endpoint, onResponse, data = undefined}) {
         const request = this._buildRequest(endpoint, data);
         let url = endpoint.url();
@@ -66,6 +70,9 @@ module.exports = class RemoteRequester extends Requester {
         let headers = {};
         if (endpoint.contentType() && endpoint.contentType() !== "multipart/form-data") {
             headers['Content-Type'] = endpoint.contentType();
+            if (endpoint.needsAuthorization()){
+                headers['Token'] = this._apiKey;
+            }
         }
 
         return headers;

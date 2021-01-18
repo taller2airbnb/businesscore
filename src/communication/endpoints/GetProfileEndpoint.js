@@ -16,6 +16,6 @@ module.exports = class ProfileEndpoint extends Endpoint {
     }
 
     needsAuthorization() {
-        return false;
+        return true;
     }
 }

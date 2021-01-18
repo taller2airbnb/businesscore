@@ -14,7 +14,7 @@ module.exports = class RegisterAdminEndpoint extends Endpoint {
   }
 
   needsAuthorization() {
-    return false;
+    return true;
   }
 
   ownResponses() {
