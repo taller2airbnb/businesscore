@@ -23,6 +23,6 @@ module.exports = class ChangePasswordEndpoint extends Endpoint {
     }
 
     needsAuthorization() {
-        return false;
+        return true;
     }
 }

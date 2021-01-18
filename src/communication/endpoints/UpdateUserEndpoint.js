@@ -16,6 +16,6 @@ module.exports = class UpdateUserEndpoint extends Endpoint {
     }
 
     needsAuthorization() {
-        return false;
+        return true;
     }
 }

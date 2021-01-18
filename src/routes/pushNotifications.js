@@ -16,8 +16,11 @@ var decodeToken = require("./tokenController.js");
 var jwt = require("jsonwebtoken");
 
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
+const apiKeyProfileServer = getSettingProfile.getSettingProfile("API_KEY");
 const requester = new RemoteRequester(remoteApiUrl);
+requester.setApiKey(apiKeyProfileServer);
 const apiClient = new ApiClient(requester);
+
 
 const remoteApiUrlNT = getSettingNT.getSettingNT("API_URL");
 const requesterNT = new RemoteRequester(remoteApiUrlNT);
