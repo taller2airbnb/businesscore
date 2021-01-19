@@ -12,21 +12,15 @@ var cors = require("cors");
 router.use(cors());
 router.options("*", cors());
 var validToken = require("./tokenController.js");
-var decodeToken = require("./tokenController.js");
-var jwt = require("jsonwebtoken");
-
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
+const apiKeyProfileServer = getSettingProfile.getSettingProfile("API_KEY");
 const requester = new RemoteRequester(remoteApiUrl);
+requester.setApiKey(apiKeyProfileServer);
 const apiClient = new ApiClient(requester);
-
 const remoteApiUrlNT = getSettingNT.getSettingNT("API_URL");
 const requesterNT = new RemoteRequester(remoteApiUrlNT);
-const apiClientNT = new ApiClient(requesterNT);
-
-
-
-
-let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+const apiClientNT =  new ApiClient(requesterNT);
+const { logger } = require("../config/logger.js");
 
 /**
  * @swagger
@@ -59,7 +53,6 @@ let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
  */
 router.post("/notification", async (req, res, next) => {
   if (!validToken.validToken(req, res)) return;
-//ExponentPushToken[Vn3OG1PFhy8uISd4vLBRD9]
   try {
     let userResponse = await apiClient.getUser(
       req.query.idUser,
@@ -78,7 +71,9 @@ router.post("/notification", async (req, res, next) => {
 
     let notificationReponse = await apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
     res.status(200).send(notificationReponse);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: notificationReponse });
   } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
       .send({ message: "Error: " + error, status: 500, error: true });
@@ -123,7 +118,9 @@ router.put("/pushToken", async (req, res, next) => {
     );
 
     res.status(200).send(pushToken);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: pushToken });
   } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
       .send({ message: "Error: " + error, status: 500, error: true });

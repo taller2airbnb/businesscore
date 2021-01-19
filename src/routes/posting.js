@@ -14,6 +14,8 @@ const handlerResponse = require("./hanlderResponse");
 const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
 const requesterSC = new RemoteRequester(remoteApiUrlSC);
 const apiClientSC = new ApiClient(requesterSC);
+const { logger } = require("../config/logger.js");
+
 
 /**
  * @swagger
@@ -35,16 +37,16 @@ const apiClientSC = new ApiClient(requesterSC);
  */
 router.get("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("get_posting", [req.query.idPosting]);
-  future
-    .then((result) => {
-      res.status(200).send({ message: result, status: 200, error: false });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-    });
+  try {
+    const response = await dao.execSql("get_posting", [req.query.idPosting]);
+    res.status(200).send({ message: response[0], status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response[0]});
+  } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
 });
 
 /**
@@ -105,7 +107,9 @@ router.post("/posting", async (req, res) => {
     ]);
 
     res.status(200).send({ message: infoDBCreateRoom[0], status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: infoDBCreateRoom[0]});
   } catch (error) {
+    logger.log({service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
       .send({ message: "SmartContract create room failed: " + error, status: 500, error: true });
@@ -146,38 +150,37 @@ router.post("/posting", async (req, res) => {
 router.put("/posting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
+  try {
+    const { is_owner } = (await dao.execSql("is_owner", [req.params.idPosting, tokenDecode.payload.id]))[0];
+    if (!is_owner) {
+      res.status(400).send({ message: "You are not the owner of the room", status: 400, error: true });
+      return;
+    }
 
-  const { is_owner } = (await dao.execSql("is_owner", [req.params.idPosting, tokenDecode.payload.id]))[0];
-  if (!is_owner) {
-    res.status(400).send({ message: "You are not the owner of the room", status: 400, error: true });
-    return;
-  }
-
-  const future = dao.execSql("update_posting", [
-    req.params.idPosting,
-    req.body.price_day,
-    req.body.start_date,
-    req.body.end_date,
-    req.body.state,
-    //TODO: req.body.features,
-    req.body.public,
-    req.body.content,
-    req.body.name,
-    req.body.country,
-    req.body.city,
-    req.body.max_number_guests,
-    req.body.latitude,
-    req.body.longitude
-  ]);
-  future
-    .then((result) => {
-      res.status(200).send({ message: result, status: 200, error: false });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-    });
+    const responseUpdate = await dao.execSql("update_posting", [
+      req.params.idPosting,
+      req.body.price_day,
+      req.body.start_date,
+      req.body.end_date,
+      req.body.state,
+      //TODO: req.body.features,
+      req.body.public,
+      req.body.content,
+      req.body.name,
+      req.body.country,
+      req.body.city,
+      req.body.max_number_guests,
+      req.body.latitude,
+      req.body.longitude
+    ]);
+    res.status(200).send({ message: responseUpdate[0], status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: responseUpdate[0] });
+  } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
 });
 
 
@@ -249,16 +252,16 @@ router.put("/posting/blocked/:idPosting", async (req, res) => {
  */
 router.delete("/posting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("delete_posting", [req.params.idPosting]);
-  future
-    .then((result) => {
-      res.status(200).send({ message: result, status: 200, error: false });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-    });
+  try {
+    const responseDelete = await dao.execSql("delete_posting", [req.params.idPosting]);
+    res.status(200).send({ message: responseDelete, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: responseDelete });
+  } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
 });
 
 /**
@@ -309,25 +312,25 @@ router.delete("/posting/:idPosting", async (req, res) => {
  *           description:  OK
  */
 router.get("/posting/search", async (req, res) => {
-  // if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("search_posting", [
-    req.query.priceMin,
-    req.query.priceMax,
-    req.query.startDate,
-    req.query.endDate,
-    req.query.feature,
-    req.query.name,
-    req.query.max_number_guests
-  ]);
-  future
-    .then((result) => {
-      res.send({ message: result, status: 200, error: false });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-    });
+  if (!validToken.validToken(req, res)) return;
+  try {
+    const response = await dao.execSql("search_posting", [
+      req.query.priceMin,
+      req.query.priceMax,
+      req.query.startDate,
+      req.query.endDate,
+      req.query.feature,
+      req.query.name,
+      req.query.max_number_guests
+    ]);
+    res.send({ message: response, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response });
+  } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
 });
 
 /**
@@ -344,17 +347,17 @@ router.get("/posting/search", async (req, res) => {
  *           description:  OK
  */
 router.get("/feature", async (req, res) => {
-  //if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("get_feature");
-  future
-    .then((result) => {
-      res.send({ message: result, status: 200, error: false });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-    });
+  if (!validToken.validToken(req, res)) return;
+  try {
+    const response = await dao.execSql("get_feature");
+    res.send({ message: response, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response });
+  } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
 });
 
 
@@ -413,7 +416,9 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
       req.params.idPosting, req.body.priceRoom, null, null, null, null, null, null, null, null, null]);
       
     res.status(200).send(messagePriceRoomChanged);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: messagePriceRoomChanged });
   } catch (error) {
+    logger.log({service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
       .send({ message: "Data base: " + error, status: 500, error: true });
@@ -468,25 +473,25 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
  *           description:  OK
  */
 router.get("/posting/searchLiked", async (req, res) => {
-  // if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("search_posting_liked", [
-    req.query.priceMin,
-    req.query.priceMax,
-    req.query.startDate,
-    req.query.endDate,
-    req.query.feature,
-    req.query.name,
-    req.query.max_number_guests
-  ]);
-  future
-    .then((result) => {
-      res.send({ message: result, status: 200, error: false });
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-    });
+  if (!validToken.validToken(req, res)) return;
+  try {
+    const response = await dao.execSql("search_posting_liked", [
+      req.query.priceMin,
+      req.query.priceMax,
+      req.query.startDate,
+      req.query.endDate,
+      req.query.feature,
+      req.query.name,
+      req.query.max_number_guests
+    ]);
+    res.send({ message: response, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response });
+  } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
 });
 
  /**
@@ -522,7 +527,9 @@ router.get("/posting/nearbyHotels", async (req, res) => {
     ]);
 
     res.status(200).send({ message: postings, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: postings });
   } catch (error) {
+    logger.log({service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
       .send({ message: "Data base: " + error, status: 500, error: true });
@@ -565,7 +572,9 @@ router.get("/posting/hotelsInArea", async (req, res) => {
     ]);
 
     res.status(200).send({ message: postings, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: postings });
   } catch (error) {
+    logger.log({service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
       .send({ message: "Data base: " + error, status: 500, error: true });

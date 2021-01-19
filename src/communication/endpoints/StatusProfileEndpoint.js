@@ -16,6 +16,6 @@ module.exports = class StatusProfileEndpoint extends Endpoint {
   }
 
   needsAuthorization() {
-    return false;
+    return true;
   }
 };

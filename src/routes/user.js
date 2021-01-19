@@ -14,7 +14,9 @@ var decodeToken = require('./tokenController.js');
 var jwt = require('jsonwebtoken');
 
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
+const apiKeyProfileServer = getSettingProfile.getSettingProfile("API_KEY");
 const requester = new RemoteRequester(remoteApiUrl);
+requester.setApiKey(apiKeyProfileServer);
 const apiClient = new ApiClient(requester);
 
 const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
@@ -51,6 +53,7 @@ router.put("/user", (req, res, next) => {
   futureResponse = apiClient.updateUser(req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: result});
   });
 });
 
@@ -122,11 +125,13 @@ router.post("/login", async (req, res, next) => {
 
     loginResponse.message["wallet"] = messageWallet.message.wallet;
     res.status(loginResponse["status"]).send(loginResponse);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: loginResponse});
 
   } catch (error) {
     res
       .status(500)
       .send({ message: "SmartContract get wallet address: " + error, status: 500, error: true });
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
   };
 });
 
@@ -173,6 +178,7 @@ router.post("/register", async (req, res, next) => {
 
     if (resultProfileServer["status"] != 200) {
       res.status(resultProfileServer["status"]).send(resultProfileServer);
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: resultProfileServer });
       return;
     }
 
@@ -181,6 +187,7 @@ router.post("/register", async (req, res, next) => {
     //Se crea la wallet
     futureResponseSC = apiClientSC.createIdentity({}, handlerResponse.handlerResponse).catch((error) => {
       res.send({ message: "SmartContract create identity failed: " + error, status: 500, error: true });
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
       return;
     });
 
@@ -202,7 +209,7 @@ router.post("/register", async (req, res, next) => {
       });
 
     });
-
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: resultProfileServer});
   });
 
 
@@ -241,6 +248,7 @@ router.put("/user/:user_mail/password/", (req, res, next) => {
   futureResponse = apiClient.changePassword(req.params.user_mail, req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: result});
   });
 });
 
@@ -275,10 +283,12 @@ router.get("/user/:idUser", async (req, res) => {
   const messageWallet = await apiClientSC.getWallet(get_creator_id, handlerResponse.handlerResponse);
   if (messageWallet["status"] != 200) {
     res.status(messageWallet["status"]).send(messageWallet);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: messageWallet });
     return;
   }
   userResponse.message["wallet"] = messageWallet.message.wallet;
   res.status(userResponse["status"]).send(userResponse);
+  logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: userResponse});
 });
 
 /**
@@ -303,6 +313,7 @@ router.get("/user", async (req, res) => {
   futureResponse = apiClient.getUsers(handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: result});
   });
 });
 
@@ -333,6 +344,7 @@ router.post("/recover_token/:userMail", (req, res, next) => {
   futureResponse = apiClient.recoverToken(req.params.userMail, req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: result});
   });
 });
 
@@ -370,11 +382,8 @@ router.put("/user/:user_id/blocked_status/", (req, res, next) => {
   futureResponse = apiClient.blockedStatus(req.params.user_id, req.body, handlerResponse.handlerResponse);
   futureResponse.then((result) => {
     res.status(result["status"]).send(result);
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: result});
   });
 });
-
-
-
-
 
 module.exports = router;
