@@ -180,6 +180,50 @@ router.put("/posting/:idPosting", async (req, res) => {
     });
 });
 
+
+/**
+ * @swagger
+ * /posting/blocked/{idPosting}:
+ *   put:
+ *     tags:
+ *       - posting
+ *     description: New posting (YYYY-MM-DD HH24:MI:SS)
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: idPosting
+ *         in: path
+ *         description: idposting
+ *         required: true
+ *         type: number
+ *       - name: body
+ *         description: Update Posting
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/PostingPut'
+ *     responses:
+ *       200:
+ *         description: Successfully update posting
+ *       500:
+ *         description: Server error
+ */
+router.put("/posting/blocked/:idPosting", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  //TODO: validar si es administrador
+  try {
+    const response = await dao.execSql("block_posting", [
+      req.params.idPosting,
+      req.body.blocked
+    ]);
+    res.status(200).send({ message: response, status: 200, error: false });
+  } catch (error) {
+    res.status(500).send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
 /**
  * @swagger
  * /posting/{idPosting}:
