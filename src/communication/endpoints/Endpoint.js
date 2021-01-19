@@ -38,6 +38,6 @@ module.exports = class Endpoint {
   }
 
   needsAuthorization() {
-    throw new Error("You have to implement the method");
+    return false;
   }
 }

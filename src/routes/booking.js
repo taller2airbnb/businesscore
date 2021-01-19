@@ -16,8 +16,11 @@ const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
 const requesterSC = new RemoteRequester(remoteApiUrlSC);
 const apiClientSC = new ApiClient(requesterSC);
 const BigNumber = require('bignumber.js');
+
 const remoteApiUrl = getSettingProfile.getSettingProfile("API_URL");
+const apiKeyProfileServer = getSettingProfile.getSettingProfile("API_KEY");
 const requester = new RemoteRequester(remoteApiUrl);
+requester.setApiKey(apiKeyProfileServer);
 const apiClient = new ApiClient(requester);
 const { logger } = require("../config/logger.js");
 const { re } = require("mathjs");

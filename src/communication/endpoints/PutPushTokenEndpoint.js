@@ -21,7 +21,7 @@ module.exports = class PutPushTokenEndpoint extends (
   }
 
   needsAuthorization() {
-    return false;
+    return true;
   }
 
   ownResponses() {
