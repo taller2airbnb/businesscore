@@ -39,8 +39,42 @@ router.get("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   try {
     const response = await dao.execSql("get_posting", [req.query.idPosting]);
-    res.status(200).send({ message: response[0], status: 200, error: false });
-    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response[0]});
+    res.status(200).send({ message: response, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response});
+  } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
+
+
+/**
+ * @swagger
+ * /posting/admin:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get posting
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: idPosting
+ *         in: query
+ *         required: false
+ *         type: number
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/posting/admin", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  try {
+    const response = await dao.execSql("get_posting_admin", [req.query.idPosting]);
+    res.status(200).send({ message: response, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response});
   } catch (error) {
     logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
@@ -186,7 +220,7 @@ router.put("/posting/:idPosting", async (req, res) => {
 
 /**
  * @swagger
- * /posting/blocked/{idPosting}:
+ * /posting/blocked_status/{idPosting}:
  *   put:
  *     tags:
  *       - posting
@@ -202,27 +236,29 @@ router.put("/posting/:idPosting", async (req, res) => {
  *         required: true
  *         type: number
  *       - name: body
- *         description: Update Posting
+ *         description: Update status blocked
  *         in: body
  *         required: true
  *         schema:
- *           $ref: '#/definitions/PostingPut'
+ *           $ref: '#/definitions/BlockedStatusPosting'
  *     responses:
  *       200:
- *         description: Successfully update posting
+ *         description: Successfully Update status blocked
  *       500:
  *         description: Server error
  */
-router.put("/posting/blocked/:idPosting", async (req, res) => {
+router.put("/posting/blocked_status/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   //TODO: validar si es administrador
   try {
-    const response = await dao.execSql("block_posting", [
+    const response = await dao.execSql("update_blocked_status_posting", [
       req.params.idPosting,
       req.body.blocked
     ]);
     res.status(200).send({ message: response, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response[0] });
   } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res.status(500).send({ message: "Data base: " + error, status: 500, error: true });
   };
 });

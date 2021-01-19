@@ -252,4 +252,16 @@
  */
 
 
+  /**
+ * @swagger
+ * definitions:
+ *   BlockedStatusPosting:
+ *     properties:
+ *       blocked:
+ *         type: boolean
+ */
+
+
+
+
 
