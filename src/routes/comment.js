@@ -6,7 +6,6 @@ router.options("*", cors());
 const dao = require("../db/index");
 var validToken = require("./tokenController.js");
 var decodeToken = require("./tokenController.js");
-const handlerResponse = require("./hanlderResponse");
 const { logger } = require("../config/logger.js");
 
 /**
@@ -30,21 +29,15 @@ const { logger } = require("../config/logger.js");
  */
 router.get("/comment/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-  const future = dao.execSql("get_comments", [req.params.idPosting]);
-
-  future
-    .then((result) => {
-      res.send({ message: result, status: 200, error: false });
-      
-      logger.log({level: 'info', message: result});
-    })
-    .catch((error) => {
-      res
-        .status(500)
-        .send({ message: "Data base: " + error, status: 500, error: true });
-      
-      logger.log({level: 'error', message: error});
-    });
+  try {
+    const response = await dao.execSql("get_comments", [req.params.idPosting]);
+    res.send({ message: response, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response});
+  } catch (error) {
+    res.status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+    logger.log({service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+  };
 });
 
 /**
@@ -78,12 +71,11 @@ router.delete("/comment/:idComment", async (req, res) => {
     const comments = await dao.execSql("delete_comment", [req.params.idComment, tokenDecode.payload.id]);
 
     res.status(200).send({ message: comments, status: 200, error: false });
-    logger.log({level: 'info', message: result});
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: comments});
   } catch (error) {
-  res
-      .status(500)
+    res.status(500)
       .send({ message: "Imposible eliminar un comentario linkeado. Data base: " + error, status: 500, error: true });
-    logger.log({level: 'error', message: error});
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
   }
 
 });
@@ -126,12 +118,12 @@ router.post("/comment/:idPosting", async (req, res) => {
     req.body.content, true, req.body.linkedComment]);
 
     res.status(200).send({ message: comments, status: 200, error: false });
-    logger.log({level: 'info', message: result});
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: comments});
   } catch (error) {
     res
       .status(500)
       .send({ message: "Data base: " + error, status: 500, error: true });
-    logger.log({level: 'error', message: error});
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
   };
 });
 

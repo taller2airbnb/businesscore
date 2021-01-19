@@ -22,6 +22,8 @@ const apiKeyProfileServer = getSettingProfile.getSettingProfile("API_KEY");
 const requester = new RemoteRequester(remoteApiUrl);
 requester.setApiKey(apiKeyProfileServer);
 const apiClient = new ApiClient(requester);
+const { logger } = require("../config/logger.js");
+const { re } = require("mathjs");
 
 
 /**
@@ -53,7 +55,6 @@ router.post("/intentBooking", async (req, res) => {
   let tokenDecode = decodeToken.decodeToken(req);
   try {
 
-
     //TODO: validar contra que el profile server que es un perfil del tipo que puede hacer reservas
     const { booking_date_range_available } = (await dao.execSql("booking_date_range_available", [req.body.initialDate, req.body.lastDate, req.body.idPosting, tokenDecode.payload.id]))[0];
     if (!booking_date_range_available) {
@@ -63,8 +64,6 @@ router.post("/intentBooking", async (req, res) => {
 
     const { get_creator_id } = (await dao.execSql("get_creator_id", [tokenDecode.payload.id]))[0];
     const { get_transaction_hash_room } = (await dao.execSql("get_transaction_hash_room", [req.body.idPosting]))[0];
-
-
     const [initialYear, initialMonth, initialDay] = req.body.initialDate.split('-');
     const [lastYear, lastMonth, lastDay] = req.body.lastDate.split('-');
 
@@ -79,12 +78,10 @@ router.post("/intentBooking", async (req, res) => {
     body["lastYear"] = parseInt(lastYear);
 
     const messageBooking = await apiClientSC.intentBooking(body, handlerResponse.handlerResponse)
-
     if (messageBooking.error) {
       res.status(messageBooking.status).send(messageBooking);
       return;
     }
-
 
     const infoDBCreateBooking = await dao.execSql("create_booking", [
       "INTENT_BOOKING",
@@ -95,8 +92,10 @@ router.post("/intentBooking", async (req, res) => {
       req.body.idPosting
     ]);
 
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: infoDBCreateBooking[0]});
     res.status(200).send({ message: infoDBCreateBooking[0], status: 200, error: false });
   } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl , level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "SmartContract create booking failed: " + error, status: 500, error: true });
@@ -130,9 +129,10 @@ router.get("/myOffers", async (req, res) => {
       infoBooking["alias_booker"] = message.alias;
     }));
 
-
     res.status(200).send({ message: myOffers, status: 200, error: false });
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: myOffers});
   } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "Get my offers failed: " + error, status: 500, error: true });
@@ -165,7 +165,6 @@ router.get("/myOffers", async (req, res) => {
  */
 router.post("/acceptBooking", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-
   try {
     let requestAcceptBooking = (await dao.execSql("get_request_accept_or_reject_booking", [req.body.transactionHash]))[0];
     requestAcceptBooking["transaction_booking_intent"] = req.body.transactionHash;
@@ -174,11 +173,11 @@ router.post("/acceptBooking", async (req, res) => {
       res.status(acceptBooking.status).send(acceptBooking);
       return;
     }
-
     await dao.execSql("update_booking", ["ACCEPTED_BOOKING", req.body.transactionHash])
-
     res.status(200).send({ message: acceptBooking.message, status: 200, error: false });
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: acceptBooking.message});
   } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "SmartContract accept booking failed: " + error, status: 500, error: true });
@@ -220,11 +219,11 @@ router.post("/rejectBooking", async (req, res) => {
       res.status(rejectBooking.status).send(rejectBooking.message);
       return;
     }
-
     await dao.execSql("update_booking", ["REJECTED_BOOKING", req.body.transactionHash])
-
     res.status(200).send({ message: rejectBooking.message, status: 200, error: false });
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: rejectBooking.message});
   } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "SmartContract accept booking failed: " + error, status: 500, error: true });
@@ -257,9 +256,10 @@ router.get("/myBookingIntents", async (req, res) => {
       infoBooking["alias_booker"] = message.alias;
     }));
 
-
     res.status(200).send({ message: myBookings, status: 200, error: false });
+    logger.log({service: req.method + ": "  + req.originalUrl,  level: 'info', message: myBookings});
   } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "Get my offers failed: " + error, status: 500, error: true });
@@ -293,9 +293,10 @@ router.get("/myBookings", async (req, res) => {
       infoBooking["alias_booker"] = message.alias;
     }));
 
-
     res.status(200).send({ message: myBookings, status: 200, error: false });
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: myBookings});
   } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "Get my offers failed: " + error, status: 500, error: true });
@@ -345,9 +346,10 @@ router.get("/transactions", async (req, res) => {
       infoTransactions["payment"]  = BigNumber(infoTransactions["payment"] ).dividedBy(ETHER_IN_ETHER).toFixed();
     }));
 
-
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: transactions});
     res.status(200).send(transactions);
   } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
       .send({ message: "Get all transactions failed: " + error, status: 500, error: true });
