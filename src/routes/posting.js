@@ -620,4 +620,34 @@ router.get("/posting/hotelsInArea", async (req, res) => {
   };
 });
 
+
+/**
+ * @swagger
+ * /myPostings:
+ *    get:
+ *     tags:
+ *       - booking
+ *     description: get my Postings
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/myPostings", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    let tokenDecode = decodeToken.decodeToken(req);
+    let myPostings = await dao.execSql("my_postings", [tokenDecode.payload.id]);
+
+    res.status(200).send({ message: myPostings, status: 200, error: false });
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: myPostings});
+  } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
+    res
+      .status(500)
+      .send({ message: "Get my postings failed: " + error, status: 500, error: true });
+  };
+});
+
 module.exports = router;
