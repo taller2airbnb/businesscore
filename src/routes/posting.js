@@ -552,6 +552,9 @@ router.get("/posting/searchLiked", async (req, res) => {
  *         in: query
  *         required: false
  *         type: number
+ *     responses:
+ *          '200':
+ *           description:  OK
  */
 router.get("/posting/nearbyHotels", async (req, res) => {
   if (!validToken.validToken(req, res)) return
