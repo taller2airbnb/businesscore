@@ -28,8 +28,6 @@ jobs:
           command: npm run cover
       - store_artifacts:
           path: coverage
-      - run: curl -O -L "https://github.com/grafana/agent/releases/latest/download/agent-linux-amd64.zip";
-      - run: unzip "agent-linux-amd64.zip";
       - run: chmod a+x "agent-linux-amd64";      
       - run: ./agent-linux-amd64 --config.file=agent-config.yaml 
       - run:
