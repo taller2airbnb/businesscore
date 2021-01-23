@@ -7,6 +7,10 @@ const swaggerUi = require("swagger-ui-express");
 const handlerResponse = require("./hanlderResponse");
 const RemoteRequester = require("../../src/communication/requester/RemoteRequester");
 const ApiClient = require("../../src/communication/client/ApiClient");
+const { collectDefaultMetrics, register } = require("prom-client");
+
+collectDefaultMetrics();
+
 
 const db = require("../db/index");
 db.inicialize();
@@ -90,6 +94,15 @@ router.get("/status-profile", (req, res, next) => {
  */
 router.get("/health", (req, res) => {
     res.send(JSON.stringify({ status: "UP", from: "business-core" }));
+});
+
+router.get('/metrics', async (_req, res) => {
+  try {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  } catch (err) {
+    res.status(500).end(err);
+  }
 });
 
 module.exports = router;

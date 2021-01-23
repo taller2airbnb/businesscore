@@ -30,6 +30,7 @@
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",
     "pg-promise": "^10.7.3",
+    "prom-client": "^13.0.0",
     "request": "^2.88.2",
     "supertest-as-promised": "^4.0.2",
     "swagger-jsdoc": "^4.3.1",
