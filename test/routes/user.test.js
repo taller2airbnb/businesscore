@@ -7,6 +7,8 @@ describe(" Test Suite: user", () => {
 
     xit('User register success', async () => {
 
+
+        console.log("asasAAAAA")
         const req = {
             "alias": "cosmefulanito",
             "email": "cosmefulanito@gmail.com",

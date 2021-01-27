@@ -1,60 +1,48 @@
 
-var supertest = require('supertest-as-promised'); 
+var supertest = require('supertest-as-promised');
 const server = require('../../app.js');
+const axios = require('axios');
+var validToken = require("../../src/routes/tokenController.js");
+var decodeToken = require("../../src/routes/tokenController.js");
+var dao = require("../../src/db/index");
+var apiClient = require("../../src/communication/client/ApiClient.js")
+
+
 const request = supertest(server);
+
 
 describe(" Test Suite: wallet", () => {
 
 
-    xit('User register bad request', async () => {
 
-        
-        jest.createMockFromModule(validToken);
-        validToken.validToken = true;
-        jest.createMockFromModule(decodeToken);
-        tokenDecode.payload.id = 1;
 
-        const res = await request.get('/wallet').send();
-        expect(res.status).toBe(200);
-    });
+    it('User get wallet', async () => {
 
-    xit('User register duplicate', async () => {
+        try {
 
-        const req = {
-            "alias": "cosmefulanito",
-            "email": "cosmefulanito@gmail.com",
-            "first_name": "Cosme",
-            "last_name": "Fulanito",
-            "national_id": "11111111",
-            "national_id_type": "DNI",
-            "password": "cosmefulanito1123",
-            "profile": 0
+            jest.mock('axios');
+            const validTokenMock = jest.spyOn(validToken, 'validToken');
+            validTokenMock.mockReturnValue(true);
+
+            const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+            tokenDecodeMock.mockReturnValue( {"payload": { "id" : 8}});
+
+            const daoMock = jest.spyOn(dao, "execSql");
+            daoMock.mockReturnValue( [{"get_creator_id": 2}]);
+
+            const apiClientMock = jest.spyOn(apiClient.prototype, "getWallet");
+            apiClientMock.mockReturnValue( {
+                status: 200,
+                message: "caa",
+                error: false
+            });
+
+            const res = await request.get('/wallet').send();
+            expect(res.status).toBe(200);
+        } catch (error) {
+            console.log(error.message)
         }
-
-        const res = await request.post('/profile-register').send(req);
-        expect(res.status).toBe(200);
     });
 
-    xit('User login success', async () => {
 
-        const req = {
-            "email": "cosmefulanito@gmail.com",
-            "password": "cosmefulanito1123",
-        }
-
-        const res = await request.post('/profile-login').send(req);
-        expect(res.status).toBe(200);
-    });
-
-    xit('User login fail', async () => {
-
-        const req = {
-            "email": "cosmefulanito@gmail.com",
-            "password": "111",
-        }
-
-        const res = await request.post('/profile-login').send(req);
-        expect(res.status).toBe(200);
-    });
-  
 });
