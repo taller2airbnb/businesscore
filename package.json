@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "cover": "npm run test -- --coverage",
-    "test": "jest --runInBand --forceExit"
+    "test": "jest --forceExit --runInBand "
   },
   "keywords": [],
   "author": "",

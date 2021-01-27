@@ -3,39 +3,18 @@ var supertest = require('supertest-as-promised');
 const server = require('../../app.js');
 const request = supertest(server);
 
-describe(" Test Suite: user", () => {
+describe(" Test Suite: wallet", () => {
 
-    xit('User register success', async () => {
-
-        const req = {
-            "alias": "cosmefulanito",
-            "email": "cosmefulanito@gmail.com",
-            "first_name": "Cosme",
-            "last_name": "Fulanito",
-            "national_id": "11111111",
-            "national_id_type": "DNI",
-            "password": "cosmefulanito1123",
-            "profile": 0
-        }
-
-        const res = await request.post('/profile-register').send(req);
-        expect(res.status).toBe(200);
-    });
 
     xit('User register bad request', async () => {
 
-        const req = {
-            "alias": "cosmefulanito",
-            "email": "cosmefulanito@gmail.com",
-            "first_name": "Cosme",
-            "last_name": "Fulanito",
-            "national_id": "11111111",
-            "national_id_type": "DNI",
-            "password": "cosmefulanito1123",
-            "profile": 0
-        }
+        
+        jest.createMockFromModule(validToken);
+        validToken.validToken = true;
+        jest.createMockFromModule(decodeToken);
+        tokenDecode.payload.id = 1;
 
-        const res = await request.post('/profile-register').send(req);
+        const res = await request.get('/wallet').send();
         expect(res.status).toBe(200);
     });
 
