@@ -206,4 +206,51 @@ describe(" Test Suite: posting", () => {
     });
 
 
+    it('Update posting ', async () => {
+        try {
+
+
+            const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+            tokenDecodeMock.mockReturnValue({ "payload": { "id": 8 } });
+
+            const daoMock = jest.spyOn(dao, "execSql");
+            daoMock.mockReturnValue([{ "is_owner": true }]);
+
+            //este es el update
+            daoMock.mockReturnValue([
+                {
+                    "id_posting": 17,
+                    "price_day": "0.0002",
+                    "creation_date": "2021-01-14T16:58:48.885Z",
+                    "start_date": "2021-04-03T03:00:00.000Z",
+                    "end_date": "2022-04-03T03:00:00.000Z",
+                    "state": "activo",
+                    "public": true,
+                    "content": "un re contenido papa updateado",
+                    "country": "argentina",
+                    "city": "necochea",
+                    "max_number_guests": 3,
+                    "id_user": 2,
+                    "name": "telo",
+                    "transaction_hash": "0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
+                    "deleted": false,
+                    "location": {
+                        "x": -58.5075778,
+                        "y": -34.462299
+                    },
+                    "blocked": false
+                }
+            ]);
+
+            const res = await request.put('/posting').send();
+            expect(res.body.status).toBe(200);
+            expect(res.body.error).toBe(false);
+            expect(res.body.message.content).toBe("un re contenido papa updateado");
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    });
+
+
 });
