@@ -242,7 +242,7 @@ describe(" Test Suite: posting", () => {
                 }
             ]);
 
-            const res = await request.put('/posting').send();
+            const res = await request.put('/posting/8').send();
             expect(res.body.status).toBe(200);
             expect(res.body.error).toBe(false);
             expect(res.body.message.content).toBe("un re contenido papa updateado");
