@@ -435,4 +435,77 @@ describe(" Test Suite: posting", () => {
       console.log(error.message);
     }
   });
+
+  it("Update price room ", async () => {
+    try {
+      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockResolvedValueOnce([{ is_owner: true }]);
+
+      daoMock.mockResolvedValueOnce([{ get_transaction_hash_room: "elCondorTransaccion" }]);
+
+
+      const apiClientMock = jest.spyOn(apiClient.prototype, "changePriceRoom");
+      apiClientMock.mockReturnValue({
+          status: 200,
+          message: {"transaction":"precioCambiado"},
+          error: false
+      });
+
+      //update precio posting
+      daoMock.mockResolvedValueOnce([{ get_transaction_hash_room: "updatePrecio" }]);
+
+      const res = await request.put("/priceRoom/17").send({"priceRoom": 0.0001});
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+
+  it("Update price room fail, you are not owner", async () => {
+    try {
+      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockResolvedValueOnce([{ is_owner: false }]);
+
+      const res = await request.put("/priceRoom/17").send({"priceRoom": 0.0001});
+      expect(res.body.status).toBe(400);
+      expect(res.body.error).toBe(true);
+      expect(res.body.message).toBe("You are not the owner of the room");
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Update price room fail call smartcontract", async () => {
+    try {
+      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockResolvedValueOnce([{ is_owner: true }]);
+
+      const apiClientMock = jest.spyOn(apiClient.prototype, "changePriceRoom");
+      apiClientMock.mockReturnValue({
+        status: 401,
+        message: "Insuficient money for transaction",
+        error: true
+    });
+
+      const res = await request.put("/priceRoom/17").send({"priceRoom": 0.0001});
+      expect(res.body.status).toBe(401);
+      expect(res.body.error).toBe(true);
+      expect(res.body.message).toBe("Insuficient money for transaction");
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 });
