@@ -291,4 +291,47 @@ describe(" Test Suite: posting", () => {
       console.log(error);
     }
   });
+
+  it("Blocked posting update fail", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+
+      const res = await request.put("/posting/blocked_status/8").send();
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  it("Delete posting", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+      const res = await request.delete("/posting/8").send();
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Delete posting fail", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockReturnValue([{ok: true}]);
+      const res = await request.delete("/posting/8").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
 });
