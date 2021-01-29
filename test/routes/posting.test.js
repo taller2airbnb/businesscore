@@ -492,6 +492,7 @@ describe(" Test Suite: posting", () => {
       const daoMock = jest.spyOn(dao, "execSql");
       daoMock.mockResolvedValueOnce([{ is_owner: true }]);
 
+      daoMock.mockResolvedValueOnce([{ get_transaction_hash_room: "elCondorTransaccion" }]);
       const apiClientMock = jest.spyOn(apiClient.prototype, "changePriceRoom");
       apiClientMock.mockReturnValue({
         status: 401,
@@ -504,6 +505,24 @@ describe(" Test Suite: posting", () => {
       expect(res.body.error).toBe(true);
       expect(res.body.message).toBe("Insuficient money for transaction");
 
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Update price room fail database", async () => {
+    try {
+      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+
+      const res = await request.put("/priceRoom/17").send({"priceRoom": 0.0001});
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
     } catch (error) {
       console.log(error.message);
     }

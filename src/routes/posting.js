@@ -440,7 +440,7 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
     request["transaction_hash_room"] = get_transaction_hash_room;
     request["newPrice"] = req.body.priceRoom;
 
-    const messagePriceRoomChanged = await apiClientSC.changePriceRoom(request, handlerResponse.handlerResponse)
+    const messagePriceRoomChanged = await apiClientSC.changePriceRoom(request, handlerResponse.handlerResponse);
     if (messagePriceRoomChanged.error) {
       res.status(messagePriceRoomChanged.status).send(messagePriceRoomChanged);
       return;
