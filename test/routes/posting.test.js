@@ -214,10 +214,10 @@ describe(" Test Suite: posting", () => {
             tokenDecodeMock.mockReturnValue({ "payload": { "id": 8 } });
 
             const daoMock = jest.spyOn(dao, "execSql");
-            daoMock.mockReturnValue([{ "is_owner": true }]);
+            daoMock.mockResolvedValueOnce([{ "is_owner": true }]);
 
             //este es el update
-            daoMock.mockReturnValue([
+            daoMock.mockResolvedValueOnce([
                 {
                     "id_posting": 17,
                     "price_day": "0.0002",
