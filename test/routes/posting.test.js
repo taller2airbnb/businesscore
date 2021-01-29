@@ -325,7 +325,7 @@ describe(" Test Suite: posting", () => {
   it("Delete posting fail", async () => {
     try {
       const daoMock = jest.spyOn(dao, "execSql");
-      daoMock.mockReturnValue([{ok: true}]);
+      daoMock.mockReturnValue([{ ok: true }]);
       const res = await request.delete("/posting/8").send();
       expect(res.body.status).toBe(200);
       expect(res.body.error).toBe(false);
@@ -334,4 +334,105 @@ describe(" Test Suite: posting", () => {
     }
   });
 
+  it("Search posting", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockReturnValue([
+        {
+          id_posting: 17,
+          price_day: "0.0002",
+          creation_date: "2021-01-14T16:58:48.885Z",
+          start_date: "2021-04-03T03:00:00.000Z",
+          end_date: "2022-04-03T03:00:00.000Z",
+          state: "activo",
+          public: true,
+          content: "un re contenido buscado",
+          country: "argentina",
+          city: "necochea",
+          max_number_guests: 3,
+          id_user: 2,
+          name: "telo",
+          transaction_hash:
+            "0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
+          deleted: false,
+          location: {
+            x: -58.5075778,
+            y: -34.462299,
+          },
+          blocked: false,
+        },
+      ]);
+      const res = await request
+        .get(
+          "/posting/search?priceMin=1&priceMax=99999&startDate=2022-04-04&endDate=2022-04-04&feature=1%2C3%2C4&name=condor&max_number_guests=10"
+        )
+        .send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+      expect(res.body.message[0].content).toBe("un re contenido buscado");
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Search posting fail", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+      const res = await request
+        .get(
+          "/posting/search?priceMin=1&priceMax=99999&startDate=2022-04-04&endDate=2022-04-04&feature=1%2C3%2C4&name=condor&max_number_guests=10"
+        )
+        .send();
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Get all feature", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockReturnValue([
+        {
+          id_feature: 1,
+          name: "Wifi",
+        },
+        {
+          id_feature: 2,
+          name: "Tv",
+        },
+        {
+          id_feature: 3,
+          name: "Baño",
+        },
+        {
+          id_feature: 4,
+          name: "Condor masaje",
+        },
+      ]);
+      const res = await request.get("/feature").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.message[0].name).toBe("Wifi");
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Search posting fail", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+      const res = await request.get("/feature").send();
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 });
