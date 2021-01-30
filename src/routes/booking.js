@@ -69,7 +69,7 @@ router.post("/intentBooking", async (req, res) => {
 
     body = {};
     body["transaction_hash"] = get_transaction_hash_room;
-    body["creatorId"] =  parseInt(get_creator_id); 
+    body["creatorId"] = parseInt(get_creator_id);
     body["initialDay"] = parseInt(initialDay);
     body["initialMonth"] = parseInt(initialMonth);
     body["initialYear"] = parseInt(initialYear);
@@ -77,7 +77,26 @@ router.post("/intentBooking", async (req, res) => {
     body["lastMonth"] = parseInt(lastMonth);
     body["lastYear"] = parseInt(lastYear);
 
-    const messageBooking = await apiClientSC.intentBooking(body, handlerResponse.handlerResponse)
+    //send notification to host
+    try {
+      const posting = (await dao.execSql("get_posting", [req.body.idPosting]))[0];
+      let userResponse = await apiClient.getUser(
+        posting.id_user,
+        handlerResponse.handlerResponse
+      );
+      if (userResponse.message.push_token != null) {
+        let requestNotification = {}
+        requestNotification["to"] = userResponse.message.push_token;
+        requestNotification["title"] = "Intent Booking:" + posting.name;
+        requestNotification["body"] = "Dates: " + req.body.initialDate
+          + " to " + req.body.lastDate + " from " + tokenDecode.payload.username;
+        apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
+      }
+    } catch (error) {
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
+    }
+
+    const messageBooking = await apiClientSC.intentBooking(body, handlerResponse.handlerResponse);
     if (messageBooking.error) {
       res.status(messageBooking.status).send(messageBooking);
       return;
@@ -92,10 +111,10 @@ router.post("/intentBooking", async (req, res) => {
       req.body.idPosting
     ]);
 
-    logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: infoDBCreateBooking[0]});
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: infoDBCreateBooking[0] });
     res.status(200).send({ message: infoDBCreateBooking[0], status: 200, error: false });
   } catch (error) {
-    logger.log({service: req.method + ": "  + req.originalUrl , level: 'error', message: error.message});
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
       .send({ message: "SmartContract create booking failed: " + error, status: 500, error: true });
@@ -165,6 +184,7 @@ router.get("/myOffers", async (req, res) => {
  */
 router.post("/acceptBooking", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
+  let tokenDecode = decodeToken.decodeToken(req);
   try {
     let requestAcceptBooking = (await dao.execSql("get_request_accept_or_reject_booking", [req.body.transactionHash]))[0];
     requestAcceptBooking["transaction_booking_intent"] = req.body.transactionHash;
@@ -174,6 +194,30 @@ router.post("/acceptBooking", async (req, res) => {
       return;
     }
     await dao.execSql("update_booking", ["ACCEPTED_BOOKING", req.body.transactionHash])
+    //send notification to booker
+    try {
+
+      const {get_user_id} = (await dao.execSql("get_user_id", [requestAcceptBooking.creator_id_booker]))[0];
+      const posting = (await dao.execSql("get_posting_by_hash_room", [requestAcceptBooking.transaction_room]))[0];
+      let userResponse = await apiClient.getUser(
+        get_user_id,
+        handlerResponse.handlerResponse
+      );
+      if (userResponse.message.push_token != null) {
+        let requestNotification = {}
+        requestNotification["to"] = userResponse.message.push_token;
+        requestNotification["title"] = "Accept Booking:" + posting.name;
+        requestNotification["body"] = "Dates: " + requestAcceptBooking.initial_year + "-"  
+          + requestAcceptBooking.initial_month + "-"  +  requestAcceptBooking.last_day
+          + " to " +  requestAcceptBooking.last_year + "-"  
+          + requestAcceptBooking.last_month + "-"  +  requestAcceptBooking.last_day + " from " + tokenDecode.payload.username;
+        apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
+      }
+    } catch (error) {
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
+    }
+
+
     res.status(200).send({ message: acceptBooking.message, status: 200, error: false });
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: acceptBooking.message});
   } catch (error) {
@@ -210,6 +254,7 @@ router.post("/acceptBooking", async (req, res) => {
  */
 router.post("/rejectBooking", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
+  let tokenDecode = decodeToken.decodeToken(req);
 
   try {
     let requestRejectBooking = (await dao.execSql("get_request_accept_or_reject_booking", [req.body.transactionHash]))[0];
@@ -219,7 +264,28 @@ router.post("/rejectBooking", async (req, res) => {
       res.status(rejectBooking.status).send(rejectBooking.message);
       return;
     }
-    await dao.execSql("update_booking", ["REJECTED_BOOKING", req.body.transactionHash])
+    await dao.execSql("update_booking", ["REJECTED_BOOKING", req.body.transactionHash]);
+
+    try {
+      const {get_user_id} = (await dao.execSql("get_user_id", [requestRejectBooking.creator_id_booker]))[0];
+      const posting = (await dao.execSql("get_posting_by_hash_room", [requestRejectBooking.transaction_room]))[0];
+      let userResponse = await apiClient.getUser(
+        get_user_id,
+        handlerResponse.handlerResponse
+      );
+      if (userResponse.message.push_token != null) {
+        let requestNotification = {}
+        requestNotification["to"] = userResponse.message.push_token;
+        requestNotification["title"] = "Reject Booking:" + posting.name;
+        requestNotification["body"] = "Dates: " + requestRejectBooking.initial_year + "-"  
+          + requestRejectBooking.initial_month + "-"  +  requestRejectBooking.last_day
+          + " to " +  requestRejectBooking.last_year + "-"  
+          + requestRejectBooking.last_month + "-"  +  requestRejectBooking.last_day + " from " + tokenDecode.payload.username;
+        apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
+      }
+    } catch (error) {
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
+    }
     res.status(200).send({ message: rejectBooking.message, status: 200, error: false });
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: rejectBooking.message});
   } catch (error) {
@@ -295,7 +361,7 @@ router.get("/myBookings", async (req, res) => {
 
     res.status(200).send({ message: myBookings, status: 200, error: false });
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: myBookings});
-  } catch (error) {
+  } catch(error){
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
       .status(500)
