@@ -449,15 +449,15 @@ describe(" Test Suite: posting", () => {
 
       const apiClientMock = jest.spyOn(apiClient.prototype, "changePriceRoom");
       apiClientMock.mockReturnValue({
-          status: 200,
-          message: {"transaction":"precioCambiado"},
-          error: false
+        status: 200,
+        message: { "transaction": "precioCambiado" },
+        error: false
       });
 
       //update precio posting
       daoMock.mockResolvedValueOnce([{ get_transaction_hash_room: "updatePrecio" }]);
 
-      const res = await request.put("/priceRoom/17").send({"priceRoom": 0.0001});
+      const res = await request.put("/priceRoom/17").send({ "priceRoom": 0.0001 });
       expect(res.body.status).toBe(200);
       expect(res.body.error).toBe(false);
     } catch (error) {
@@ -474,7 +474,7 @@ describe(" Test Suite: posting", () => {
       const daoMock = jest.spyOn(dao, "execSql");
       daoMock.mockResolvedValueOnce([{ is_owner: false }]);
 
-      const res = await request.put("/priceRoom/17").send({"priceRoom": 0.0001});
+      const res = await request.put("/priceRoom/17").send({ "priceRoom": 0.0001 });
       expect(res.body.status).toBe(400);
       expect(res.body.error).toBe(true);
       expect(res.body.message).toBe("You are not the owner of the room");
@@ -498,9 +498,9 @@ describe(" Test Suite: posting", () => {
         status: 401,
         message: "Insuficient money for transaction",
         error: true
-    });
+      });
 
-      const res = await request.put("/priceRoom/17").send({"priceRoom": 0.0001});
+      const res = await request.put("/priceRoom/17").send({ "priceRoom": 0.0001 });
       expect(res.body.status).toBe(401);
       expect(res.body.error).toBe(true);
       expect(res.body.message).toBe("Insuficient money for transaction");
@@ -520,7 +520,181 @@ describe(" Test Suite: posting", () => {
         throw "un error mockeado";
       });
 
-      const res = await request.put("/priceRoom/17").send({"priceRoom": 0.0001});
+      const res = await request.put("/priceRoom/17").send({ "priceRoom": 0.0001 });
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+
+  it("Search posting", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockReturnValue([
+        {
+          id_posting: 17,
+          price_day: "0.0002",
+          creation_date: "2021-01-14T16:58:48.885Z",
+          start_date: "2021-04-03T03:00:00.000Z",
+          end_date: "2022-04-03T03:00:00.000Z",
+          state: "activo",
+          public: true,
+          content: "un re contenido buscado y likeado",
+          country: "argentina",
+          city: "necochea",
+          max_number_guests: 3,
+          id_user: 2,
+          name: "telo",
+          transaction_hash:
+            "0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
+          deleted: false,
+          location: {
+            x: -58.5075778,
+            y: -34.462299,
+          },
+          blocked: false,
+        },
+      ]);
+      const res = await request
+        .get(
+          "/posting/searchLiked?priceMin=1&priceMax=99999&startDate=2022-04-04&endDate=2022-04-04&feature=1%2C3%2C4&name=condor&max_number_guests=10"
+        )
+        .send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+      expect(res.body.message[0].content).toBe("un re contenido buscado y likeado");
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Search liked posting fail", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+      const res = await request
+        .get(
+          "/posting/searchLiked?priceMin=1&searchMax=99999&startDate=2022-04-04&endDate=2022-04-04&feature=1%2C3%2C4&name=condor&max_number_guests=10"
+        )
+        .send();
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Nearby hotels", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockReturnValue([
+        {
+          id_posting: 17,
+          price_day: "0.0002",
+          creation_date: "2021-01-14T16:58:48.885Z",
+          start_date: "2021-04-03T03:00:00.000Z",
+          end_date: "2022-04-03T03:00:00.000Z",
+          state: "activo",
+          public: true,
+          content: "un re contenido buscado",
+          country: "argentina",
+          city: "necochea",
+          max_number_guests: 3,
+          id_user: 2,
+          name: "telo",
+          transaction_hash:
+            "0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
+          deleted: false,
+          location: {
+            x: -58.5075778,
+            y: -34.462299,
+          },
+          blocked: false,
+        },
+      ]);
+      const res = await request
+        .get(
+          "/posting/nearbyHotels?MyLatitude=-14.56165165161616161&MyLongitude=-14.56165165161616161&numberPostings=1"
+        )
+        .send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Nearby hotels fail", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+      const res = await request
+        .get(
+          "/posting/nearbyHotels?MyLatitude=-14.56165165161616161&MyLongitude=-14.56165165161616161&numberPostings=1")
+        .send();
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Hotels in area", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockReturnValue([
+        {
+          id_posting: 17,
+          price_day: "0.0002",
+          creation_date: "2021-01-14T16:58:48.885Z",
+          start_date: "2021-04-03T03:00:00.000Z",
+          end_date: "2022-04-03T03:00:00.000Z",
+          state: "activo",
+          public: true,
+          content: "un re contenido buscado",
+          country: "argentina",
+          city: "necochea",
+          max_number_guests: 3,
+          id_user: 2,
+          name: "telo",
+          transaction_hash:
+            "0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
+          deleted: false,
+          location: {
+            x: -58.5075778,
+            y: -34.462299,
+          },
+          blocked: false,
+        },
+      ]);
+      const res = await request
+        .get(
+          "/posting/hotelsInArea?MyLatitude=-14.56165165161616161&MyLongitude=-14.56165165161616161&radioArea=999"
+        )
+        .send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Hotels in area fail", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+      const res = await request
+        .get(
+          "/posting/hotelsInArea?MyLatitude=-14.56165165161616161&MyLongitude=-14.56165165161616161&radioArea=999")
+        .send();
       expect(res.body.status).toBe(500);
       expect(res.body.error).toBe(true);
     } catch (error) {
