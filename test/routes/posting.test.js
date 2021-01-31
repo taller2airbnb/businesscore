@@ -14,7 +14,7 @@ describe(" Test Suite: posting", () => {
     validTokenMock.mockReturnValue(true);
   });
 
-  it("Get posting get posting", async () => {
+  it("Get posting", async () => {
     try {
       const daoMock = jest.spyOn(dao, "execSql");
       daoMock.mockReturnValue([
@@ -197,6 +197,25 @@ describe(" Test Suite: posting", () => {
       console.log(error.message);
     }
   });
+
+  it("Create posting fail", async () => {
+    try {
+      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+
+      const res = await request.post("/posting").send();
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
 
   it("Update posting ", async () => {
     try {
@@ -701,4 +720,61 @@ describe(" Test Suite: posting", () => {
       console.log(error.message);
     }
   });
+
+  it("My postings", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+      daoMock.mockReturnValue([
+        {
+          id_posting: 17,
+          price_day: "0.0002",
+          creation_date: "2021-01-14T16:58:48.885Z",
+          start_date: "2021-04-03T03:00:00.000Z",
+          end_date: "2022-04-03T03:00:00.000Z",
+          state: "activo",
+          public: true,
+          content: "un re contenido buscado",
+          country: "argentina",
+          city: "necochea",
+          max_number_guests: 3,
+          id_user: 2,
+          name: "telo",
+          transaction_hash:
+            "0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
+          deleted: false,
+          location: {
+            x: -58.5075778,
+            y: -34.462299,
+          },
+          blocked: false,
+        },
+      ]);
+      
+      const res = await request.get("/myPostings").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("My posting fail", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+      const res = await request.get("/myPostings").send();
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  
 });
