@@ -38,11 +38,29 @@ const { logger } = require("../config/logger.js");
 router.get("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   try {
-    const response = await dao.execSql("get_posting", [req.query.idPosting]);
-    res.status(200).send({ message: response, status: 200, error: false });
-    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response});
+    const postings = await dao.execSql("get_posting", [req.query.idPosting]);
+
+    await Promise.all(
+      postings.map(async (posting) => {
+        const features = await dao.execSql("get_feature_by_posting", [
+          posting.id_posting,
+        ]);
+        posting["features"] = (features.map((x) => (x.id_feature))).join(',');;
+      })
+    );
+
+    res.status(200).send({ message: postings, status: 200, error: false });
+    logger.log({
+      service: req.method + ": " + req.originalUrl,
+      level: "info",
+      message: postings,
+    });
   } catch (error) {
-    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    logger.log({
+      service: req.method + ": " + req.originalUrl,
+      level: "error",
+      message: error.message,
+    });
     res
       .status(500)
       .send({ message: "Data base: " + error, status: 500, error: true });
