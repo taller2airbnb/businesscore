@@ -434,4 +434,76 @@ describe(" Test Suite: Bookings", () => {
   });
 
 
+  it("My bookings", async () => {
+    try {
+      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockResolvedValueOnce([
+        {
+          "id_posting": 17,
+          "name": "telo",
+          "start_date": {
+
+          },
+          "end_date": {
+
+          },
+          "booker": 3,
+          "transaction_booking": "0xc41adbc118cb0cdf7f086a9f7baacd84442455e00e215d98140a2c92e87b344f"
+        }
+      ]);
+
+      const apiClientMock = jest.spyOn(apiClient.prototype, "getUser");
+      apiClientMock.mockReturnValue({
+        status: 200,
+        message: {
+          "message": {
+            alias: "hardtokill",
+            blocked: false,
+            email: "hard@to.kill",
+            first_name: "John",
+            id: 3,
+            last_name: "McClane",
+            national_id: "77777777",
+            national_id_type: "DNI",
+            profile: 2,
+            push_token: null,
+          }
+        },
+        error: false
+      });
+
+      const res = await request.get("/myBookings").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("My bookings fails", async () => {
+    try {
+      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
+      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockImplementation(() => {
+        throw "un error mockeado";
+      });
+
+
+      const res = await request.get("/myBookings").send();
+      expect(res.body.status).toBe(500);
+      expect(res.body.error).toBe(true);
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+
+
 });
