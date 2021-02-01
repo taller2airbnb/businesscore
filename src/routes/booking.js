@@ -320,7 +320,11 @@ router.get("/myBookings", async (req, res) => {
 router.get("/transactions", async (req, res) => {
   try {
     if (!validToken.validToken(req, res)) return;
-    const transactionsResponse = await apiClientSC.transactions({}, handlerResponse.handlerResponse)
+    const transactionsResponse = await apiClientSC.transactions({}, handlerResponse.handlerResponse);
+    if (transactionsResponse.error) {
+      res.status(transactionsResponse.status).send(transactionsResponse);
+      return;
+    }
     let transactions = transactionsResponse.message.transactions;
 
     await Promise.all(transactions.map(async infoTransactions => {
@@ -347,7 +351,7 @@ router.get("/transactions", async (req, res) => {
     }));
 
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: transactions});
-    res.status(200).send(transactions);
+    res.status(200).send({ message: transactions, status: 200, error: false });
   } catch (error) {
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
     res
