@@ -216,7 +216,7 @@ router.post("/rejectBooking", async (req, res) => {
     requestRejectBooking["transaction_booking_intent"] = req.body.transactionHash;
     const rejectBooking = await apiClientSC.rejectBooking(requestRejectBooking, handlerResponse.handlerResponse)
     if (rejectBooking.error) {
-      res.status(rejectBooking.status).send(rejectBooking.message);
+      res.status(rejectBooking.status).send(rejectBooking);
       return;
     }
     await dao.execSql("update_booking", ["REJECTED_BOOKING", req.body.transactionHash])
