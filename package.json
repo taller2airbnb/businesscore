@@ -6,17 +6,19 @@
   "scripts": {
     "start": "node server.js",
     "cover": "npm run test -- --coverage",
-    "test": "jest --runInBand --forceExit"
+    "test": "jest --forceExit --runInBand"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^26.6.1",
+    "jest": "^26.6.3",
     "nodemon": "^2.0.5",
-    "supertest": "^6.0.1"
+    "supertest": "^6.0.1",
+    "webpack": "^5.18.0"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "big-number": "^2.0.0",
     "bignumber": "1.1.0",
     "bignumber.js": "9.0.1",
@@ -24,8 +26,10 @@
     "dotenv": "^8.2.0",
     "expo-server-sdk": "^3.6.0",
     "express": "^4.17.1",
+    "jest-cli": "^26.6.3",
     "jsonwebtoken": "^8.5.1",
     "mathjs": "^8.1.1",
+    "microbundle": "^0.13.0",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",
@@ -35,5 +39,8 @@
     "swagger-jsdoc": "^4.3.1",
     "swagger-ui-express": "^4.1.4",
     "winston": "^3.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }

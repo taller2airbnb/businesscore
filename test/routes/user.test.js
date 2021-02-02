@@ -1,81 +1,190 @@
-
 var supertest = require('supertest-as-promised'); 
-const server = require('../../server.js');
+const server = require('../../app.js');
+var validToken = require("../../src/routes/tokenController.js");
+var decodeToken = require("../../src/routes/tokenController.js");
+var dao = require("../../src/db/index");
+var apiClient = require("../../src/communication/client/ApiClient.js");
+
 const request = supertest(server);
 
 describe(" Test Suite: user", () => {
 
-    xit('User register success', async () => {
-
-        const req = {
-            "alias": "cosmefulanito",
-            "email": "cosmefulanito@gmail.com",
-            "first_name": "Cosme",
-            "last_name": "Fulanito",
-            "national_id": "11111111",
-            "national_id_type": "DNI",
-            "password": "cosmefulanito1123",
-            "profile": 0
-        }
-
-        const res = await request.post('/profile-register').send(req);
-        expect(res.status).toBe(200);
+    beforeEach(() => {
+        jest.resetAllMocks();
+        const validTokenMock = jest.spyOn(validToken, "validToken");
+        validTokenMock.mockReturnValue(true);
     });
 
-    xit('User register bad request', async () => {
+    it("Get user by id", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockResolvedValueOnce([
+        {
+            status: 200,
+            message: {
+                alias: "hardtokill",
+                blocked: false,
+                email: "hard@to.kill",
+                first_name: "John",
+                id: 3,
+                last_name: "McClane",
+                national_id: "77777777",
+                national_id_type: "DNI",
+                profile: 2,
+                push_token: null,
+                wallet: "0x5d527ee765d4806FF2af49bd783B8c11bD5B1841"
+            },
+            error: false
+        },
+      ]);
 
-        const req = {
-            "alias": "cosmefulanito",
-            "email": "cosmefulanito@gmail.com",
-            "first_name": "Cosme",
-            "last_name": "Fulanito",
-            "national_id": "11111111",
-            "national_id_type": "DNI",
-            "password": "cosmefulanito1123",
-            "profile": 0
-        }
+      daoMock.mockResolvedValueOnce([{ "get_creator_id": 2 }]);
 
-        const res = await request.post('/profile-register').send(req);
-        expect(res.status).toBe(200);
-    });
+      const apiClientMock = jest.spyOn(apiClient.prototype, "getWallet");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "unaWallet",
+          error: false
+      });
 
-    xit('User register duplicate', async () => {
+      const res = await request.get("/user/3").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
-        const req = {
-            "alias": "cosmefulanito",
-            "email": "cosmefulanito@gmail.com",
-            "first_name": "Cosme",
-            "last_name": "Fulanito",
-            "national_id": "11111111",
-            "national_id_type": "DNI",
-            "password": "cosmefulanito1123",
-            "profile": 0
-        }
+  it("Get users", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockReturnValue([
+        {
+            status: 200,
+            message: {
+                alias: "hardtokill",
+                blocked: false,
+                email: "hard@to.kill",
+                first_name: "John",
+                id: 3,
+                last_name: "McClane",
+                national_id: "77777777",
+                national_id_type: "DNI",
+                profile: 2,
+                push_token: null,
+                wallet: "0x5d527ee765d4806FF2af49bd783B8c11bD5B1841"
+            },
+            error: false
+        },
+      ]);
 
-        const res = await request.post('/profile-register').send(req);
-        expect(res.status).toBe(200);
-    });
+      const res = await request.get("/user").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
-    xit('User login success', async () => {
+  it("Register user", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const apiClientMock = jest.spyOn(apiClient.prototype, "register");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "unRegistroPAPAAAA",
+          error: false
+      });
 
-        const req = {
-            "email": "cosmefulanito@gmail.com",
-            "password": "cosmefulanito1123",
-        }
+      daoMock.mockResolvedValueOnce([{ "get_creator_id": 2 }]);
 
-        const res = await request.post('/profile-login').send(req);
-        expect(res.status).toBe(200);
-    });
+      const res = await request.post("/register").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
-    xit('User login fail', async () => {
+  it("Login user", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      let apiClientMock = jest.spyOn(apiClient.prototype, "login");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "unLogin",
+          error: false
+      });
 
-        const req = {
-            "email": "cosmefulanito@gmail.com",
-            "password": "111",
-        }
+      daoMock.mockResolvedValueOnce([{ "get_creator_id": 2 }]);
 
-        const res = await request.post('/profile-login').send(req);
-        expect(res.status).toBe(200);
-    });
-  
+      apiClientMock = jest.spyOn(apiClient.prototype, "getWallet");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "unaWallet",
+          error: false
+      });
+
+      const res = await request.post("/login").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Change user pass", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const apiClientMock = jest.spyOn(apiClient.prototype, "changePassword");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "Cuchu Cambiaso",
+          error: false
+      });
+
+      const res = await request.put("/user/hard@to.kill/password/").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Recover token", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const apiClientMock = jest.spyOn(apiClient.prototype, "recoverToken");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "Rescatate un token",
+          error: false
+      });
+
+      const res = await request.post("/recover_token/hard@to.kill").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Block status", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const apiClientMock = jest.spyOn(apiClient.prototype, "blockedStatus");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "Te bloquea con de todo",
+          error: false
+      });
+
+      const res = await request.put("/user/2/blocked_status/").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+            
 });
