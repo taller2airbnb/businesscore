@@ -60,7 +60,7 @@ router.post("/notification", async (req, res, next) => {
     );
 
     if (!Expo.isExpoPushToken(userResponse.message.push_token)) {
-      console.error(`Push token ${userResponse.message.push_token} is not a valid Expo push token`);
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: `Push token ${userResponse.message.push_token} is not a valid Expo push token` });
       throw "error valid PushToken";
     };
 

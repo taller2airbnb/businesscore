@@ -41,11 +41,11 @@ describe(" Test Suite: Notifications", () => {
         error: false
       });
 
-      const expoToken = jest.spyOn(Expo.prototype, "isExpoPushToken");
+      const expoToken = jest.spyOn(Expo, "isExpoPushToken");
       expoToken.mockReturnValue(true);
 
-      const apiClientMock = jest.spyOn(apiClient.prototype, "sendNotification");
-      apiClientMock.mockReturnValue({
+      const apiClientMockNotification = jest.spyOn(apiClient.prototype, "sendNotification");
+      apiClientMockNotification.mockReturnValue({
         status: 200,
         message: {
             algo: "algo",
@@ -53,9 +53,8 @@ describe(" Test Suite: Notifications", () => {
         error: false
       });
 
-      const res = await request.post("/ratingPosting/17").send({
-        score: 9,
-        content: "re pistero",
+      const res = await request.post("/notification?idUser=17").send({
+        "push_token": "unTOken"
       });
       expect(res.body.status).toBe(200);
       expect(res.body.error).toBe(false);
@@ -64,19 +63,36 @@ describe(" Test Suite: Notifications", () => {
     }
   });
 
-  it("Add rating to posting fail", async () => {
+  it("Send Notification fail  get user", async () => {
     try {
       const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
       tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
 
-      const daoMock = jest.spyOn(dao, "execSql");
-      daoMock.mockImplementation(() => {
-        throw "un error mockeado";
+      const apiClientMock = jest.spyOn(apiClient.prototype, "getUser");
+      apiClientMock.mockReturnValue({
+        status: 200,
+        message: {
+          "message": {
+            alias: "hardtokill",
+            blocked: false,
+            email: "hard@to.kill",
+            first_name: "John",
+            id: 3,
+            last_name: "McClane",
+            national_id: "77777777",
+            national_id_type: "DNI",
+            profile: 2,
+            push_token: null,
+          }
+        },
+        error: false
       });
 
-      const res = await request.post("/ratingPosting/17").send({
-        score: 9,
-        content: "re pistero",
+      const expoToken = jest.spyOn(Expo, "isExpoPushToken");
+      expoToken.mockReturnValue(false);
+
+      const res = await request.post("/notification?idUser=17").send({
+        "push_token": "unTOken"
       });
       expect(res.body.status).toBe(500);
       expect(res.body.error).toBe(true);
@@ -85,29 +101,21 @@ describe(" Test Suite: Notifications", () => {
     }
   });
 
-  it("Add rating to user", async () => {
+
+  it("Change push token", async () => {
     try {
-      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
-      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
+      const apiClientMock = jest.spyOn(apiClient.prototype, "putPushToken");
+      apiClientMock.mockReturnValue({
+        status: 200,
+        message: {
+          id: 3,
+          modify_user: "OK",
+        },
+        error: false,
+      });
 
-      const daoMock = jest.spyOn(dao, "execSql");
-      daoMock.mockResolvedValueOnce([
-        [
-          [
-            {
-              "id_rating": 2,
-              "content": "re buen tipo este",
-              "score": 8,
-              "id_user_owner": 2,
-              "id_user_booker": 7
-            }
-          ]
-        ],
-      ]);
-
-      const res = await request.post("/ratingBooker/4").send({
-        "score": 8,
-        "content": "re buen tipo este"
+      const res = await request.put("/pushToken?idUser=17").send({
+        "push_token": "unTOken"
       });
       expect(res.body.status).toBe(200);
       expect(res.body.error).toBe(false);
@@ -116,19 +124,15 @@ describe(" Test Suite: Notifications", () => {
     }
   });
 
-  it("Add rating to user fail", async () => {
+  it("Change push token fail", async () => {
     try {
-      const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
-      tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
-
-      const daoMock = jest.spyOn(dao, "execSql");
-      daoMock.mockImplementation(() => {
+      const apiClientMock = jest.spyOn(apiClient.prototype, "putPushToken");
+      apiClientMock.mockImplementation(() => {
         throw "un error mockeado";
       });
 
-      const res = await request.post("/ratingBooker/4").send({
-        "score": 8,
-        "content": "re buen tipo este"
+      const res = await request.put("/pushToken?idUser=17").send({
+        "push_token": "unTOken"
       });
       expect(res.body.status).toBe(500);
       expect(res.body.error).toBe(true);
@@ -136,5 +140,6 @@ describe(" Test Suite: Notifications", () => {
       console.log(error.message);
     }
   });
+
 
 });
