@@ -17,6 +17,26 @@ describe(" Test Suite: tokenController", () => {
         expect(validToken.validToken(req)).toBe(true);
     });
 
+    it('Invalid token', async () => {
+        req = { headers: { authorization: 'XXX.eyJ1c2VybmFtZSI6ImhhcmRAdG8ua2lsbCIsInByb2ZpbGUiOjIsImlkIjozLCJpYXQiOjE2MTIyOTU2MDgsImV4cCI6MTYxMjM4MjAwOH0.SdzNBydlVwCbRmJRChTDTiDMDlnAjqIRmoKFc-NSeWs' } }
+        expect(validToken.validToken(req)).toBe(false);
+    });
+
+    it('Empty token', async () => {
+        req = { headers: { authorization: undefined } }
+        expect(validToken.validToken(req)).toBe(false);
+    });
+
+    it('Unable ecode token', async () => {
+        req = { headers: { authorization: 'XXX.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhhcmRAdG8ua2lsbCIsInByb2ZpbGUiOjIsImlkIjozLCJpYXQiOjE2MTIyOTU2MDgsImV4cCI6MTYxMjM4MjAwOH0.SdzNBydlVwCbRmJRChTDTiDMDlnAjqIRmoKFc-NSeWs' } }
+        res = { header: { alg: "HS256", typ: "JWT"}, payload: {exp: 1612382008, iat: 1612295608, id: 3, profile: 2, username: "hard@to.kill"}, signature: "SdzNBydlVwCbRmJRChTDTiDMDlnAjqIRmoKFc-NSeWs"}
+        expect(decodeToken.decodeToken(req)).toStrictEqual({
+            message: 'Token inválido',
+            status:401,
+            error:true
+        });
+    });
+
     it('Decode token', async () => {
         req = { headers: { authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhhcmRAdG8ua2lsbCIsInByb2ZpbGUiOjIsImlkIjozLCJpYXQiOjE2MTIyOTU2MDgsImV4cCI6MTYxMjM4MjAwOH0.SdzNBydlVwCbRmJRChTDTiDMDlnAjqIRmoKFc-NSeWs' } }
         res = { header: { alg: "HS256", typ: "JWT"}, payload: {exp: 1612382008, iat: 1612295608, id: 3, profile: 2, username: "hard@to.kill"}, signature: "SdzNBydlVwCbRmJRChTDTiDMDlnAjqIRmoKFc-NSeWs"}
