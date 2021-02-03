@@ -7,7 +7,7 @@ var apiClient = require("../../src/communication/client/ApiClient.js");
 
 const request = supertest(server);
 
-describe(" Test Suite: Bookings", () => {
+describe(" Test Suite: Ratings", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     const validTokenMock = jest.spyOn(validToken, "validToken");

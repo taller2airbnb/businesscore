@@ -131,7 +131,6 @@ describe(" Test Suite: Bookings", () => {
       apiClientMock.mockReturnValue({
         status: 200,
         message: {
-          "message": {
             alias: "hardtokill",
             blocked: false,
             email: "hard@to.kill",
@@ -142,7 +141,6 @@ describe(" Test Suite: Bookings", () => {
             national_id_type: "DNI",
             profile: 2,
             push_token: null,
-          }
         },
         error: false
       });
