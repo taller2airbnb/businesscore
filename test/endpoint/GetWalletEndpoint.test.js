@@ -4,21 +4,21 @@ var validToken = require("../../src/routes/tokenController.js");
 var decodeToken = require("../../src/routes/tokenController.js");
 var dao = require("../../src/db/index");
 var jwt = require('jsonwebtoken');
-var BlockedStatusEndpoint = require("../../src/communication/endpoints/BlockedStatusEndpoint.js");
+var GetWalletEndpoint = require("../../src/communication/endpoints/GetWalletEndpoint.js");
 
 const request = supertest(server);
 
-describe(" Test Suite: BlockedStatusEndpoint", () => {
+describe(" Test Suite: GetWalletEndpoint", () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
     });
 
     it('Endpoint construct', async () => {
-        endpoint = new BlockedStatusEndpoint(2);
-        expect(endpoint.url()).toBe('/user/2/blocked_status/');
-        expect(endpoint.method()).toBe('PUT');
-        expect(endpoint.needsAuthorization()).toBe(true);
+        endpoint = new GetWalletEndpoint('2');
+        expect(endpoint.url()).toBe('/wallet?creatorId=2');
+        expect(endpoint.method()).toBe('GET');
+        expect(endpoint.needsAuthorization()).toBe(false);
     });
 
 });

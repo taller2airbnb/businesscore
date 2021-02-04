@@ -4,20 +4,20 @@ var validToken = require("../../src/routes/tokenController.js");
 var decodeToken = require("../../src/routes/tokenController.js");
 var dao = require("../../src/db/index");
 var jwt = require('jsonwebtoken');
-var BlockedStatusEndpoint = require("../../src/communication/endpoints/BlockedStatusEndpoint.js");
+var RecoverTokenEndpoint = require("../../src/communication/endpoints/RecoverTokenEndpoint.js");
 
 const request = supertest(server);
 
-describe(" Test Suite: BlockedStatusEndpoint", () => {
+describe(" Test Suite: RecoverTokenEndpoint", () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
     });
 
     it('Endpoint construct', async () => {
-        endpoint = new BlockedStatusEndpoint(2);
-        expect(endpoint.url()).toBe('/user/2/blocked_status/');
-        expect(endpoint.method()).toBe('PUT');
+        endpoint = new RecoverTokenEndpoint('hard@to.kill');
+        expect(endpoint.url()).toBe('/recover_token/hard@to.kill');
+        expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(true);
     });
 
