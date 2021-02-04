@@ -1,15 +1,9 @@
 
 var supertest = require('supertest-as-promised');
 const server = require('../../app.js');
-const axios = require('axios');
 var validToken = require("../../src/routes/tokenController.js");
-var decodeToken = require("../../src/routes/tokenController.js");
-var dao = require("../../src/db/index");
 var apiClient = require("../../src/communication/client/ApiClient.js")
-
-
 const request = supertest(server);
-
 
 describe(" Test Suite: profile", () => {
 
@@ -39,6 +33,25 @@ describe(" Test Suite: profile", () => {
             console.log(error.message)
         }
     });
+
+    it('Create Profile fail ', async () => {
+        try {
+
+            const apiClientMock = jest.spyOn(apiClient.prototype, "addProfile");
+            apiClientMock.mockReturnValue({
+              status: 400,
+              error: true
+            });
+
+            const res = await request.post('/profile').send({
+                "description": "un perfil"
+              });
+            expect(res.body.status).toBe(400);
+            expect(res.body.error).toBe(true);
+        } catch (error) {
+            console.log(error.message)
+        }
+    })
 
     it('Get Profile', async () => {
         try {
