@@ -17,31 +17,29 @@ describe(" Test Suite: user", () => {
 
     it("Get user by id", async () => {
     try {
-      const daoMock = jest.spyOn(dao, "execSql");
-      daoMock.mockResolvedValueOnce([
-        {
-            status: 200,
-            message: {
-                alias: "hardtokill",
-                blocked: false,
-                email: "hard@to.kill",
-                first_name: "John",
-                id: 3,
-                last_name: "McClane",
-                national_id: "77777777",
-                national_id_type: "DNI",
-                profile: 2,
-                push_token: null,
-                wallet: "0x5d527ee765d4806FF2af49bd783B8c11bD5B1841"
-            },
-            error: false
-        },
-      ]);
 
-      daoMock.mockResolvedValueOnce([{ "get_creator_id": 2 }]);
-
-      const apiClientMock = jest.spyOn(apiClient.prototype, "getWallet");
+      const apiClientMock = jest.spyOn(apiClient.prototype, "getUser");
       apiClientMock.mockResolvedValueOnce({
+        status: 200,
+        message: {
+            alias: "hardtokill",
+            blocked: false,
+            email: "hard@to.kill",
+            first_name: "John",
+            id: 3,
+            last_name: "McClane",
+            national_id: "77777777",
+            national_id_type: "DNI",
+            profile: 2,
+            push_token: null,
+        },
+        error: false
+      });
+
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockResolvedValueOnce([{ "get_creator_id": 2 }]);
+      const apiClientWalletMock = jest.spyOn(apiClient.prototype, "getWallet");
+      apiClientWalletMock.mockResolvedValueOnce({
           status: 200,
           message: "unaWallet",
           error: false
@@ -57,26 +55,23 @@ describe(" Test Suite: user", () => {
 
   it("Get users", async () => {
     try {
-      const daoMock = jest.spyOn(dao, "execSql");
-      daoMock.mockReturnValue([
-        {
-            status: 200,
-            message: {
-                alias: "hardtokill",
-                blocked: false,
-                email: "hard@to.kill",
-                first_name: "John",
-                id: 3,
-                last_name: "McClane",
-                national_id: "77777777",
-                national_id_type: "DNI",
-                profile: 2,
-                push_token: null,
-                wallet: "0x5d527ee765d4806FF2af49bd783B8c11bD5B1841"
-            },
-            error: false
-        },
-      ]);
+      const apiClientMock = jest.spyOn(apiClient.prototype, "getUsers");
+      apiClientMock.mockResolvedValueOnce({
+        status: 200,
+        message: [{
+            alias: "hardtokill",
+            blocked: false,
+            email: "hard@to.kill",
+            first_name: "John",
+            id: 3,
+            last_name: "McClane",
+            national_id: "77777777",
+            national_id_type: "DNI",
+            profile: 2,
+            push_token: null,
+        }],
+        error: false
+      });
 
       const res = await request.get("/user").send();
       expect(res.body.status).toBe(200);
@@ -97,6 +92,23 @@ describe(" Test Suite: user", () => {
       });
 
       daoMock.mockResolvedValueOnce([{ "get_creator_id": 2 }]);
+
+      const createIdentityMock = jest.spyOn(apiClient.prototype, "createIdentity");
+      createIdentityMock.mockResolvedValueOnce({
+        status: 200,
+        message: {
+          id: 201,
+          address: "0x45b5ecb08E4dc0639afB7E5F5e01C099714089b5",
+          mnemonic: "abandon abandon abandon abandon ability merry six sight jazz ordinary equal about",
+        },
+        error: false,
+      });
+
+      apiClientMock.mockResolvedValueOnce([
+        {
+          insert_user_wallet: "",
+        },
+      ]);
 
       const res = await request.post("/register").send();
       expect(res.body.status).toBe(200);

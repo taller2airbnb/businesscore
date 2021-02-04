@@ -193,7 +193,6 @@ router.post("/register", async (req, res, next) => {
     });
 
     //Se guarda la relacion wallet vs usuario
-    // pregunta para cesar: porque se guarda el mismo ID 2 veces?
     futureResponseSC.then((resultSC) => {
       const futureDB = dao.execSql("insert_user_wallet", [
         resultProfileServer.message.id,
@@ -297,7 +296,7 @@ router.get("/user/:idUser", async (req, res) => {
  * /user:
  *   get:
  *     tags:
- *       - user
+ *       - users
  *     description: get all users
  *     produces:
  *       - application/json
