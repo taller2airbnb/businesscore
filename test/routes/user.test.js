@@ -13,6 +13,8 @@ describe(" Test Suite: user", () => {
         jest.resetAllMocks();
         const validTokenMock = jest.spyOn(validToken, "validToken");
         validTokenMock.mockReturnValue(true);
+        const dbMock = jest.spyOn(dao, "inicialize");
+        dbMock.mockResolvedValueOnce({});
     });
 
     it("Get user by id", async () => {

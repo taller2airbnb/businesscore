@@ -16,6 +16,8 @@ describe(" Test Suite: wallet", () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
+        const dbMock = jest.spyOn(dao, "inicialize");
+        dbMock.mockResolvedValueOnce({});
     });
 
     it('User get wallet', async () => {

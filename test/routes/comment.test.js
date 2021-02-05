@@ -12,6 +12,8 @@ describe(" Test Suite: comment", () => {
         jest.resetAllMocks();
         const validTokenMock = jest.spyOn(validToken, "validToken");
         validTokenMock.mockReturnValue(true);
+        const dbMock = jest.spyOn(dao, "inicialize");
+        dbMock.mockResolvedValueOnce({});
     });
 
     it("Get comments by posting id", async () => {
