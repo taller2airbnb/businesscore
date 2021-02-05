@@ -1,4 +1,7 @@
 var supertest = require('supertest-as-promised'); 
+var dao = require("../../src/db/index");
+const dbMock = jest.spyOn(dao, "inicialize");
+dbMock.mockResolvedValueOnce({});
 const server = require('../../app.js');
 var validToken = require("../../src/routes/tokenController.js");
 var decodeToken = require("../../src/routes/tokenController.js");
@@ -12,6 +15,8 @@ describe(" Test Suite: GetWalletEndpoint", () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
+        dbMock.mockResolvedValueOnce({});
+
     });
 
     it('Endpoint construct', async () => {

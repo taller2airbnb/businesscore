@@ -1,9 +1,14 @@
 
 var supertest = require('supertest-as-promised');
+var dao = require("../../src/db/index");
+const dbMock = jest.spyOn(dao, "inicialize");
+dbMock.mockResolvedValueOnce({});
 const server = require('../../app.js');
 var validToken = require("../../src/routes/tokenController.js");
 var apiClient = require("../../src/communication/client/ApiClient.js")
 const request = supertest(server);
+
+
 
 describe(" Test Suite: profile", () => {
 
@@ -12,6 +17,8 @@ describe(" Test Suite: profile", () => {
         jest.resetAllMocks();
         const validTokenMock = jest.spyOn(validToken, "validToken");
         validTokenMock.mockReturnValue(true);
+        dbMock.mockResolvedValueOnce({});
+
     });
 
     it('Create Profile', async () => {

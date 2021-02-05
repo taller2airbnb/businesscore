@@ -1,14 +1,15 @@
 
 var supertest = require('supertest-as-promised');
+var dao = require("../../src/db/index");
+const dbMock = jest.spyOn(dao, "inicialize");
+dbMock.mockResolvedValueOnce({});
 const server = require('../../app.js');
 const axios = require('axios');
 var validToken = require("../../src/routes/tokenController.js");
 var decodeToken = require("../../src/routes/tokenController.js");
-var dao = require("../../src/db/index");
 var apiClient = require("../../src/communication/client/ApiClient.js")
-
-
 const request = supertest(server);
+
 
 
 describe(" Test Suite: wallet", () => {
@@ -16,7 +17,6 @@ describe(" Test Suite: wallet", () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
-        const dbMock = jest.spyOn(dao, "inicialize");
         dbMock.mockResolvedValueOnce({});
     });
 

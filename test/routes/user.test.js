@@ -1,11 +1,16 @@
 var supertest = require('supertest-as-promised'); 
+var dao = require("../../src/db/index");
+const dbMock = jest.spyOn(dao, "inicialize");
+dbMock.mockResolvedValueOnce({});
+dbMock.mockResolvedValueOnce({});
 const server = require('../../app.js');
 var validToken = require("../../src/routes/tokenController.js");
 var decodeToken = require("../../src/routes/tokenController.js");
-var dao = require("../../src/db/index");
 var apiClient = require("../../src/communication/client/ApiClient.js");
 
 const request = supertest(server);
+
+
 
 describe(" Test Suite: user", () => {
 
@@ -13,7 +18,6 @@ describe(" Test Suite: user", () => {
         jest.resetAllMocks();
         const validTokenMock = jest.spyOn(validToken, "validToken");
         validTokenMock.mockReturnValue(true);
-        const dbMock = jest.spyOn(dao, "inicialize");
         dbMock.mockResolvedValueOnce({});
     });
 

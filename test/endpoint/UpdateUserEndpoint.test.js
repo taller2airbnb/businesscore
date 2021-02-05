@@ -1,4 +1,7 @@
 var supertest = require('supertest-as-promised'); 
+var dao = require("../../src/db/index");
+const dbMock = jest.spyOn(dao, "inicialize");
+dbMock.mockResolvedValueOnce({});
 const server = require('../../app.js');
 var UpdateUserEndpoint = require("../../src/communication/endpoints/UpdateUserEndpoint.js");
 
@@ -8,6 +11,8 @@ describe(" Test Suite: UpdateUserEndpoint", () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
+        dbMock.mockResolvedValueOnce({});
+
     });
 
     it('Endpoint construct', async () => {

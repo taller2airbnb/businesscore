@@ -1,11 +1,13 @@
 var supertest = require("supertest-as-promised");
+var dao = require("../../src/db/index");
+const dbMock = jest.spyOn(dao, "inicialize");
+dbMock.mockResolvedValueOnce({});
 const server = require("../../app.js");
 var validToken = require("../../src/routes/tokenController.js");
 var decodeToken = require("../../src/routes/tokenController.js");
 var dao = require("../../src/db/index");
 var apiClient = require("../../src/communication/client/ApiClient.js");
 const { Expo } = require("expo-server-sdk");
-
 
 const request = supertest(server);
 
@@ -14,6 +16,7 @@ describe(" Test Suite: Notifications", () => {
     jest.resetAllMocks();
     const validTokenMock = jest.spyOn(validToken, "validToken");
     validTokenMock.mockReturnValue(true);
+    dbMock.mockResolvedValueOnce({});
   });
 
   it("Send Notification", async () => {
