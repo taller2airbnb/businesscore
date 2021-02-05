@@ -7,11 +7,11 @@ var validToken = require("../../src/routes/tokenController.js");
 var decodeToken = require("../../src/routes/tokenController.js");
 var dao = require("../../src/db/index");
 var jwt = require('jsonwebtoken');
-var GetUsersEndpoint = require("../../src/communication/endpoints/GetUsersEndpoint.js");
+var GetUserEndpoint = require("../../src/communication/endpoints/GetUserEndpoint.js");
 
 const request = supertest(server);
 
-describe(" Test Suite: GetUsersEndpoint", () => {
+describe(" Test Suite: GetUserEndpoint", () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -20,7 +20,7 @@ describe(" Test Suite: GetUsersEndpoint", () => {
     });
 
     it('Endpoint construct', async () => {
-        endpoint = new GetUsersEndpoint();
+        endpoint = new GetUserEndpoint(2);
         expect(endpoint.url()).toBe('/user/2');
         expect(endpoint.method()).toBe('GET');
         expect(endpoint.needsAuthorization()).toBe(true);
