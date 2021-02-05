@@ -24,6 +24,7 @@ describe(" Test Suite: GetWalletEndpoint", () => {
         expect(endpoint.url()).toBe('/wallet?creatorId=2');
         expect(endpoint.method()).toBe('GET');
         expect(endpoint.needsAuthorization()).toBe(false);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

@@ -20,6 +20,7 @@ describe(" Test Suite: UpdateUserEndpoint", () => {
         expect(endpoint.url()).toBe("/user/");
         expect(endpoint.method()).toBe('PUT');
         expect(endpoint.needsAuthorization()).toBe(true);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

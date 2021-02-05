@@ -24,6 +24,7 @@ describe(" Test Suite: RegisterUserRoomEndpoint", () => {
         expect(endpoint.url()).toBe('/room');
         expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(false);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

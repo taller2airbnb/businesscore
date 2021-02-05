@@ -20,6 +20,7 @@ describe(" Test Suite: RejectBookingEndpoint", () => {
         expect(endpoint.url()).toBe("/rejectBooking");
         expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(false);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

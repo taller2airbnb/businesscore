@@ -21,6 +21,7 @@ describe(" Test Suite: AddProfileEndpoint", () => {
         expect(endpoint.url()).toBe("/profiles/add/");
         expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(true);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

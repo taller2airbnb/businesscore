@@ -20,6 +20,7 @@ describe(" Test Suite: ProfileEndpoint", () => {
         expect(endpoint.url()).toBe('/profiles/');
         expect(endpoint.method()).toBe('GET');
         expect(endpoint.needsAuthorization()).toBe(true);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

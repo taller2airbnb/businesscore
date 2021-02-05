@@ -24,6 +24,7 @@ describe(" Test Suite: BlockedStatusEndpoint", () => {
         expect(endpoint.url()).toBe('/user/2/blocked_status/');
         expect(endpoint.method()).toBe('PUT');
         expect(endpoint.needsAuthorization()).toBe(true);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

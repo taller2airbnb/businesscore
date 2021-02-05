@@ -24,6 +24,7 @@ describe(" Test Suite: RecoverTokenEndpoint", () => {
         expect(endpoint.url()).toBe('/recover_token/hard@to.kill');
         expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(true);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });
