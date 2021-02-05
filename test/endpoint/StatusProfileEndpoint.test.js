@@ -18,6 +18,7 @@ describe(" Test Suite: StatusProfileEndpoint", () => {
         endpoint = new StatusProfileEndpoint();
         expect(endpoint.url()).toBe("/health");
         expect(endpoint.method()).toBe('GET');
+        expect(endpoint.ownResponses().length).toBe(1);
         expect(endpoint.needsAuthorization()).toBe(true);
     });
 

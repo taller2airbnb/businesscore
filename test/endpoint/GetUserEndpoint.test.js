@@ -24,6 +24,7 @@ describe(" Test Suite: GetUserEndpoint", () => {
         expect(endpoint.url()).toBe('/user/2');
         expect(endpoint.method()).toBe('GET');
         expect(endpoint.needsAuthorization()).toBe(true);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });
