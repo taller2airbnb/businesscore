@@ -24,6 +24,7 @@ describe(" Test Suite: ChangePasswordEndpoint", () => {
         expect(endpoint.url()).toBe('/user/hard@to.kill/password/');
         expect(endpoint.method()).toBe('PUT');
         expect(endpoint.needsAuthorization()).toBe(true);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

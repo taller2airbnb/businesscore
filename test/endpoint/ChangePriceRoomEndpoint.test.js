@@ -20,6 +20,7 @@ describe(" Test Suite: ChangePriceRoomEndpoint", () => {
         expect(endpoint.url()).toBe('/changePriceRoom');
         expect(endpoint.method()).toBe('PUT');
         expect(endpoint.needsAuthorization()).toBe(false);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

@@ -24,6 +24,7 @@ describe(" Test Suite: RegisterEndpoint", () => {
         expect(endpoint.url()).toBe('/user/');
         expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(true);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

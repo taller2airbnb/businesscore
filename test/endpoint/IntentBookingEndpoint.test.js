@@ -20,6 +20,7 @@ describe(" Test Suite: IntentBookingEndpoint", () => {
         expect(endpoint.url()).toBe('/intentBooking');
         expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(false);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

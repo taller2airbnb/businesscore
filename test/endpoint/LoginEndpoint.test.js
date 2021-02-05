@@ -19,6 +19,7 @@ describe(" Test Suite: PutPushTokenEndpoint", () => {
         expect(endpoint.url()).toBe("/login/");
         expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(true);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

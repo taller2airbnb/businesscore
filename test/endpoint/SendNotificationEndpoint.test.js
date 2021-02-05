@@ -24,6 +24,7 @@ describe(" Test Suite: SendNotificationEndpoint", () => {
         expect(endpoint.url()).toBe('push/send');
         expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(false);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });

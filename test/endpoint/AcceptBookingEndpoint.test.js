@@ -24,6 +24,7 @@ describe(" Test Suite: AcceptBookingEndpoint", () => {
         expect(endpoint.url()).toBe('/acceptBooking');
         expect(endpoint.method()).toBe('POST');
         expect(endpoint.needsAuthorization()).toBe(false);
+        expect(endpoint.ownResponses().length).toBe(2);
     });
 
 });
