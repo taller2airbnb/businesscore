@@ -361,6 +361,14 @@ router.delete("/posting/:idPosting", async (req, res) => {
  *         required: false
  *         type: number
  *         description: '2'
+ *       - name: latitude
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: longitude
+ *         in: query
+ *         required: false
+ *         type: number
  *     responses:
  *          '200':
  *           description:  OK
@@ -368,6 +376,7 @@ router.delete("/posting/:idPosting", async (req, res) => {
 router.get("/posting/search", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   try {
+    let radio = 25;
     const response = await dao.execSql("search_posting", [
       req.query.priceMin,
       req.query.priceMax,
@@ -375,7 +384,10 @@ router.get("/posting/search", async (req, res) => {
       req.query.endDate,
       req.query.feature,
       req.query.name,
-      req.query.max_number_guests
+      req.query.max_number_guests,
+      req.query.latitude,
+      req.query.longitude,
+      radio
     ]);
     res.send({ message: response, status: 200, error: false });
     logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response });
@@ -522,6 +534,14 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
  *         required: false
  *         type: number
  *         description: '2'
+ *       - name: latitude
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: longitude
+ *         in: query
+ *         required: false
+ *         type: number
  *     responses:
  *          '200':
  *           description:  OK
@@ -529,6 +549,7 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
 router.get("/posting/searchLiked", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   try {
+    let radio = 25;
     const response = await dao.execSql("search_posting_liked", [
       req.query.priceMin,
       req.query.priceMax,
@@ -536,7 +557,10 @@ router.get("/posting/searchLiked", async (req, res) => {
       req.query.endDate,
       req.query.feature,
       req.query.name,
-      req.query.max_number_guests
+      req.query.max_number_guests,
+      req.query.latitude,
+      req.query.longitude,
+      radio
     ]);
     res.send({ message: response, status: 200, error: false });
     logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response });
