@@ -84,16 +84,18 @@ router.post("/intentBooking", async (req, res) => {
         posting.id_user,
         handlerResponse.handlerResponse
       );
+      let requestNotification = {}
+      requestNotification["to"] = userResponse.message.push_token;
+      requestNotification["title"] = "Intent Booking:" + posting.name;
+      requestNotification["body"] = "Dates: " + req.body.initialDate
+        + " to " + req.body.lastDate + " from " + tokenDecode.payload.username;
       if (userResponse.message.push_token != null) {
-        let requestNotification = {}
-        requestNotification["to"] = userResponse.message.push_token;
-        requestNotification["title"] = "Intent Booking:" + posting.name;
-        requestNotification["body"] = "Dates: " + req.body.initialDate
-          + " to " + req.body.lastDate + " from " + tokenDecode.payload.username;
         apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
+      } else {
+        logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
       }
     } catch (error) {
-      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error});
     }
 
     const messageBooking = await apiClientSC.intentBooking(body, handlerResponse.handlerResponse);
@@ -203,18 +205,21 @@ router.post("/acceptBooking", async (req, res) => {
         get_user_id,
         handlerResponse.handlerResponse
       );
+
+      let requestNotification = {}
+      requestNotification["to"] = userResponse.message.push_token;
+      requestNotification["title"] = "Accept Booking:" + posting.name;
+      requestNotification["body"] = "Dates: " + requestAcceptBooking.initial_year + "-"
+        + requestAcceptBooking.initial_month + "-" + requestAcceptBooking.last_day
+        + " to " + requestAcceptBooking.last_year + "-"
+        + requestAcceptBooking.last_month + "-" + requestAcceptBooking.last_day + " from " + tokenDecode.payload.username;
       if (userResponse.message.push_token != null) {
-        let requestNotification = {}
-        requestNotification["to"] = userResponse.message.push_token;
-        requestNotification["title"] = "Accept Booking:" + posting.name;
-        requestNotification["body"] = "Dates: " + requestAcceptBooking.initial_year + "-"  
-          + requestAcceptBooking.initial_month + "-"  +  requestAcceptBooking.last_day
-          + " to " +  requestAcceptBooking.last_year + "-"  
-          + requestAcceptBooking.last_month + "-"  +  requestAcceptBooking.last_day + " from " + tokenDecode.payload.username;
         apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
+      } else {
+        logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
       }
     } catch (error) {
-      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error });
     }
 
 
@@ -273,18 +278,21 @@ router.post("/rejectBooking", async (req, res) => {
         get_user_id,
         handlerResponse.handlerResponse
       );
+      let requestNotification = {}
+
+      requestNotification["to"] = userResponse.message.push_token;
+      requestNotification["title"] = "Reject Booking:" + posting.name;
+      requestNotification["body"] = "Dates: " + requestRejectBooking.initial_year + "-"
+        + requestRejectBooking.initial_month + "-" + requestRejectBooking.last_day
+        + " to " + requestRejectBooking.last_year + "-"
+        + requestRejectBooking.last_month + "-" + requestRejectBooking.last_day + " from " + tokenDecode.payload.username;
       if (userResponse.message.push_token != null) {
-        let requestNotification = {}
-        requestNotification["to"] = userResponse.message.push_token;
-        requestNotification["title"] = "Reject Booking:" + posting.name;
-        requestNotification["body"] = "Dates: " + requestRejectBooking.initial_year + "-"  
-          + requestRejectBooking.initial_month + "-"  +  requestRejectBooking.last_day
-          + " to " +  requestRejectBooking.last_year + "-"  
-          + requestRejectBooking.last_month + "-"  +  requestRejectBooking.last_day + " from " + tokenDecode.payload.username;
         apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
+      } else {
+        logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
       }
     } catch (error) {
-      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error });
     }
     res.status(200).send({ message: rejectBooking.message, status: 200, error: false });
     logger.log({service: req.method + ": "  + req.originalUrl, level: 'info', message: rejectBooking.message});
