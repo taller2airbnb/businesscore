@@ -10,7 +10,7 @@ const {Storage} = require('@google-cloud/storage');
 const Multer = require('multer');
 
 const storage = new Storage({
-  credentials: require('../config/bookbnb-degoas-ed-53962d7eeb24.json')
+  // credentials: require('../config/bookbnb-degoas-ed-53962d7eeb24.json')
 });
 
 const bucket = storage.bucket("/user-upload-images/");
