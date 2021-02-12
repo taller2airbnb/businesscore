@@ -4,12 +4,13 @@ var cors = require("cors");
 router.use(cors());
 router.options("*", cors());
 
-const googleStorage = require('@google-cloud/storage');
+const { logger } = require("../config/logger.js");
+const {Storage} = require('@google-cloud/storage');
+
 const Multer = require('multer');
 
-const storage = googleStorage({
-  projectId: "bookbnb-degoas-ed",
-  keyFilename: "../config/google-services.json"
+const storage = new Storage({
+  credentials: require('../config/bookbnb-degoas-ed-53962d7eeb24.json')
 });
 
 const bucket = storage.bucket("/user-upload-images/");
@@ -22,10 +23,34 @@ const multer = Multer({
 });
 
 /**
- * Adding new file to the storage
+ * @swagger
+ * /upload:
+ *   post:
+ *     tags:
+ *       - images
+ *     description: Image upload
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: file
+ *         description: Image to store
+ *         in: formData
+ *         required: true
+ *         type: file
+ *     responses:
+ *       200:
+ *         description: Successfully image upload
+ *       500:
+ *         description: Server error
  */
 router.post('/upload', multer.single('file'), (req, res) => {
-  console.log('Upload Image');
+    logger.log({
+      service: req.method + ": " + req.originalUrl,
+      level: "info",
+      message: "Image upload" + req.file.originalname,
+    });
 
   let file = req.file;
   if (file) {
@@ -34,7 +59,14 @@ router.post('/upload', multer.single('file'), (req, res) => {
         status: 'success'
       });
     }).catch((error) => {
-      console.error(error);
+      logger.log({
+      service: req.method + ": " + req.originalUrl,
+      level: "error",
+      message: error.message,
+    });
+    res
+      .status(500)
+      .send({ message: error, status: 500, error: true });
     });
   }
 });

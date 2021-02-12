@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "bookbnb-degoas-ed",
+  "private_key_id": "53962d7eeb24c8253fdb2674e74d75e398212632",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDLmB/DANfZrMcx\n5vWPEvfqqjDLcVZvSES/jk+B7c+0qk9sryC7TiTBKXiqXF4vNRUTKTwQPrve6ajA\nk853XAX5kHDYDITgzsWi3CFovk+P4H5TV8aGGKuO8VrwEZ25VpYH/cWROA6o7T5R\ncWzE3tm5Xhozkut6Ut7VYFZuITo7Sd8sF3oBptpP11cy4rTKOa5QbPn7Nd122t3n\niu/pgv3su+tA4BS616Hg/tkGDqXnmuujvcGAZudF0vX7XkYl0dDr0MhuKRg/jQ+P\nPOY8eAlovQk6oSVgviGprrj8FKKfwNT9tlGmY0OzwKRZK4CZwiKB9WrNVzuljWD8\nYBsastEtAgMBAAECggEAKOGoWRAZh75btk/F9b+NlCuuBiABRvG4Sk2xdenSmBjN\nv4lv9WSE2VuyPOU0zV5nl7QjOTDbqTB6oAbeAdYy5fDE1AE5imnCwkfZFo8Ga2Hd\nA++/b6xTAK5CwCuNZAq4sCybSCR9Pxr6dUClImgMSJ5WfQ4uph6vW6HPYShfaMl5\n5t2myRkgfi0LsAJ2aXtFbd90m0DadhiLUcifA68KLaWR7QAHPvjemcKY3gzDstrW\nAPBu1uX7WIP5KZzt9WJDxoEwbt6YPf3wLFcAI8IZ1jNu8Lo7Eh+W6apvNXNo8DfO\ncK8K+9P4Evt3PKsEF6ENLW1rnabdDju0I88F4Rm6OQKBgQD2pWuYtFCa3aT3Iuo9\n574UL7tLSB8LXLNxiazMZOu9KBdcLKb9BQ1g95177vnCzjY9MGw4XSVQ6NsetEOq\nDyEEWb1cakwAKP6228Jitbj1f9aV73HKObCVaB3oh0KBABlfnDRj/O4yBi9Za51H\nY/xzzcK7pfv3bkl377SV56AIxQKBgQDTULs5y4Mu3vHRQUReHy2j14DhJIWZFK7C\n4i4ibDDGow/IqgTTn6thPE5DTo9JereeSMkB325YNIdAcftkBerl5L0BxR3bT0EA\nglsQKJy9rWWsAursZfTvFpns+13xrblLSMNo3eY7BaB2QyjY9RZan1oXPem3+HmP\nXqcP1eodSQKBgQCP3qYIiQWLkEYtsjwYqBkEBWOm4gbZxdUWIUyeXS/1QnF93r35\nUP0g1s8R/6/IpiiVQK2foxWlQG6wVk4x4GlN9Fq0kXyLi14oo7+bfIzLByrQgr9J\nSqVqQTVQ8bUlMj2au68DtAHtRBZSfqdbgUM8+YThmEyFY9uPDk+0MUv0UQKBgFZz\npOVUOWsnks8FYK8RGl75f6SciHvEVmsslatHj/z0ITT7OdZKcJbrUSmALmbladG7\n/WBixIYZl2vqNesJ8Lv1BM6AkmJy3ikTK6ZEtztygTIKT4o/fCGEoZyuihSh+jiu\noCN7BQIIn0lC2KdKPcb9gqIXllLJuRHKq5Zy8cDhAoGACQ31DVYQ4Pn6uB5NuABd\n7e4sfHrKUgP9oSHBCh8AtIsHmwELrOxZwpWDcKmg3zihOmmCKrifxB7dT1CXcbJk\nte73IwB0Vk5PMwR2P5yJu4B1H5gxRaCTuGdrBbf6yF2wOsQohnyCEyjGMvEQ7kaR\nRh6wWU+DNDuPGhCQol5WQhU=\n-----END PRIVATE KEY-----\n",
+  "client_email": "bussines-core-admin-sdk@bookbnb-degoas-ed.iam.gserviceaccount.com",
+  "client_id": "106098158470731911256",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bussines-core-admin-sdk%40bookbnb-degoas-ed.iam.gserviceaccount.com"
+}
