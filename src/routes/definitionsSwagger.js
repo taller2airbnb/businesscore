@@ -261,7 +261,14 @@
  *         type: boolean
  */
 
-
+ /**
+ * @swagger
+ * definitions:
+ *   ImageAdd:
+ *     properties:
+ *       name:
+ *         type: string
+ */
 
 
 
