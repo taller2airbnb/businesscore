@@ -10,10 +10,10 @@ const {Storage} = require('@google-cloud/storage');
 const Multer = require('multer');
 
 const storage = new Storage({
-  // credentials: require('../config/bookbnb-degoas-ed-53962d7eeb24.json')
+  credentials: require('../config/bookbnb-degoas-ed-firebase-adminsdk-j0yl9-8fffe79fdf.json')
 });
 
-const bucket = storage.bucket("/user-upload-images/");
+const bucket = storage.bucket("gs://bookbnb-degoas-ed.appspot.com");
 
 const multer = Multer({
   storage: Multer.memoryStorage(),
@@ -31,6 +31,8 @@ const multer = Multer({
  *     description: Image upload
  *     produces:
  *       - application/json
+ *     consumes:
+ *       - multipart/form-data
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -45,63 +47,32 @@ const multer = Multer({
  *       500:
  *         description: Server error
  */
-router.post('/upload', multer.single('file'), (req, res) => {
-    logger.log({
-      service: req.method + ": " + req.originalUrl,
-      level: "info",
-      message: "Image upload" + req.file.originalname,
-    });
+router.post('/upload', multer.single('file'), async (req, res) => {
+  logger.log({
+    service: req.method + ": " + req.originalUrl,
+    level: "info",
+    message: "Image upload" + req.file.originalname,
+  });
 
   let file = req.file;
+
   if (file) {
-    uploadImageToStorage(file).then((success) => {
-      res.status(200).send({
-        status: 'success'
-      });
-    }).catch((error) => {
-      logger.log({
-      service: req.method + ": " + req.originalUrl,
-      level: "error",
-      message: error.message,
-    });
-    res
-      .status(500)
-      .send({ message: error, status: 500, error: true });
-    });
-  }
-});
 
-/**
- * Upload the image file to Google Storage
- * @param {File} file object that will be uploaded to Google Storage
- */
-const uploadImageToStorage = (file) => {
-  return new Promise((resolve, reject) => {
-    if (!file) {
-      reject('No image file');
-    }
-    let newFileName = `${file.originalname}_${Date.now()}`;
-
-    let fileUpload = bucket.file(newFileName);
-
-    const blobStream = fileUpload.createWriteStream({
-      metadata: {
-        contentType: file.mimetype
+    bucket.upload("/Users/ccordoba/Documents/" + file.originalname, function(error, file) {
+      if (!error) {
+        res.status(200).send({
+          message: "Image upload: " + file.metadata.name,
+          status: 200,
+          error: false
+        });
+      } else {
+        res.status(500).send({ 
+          message: error, status: 500, error: true 
+        });
       }
     });
-
-    blobStream.on('error', (error) => {
-      reject('Something is wrong! Unable to upload at the moment.');
-    });
-
-    blobStream.on('finish', () => {
-      // The public URL can be used to directly access the file via HTTP.
-      const url = format(`https://storage.googleapis.com/${bucket.name}/${fileUpload.name}`);
-      resolve(url);
-    });
-
-    blobStream.end(file.buffer);
-  });
-}
+    
+  }
+});
 
 module.exports = router;
