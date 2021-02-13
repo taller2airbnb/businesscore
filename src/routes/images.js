@@ -25,7 +25,7 @@ const multer = Multer({
 
 /**
  * @swagger
- * /upload:
+ * /upload/{idPosting}:
  *   post:
  *     tags:
  *       - images
@@ -42,13 +42,18 @@ const multer = Multer({
  *         in: formData
  *         required: true
  *         type: file
+*       - name: idPosting
+ *         in: path
+ *         description: idposting
+ *         required: true
+ *         type: number
  *     responses:
  *       200:
  *         description: Successfully image upload
  *       500:
  *         description: Server error
  */
-router.post('/upload', multer.single('file'), async (req, res) => {
+router.post('/upload/:idPosting', multer.single('file'), async (req, res) => {
   // if (!validToken.validToken(req, res)) return;
   // let tokenDecode = decodeToken.decodeToken(req);
 
@@ -58,17 +63,39 @@ router.post('/upload', multer.single('file'), async (req, res) => {
     message: "Image upload: " + req.file.originalname,
   });
 
+  let newFileName;
+
+  try {
+    const imagePosting = await dao.execSql("insert_image_posting", [req.params.idPosting]);
+    newFileName = `${imagePosting[0].id_image_posting}`;
+
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: 'Success insert image posting' });
+  } catch (error) {
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Insert image failed: " + error, status: 500, error: true });
+  };
+
   let file = req.file;
+  let fileUpload = bucket.file(newFileName);
 
   if (file) {
+    const options = {
+      destination: newFileName,
+      validation: 'crc32c',
+      contentType: file.mimetype
+    };
 
-    bucket.upload("/Users/ccordoba/Documents/" + file.originalname, function(error, file) {
+    bucket.upload("/Users/ccordoba/Documents/" + file.originalname, options, async function(error, fileUpload) {
       if (!error) {
+        
         res.status(200).send({
-          message: "Success image upload: " + file.metadata.name,
+          message: "Success image upload: " + fileUpload.metadata.name,
           status: 200,
           error: false
         });
+
       } else {
         res.status(500).send({ 
           message: error, status: 500, error: true 
@@ -77,52 +104,6 @@ router.post('/upload', multer.single('file'), async (req, res) => {
     });
     
   }
-});
-
-/**
- * @swagger
- * /imagePosting/{idPosting}:
- *   post:
- *     tags:
- *       - images
- *     description: Insert  
- *     produces:
- *       - application/json
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: idPosting
- *         in: path
- *         description: idposting
- *         required: true
- *         type: number
- *       - name: body
- *         description: Image to Posting
- *         in: body
- *         required: true
- *         schema:
- *           $ref: '#/definitions/ImageAdd'
- *     responses:
- *       200:
- *         description: Successfully rating a posting
- *       500:
- *         description: Server error
- */
-router.post("/imagePosting/:idPosting", async (req, res) => {
-  // if (!validToken.validToken(req, res)) return;
-  // let tokenDecode = decodeToken.decodeToken(req);
-
-  try {
-    const imagePosting = await dao.execSql("insert_image_posting", [req.params.idPosting, req.body.name]);
-
-    res.status(200).send({ message: imagePosting[0], status: 200, error: false });
-    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: 'Success insert image posting' });
-  } catch (error) {
-    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
-    res
-      .status(500)
-      .send({ message: "Insert image failed: " + error, status: 500, error: true });
-  };
 });
 
 module.exports = router;
