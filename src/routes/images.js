@@ -74,10 +74,11 @@ router.post('/upload/:idPosting', multer.single('file'), async (req, res) => {
   });
 
   let newFileName;
+  let imagePosting;
   const fileContents = new Buffer(req.body.file, 'base64');
 
   try {
-    const imagePosting = await dao.execSql("insert_image_posting", [req.params.idPosting]);
+    imagePosting = await dao.execSql("insert_image_posting", [req.params.idPosting]);
     newFileName = `${imagePosting[0].id_image_posting}`;
 
     logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: 'Success insert image_posting' });
@@ -115,13 +116,21 @@ router.post('/upload/:idPosting', multer.single('file'), async (req, res) => {
     res.status(500).send({ 
           message: error, status: 500, error: true });
   })
-  . on('finish', (file) => {
-    res.status(200).send({
-          message: "Success file upload",
-          status: 200,
-          error: false,
-          downloadURL: resDownloadUrl
-        });
+  .on('finish', async (file) => {
+    try {
+      const id_image = imagePosting[0].id_image_posting;
+      await dao.execSql("update_image_posting", [id_image, resDownloadUrl]); 
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: 'Success update image_posting' });
+      res.status(200).send({
+        message: "Success file upload",
+        status: 200,
+        error: false,
+        downloadURL: resDownloadUrl
+      });
+    } catch (error) {
+      logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+      res.status(500).send({ message: "Update image_posting failed: " + error, status: 500, error: true });
+    };
   });
 
 });
