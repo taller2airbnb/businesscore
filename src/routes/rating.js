@@ -41,8 +41,13 @@ const { logger } = require("../config/logger.js");
 router.post("/ratingPosting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
-
+  if (req.body.score < 0 || req.body.score > 5) {
+    res.status(400)
+      .send({ message: "The score must be between 0 and 5", status: 400, error: true })
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "The score must be between 0 and 5" });
+  }
   try {
+    
     const infoRating = await dao.execSql("rating_posting", [tokenDecode.payload.id, req.params.idPosting, req.body.score, req.body.content]);
 
     res.status(200).send({ message: infoRating[0], status: 200, error: false });
@@ -54,6 +59,8 @@ router.post("/ratingPosting/:idPosting", async (req, res) => {
       .send({ message: "Posting rating failed: " + error, status: 500, error: true });
   };
 });
+
+
 
 
 /**
@@ -88,6 +95,11 @@ router.post("/ratingPosting/:idPosting", async (req, res) => {
 router.post("/ratingBooker/:idUser", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
+  if (req.body.score < 0 || req.body.score > 5) {
+    res.status(400)
+      .send({ message: "The score must be between 0 and 5", status: 400, error: true })
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "The score must be between 0 and 5" });
+  }
 
   try {
     const infoRating = await dao.execSql("rating_booker", [tokenDecode.payload.id, req.params.idUser, req.body.score, req.body.content]);
@@ -104,11 +116,11 @@ router.post("/ratingBooker/:idUser", async (req, res) => {
 
 /**
  * @swagger
- * /rating/user:
+ * /ratingAverage/user:
  *    get:
  *     tags:
  *       - rating
- *     description: get rating posting
+ *     description: get average rating posting
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -120,7 +132,7 @@ router.post("/ratingBooker/:idUser", async (req, res) => {
  *          '200':
  *           description:  OK
  */
-router.get("/rating/user", async (req, res) => {
+router.get("/ratingAverage/user", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   try {
     let score_avg = (await dao.execSql("get_rating_average_user", [req.query.idUser]))[0];
@@ -145,11 +157,92 @@ router.get("/rating/user", async (req, res) => {
 
 /**
  * @swagger
+ * /ratingAverage/posting:
+ *    get:
+ *     tags:
+ *       - rating
+ *     description: get average rating posting
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: idPosting
+ *         in: query
+ *         required: true
+ *         type: number
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/ratingAverage/posting", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  try {
+    let score_avg = (await dao.execSql("get_rating_average_posting", [req.query.idPosting]))[0];
+    score_avg  = score_avg ? parseFloat(score_avg.average_score_posting)  : 0; 
+    res.status(200).send({ message: score_avg, status: 200, error: false });
+    logger.log({
+      service: req.method + ": " + req.originalUrl,
+      level: "info",
+      message: score_avg,
+    });
+  } catch (error) {
+    logger.log({
+      service: req.method + ": " + req.originalUrl,
+      level: "error",
+      message: error.message,
+    });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
+/**
+ * @swagger
+ * /rating/user:
+ *    get:
+ *     tags:
+ *       - rating
+ *     description: get user ratings
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: idUser
+ *         in: query
+ *         required: true
+ *         type: number
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/rating/user", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  try {
+    let get_ratings_user = (await dao.execSql("get_ratings_user", [req.query.idUser]));
+    res.status(200).send({ message: get_ratings_user, status: 200, error: false });
+    logger.log({
+      service: req.method + ": " + req.originalUrl,
+      level: "info",
+      message: get_ratings_user,
+    });
+  } catch (error) {
+    logger.log({
+      service: req.method + ": " + req.originalUrl,
+      level: "error",
+      message: error.message,
+    });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
+/**
+ * @swagger
  * /rating/posting:
  *    get:
  *     tags:
  *       - rating
- *     description: get rating posting
+ *     description: get posting ratings
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -164,13 +257,12 @@ router.get("/rating/user", async (req, res) => {
 router.get("/rating/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   try {
-    let score_avg = (await dao.execSql("get_rating_average_posting", [req.query.idPosting]))[0];
-    score_avg  = score_avg ? parseFloat(score_avg.average_score_posting)  : 0; 
-    res.status(200).send({ message: score_avg, status: 200, error: false });
+    let get_ratings_posting = (await dao.execSql("get_ratings_posting", [req.query.idPosting]));
+    res.status(200).send({ message: get_ratings_posting, status: 200, error: false });
     logger.log({
       service: req.method + ": " + req.originalUrl,
       level: "info",
-      message: score_avg,
+      message: get_ratings_posting,
     });
   } catch (error) {
     logger.log({
