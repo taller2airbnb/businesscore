@@ -1,4 +1,7 @@
 const { Router } = require("express");
+const { Buffer } = require("buffer");
+const stream = require('stream');
+
 const router = Router();
 var cors = require("cors");
 router.use(cors());
@@ -30,23 +33,29 @@ const multer = Multer({
  *     tags:
  *       - images
  *     description: Image upload
+ *     consumes: 
+ *       - multipart/form-data
  *     produces:
  *       - application/json
- *     consumes:
- *       - multipart/form-data
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - name: file
- *         description: Image to store
+ *         description: File to store
  *         in: formData
+ *         type: string
  *         required: true
- *         type: file
-*       - name: idPosting
- *         in: path
+ *         format: base64
+ *       - name: idPosting
  *         description: idposting
+ *         in: path
  *         required: true
  *         type: number
+ *       - name: metaContentType
+ *         description: content type metadata
+ *         in: query
+ *         required: false
+ *         type: string
  *     responses:
  *       200:
  *         description: Successfully image upload
@@ -60,50 +69,56 @@ router.post('/upload/:idPosting', multer.single('file'), async (req, res) => {
   logger.log({
     service: req.method + ": " + req.originalUrl,
     level: "info",
-    message: "Image upload: " + req.file.originalname,
+    message: "File upload to post: " + req.params.idPosting,
   });
 
   let newFileName;
+  const fileContents = new Buffer(req.body.file, 'base64');
 
   try {
     const imagePosting = await dao.execSql("insert_image_posting", [req.params.idPosting]);
     newFileName = `${imagePosting[0].id_image_posting}`;
 
-    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: 'Success insert image posting' });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: 'Success insert image_posting' });
   } catch (error) {
     logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
     res
       .status(500)
-      .send({ message: "Insert image failed: " + error, status: 500, error: true });
+      .send({ message: "Insert file failed: " + error, status: 500, error: true });
   };
 
-  let file = req.file;
-  let fileUpload = bucket.file(newFileName);
+  let bufferStream = new stream.PassThrough();
+  bufferStream.end(fileContents);
+  
+  let file = bucket.file(newFileName);
+  const config = {
+    action: 'read',
+    expires: '01-01-2050'
+  };
 
-  if (file) {
-    const options = {
-      destination: newFileName,
-      validation: 'crc32c',
-      contentType: file.mimetype
-    };
+  var resDownloadUrl;
+  file.getSignedUrl(config).then(function(result){
+      resDownloadUrl = result[0];
+  });
 
-    bucket.upload("/Users/ccordoba/Documents/" + file.originalname, options, async function(error, fileUpload) {
-      if (!error) {
-        
-        res.status(200).send({
-          message: "Success image upload: " + fileUpload.metadata.name,
-          status: 200,
-          error: false
-        });
-
-      } else {
-        res.status(500).send({ 
-          message: error, status: 500, error: true 
-        });
+  bufferStream.pipe(file.createWriteStream({
+      metadata: {
+        contentType: req.query.metaContentType // 'image/jpeg', 'video/mp4'
       }
-    });
-    
-  }
+  }))
+  .on('error', error => {
+    res.status(500).send({ 
+          message: error, status: 500, error: true });
+  })
+  . on('finish', (file) => {
+    res.status(200).send({
+          message: "Success file upload",
+          status: 200,
+          error: false,
+          downloadURL: resDownloadUrl
+        });
+  });
+
 });
 
 module.exports = router;
