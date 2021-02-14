@@ -11,28 +11,7 @@ const dao = require("../db/index");
 
 const { logger } = require("../config/logger.js");
 const {Storage} = require('@google-cloud/storage');
-
 const Multer = require('multer');
-
-const _private_key_id = process.env['firebase_private_key_id'];
-const _private_key = process.env['firebase_private_key'].replace(/\\n/g, '\n');
-
-const storage = new Storage({
-  credentials: {
-    "type": "service_account",
-    "project_id": "bookbnb-degoas-ed",
-    "private_key_id": _private_key_id,
-    "private_key": _private_key,
-    "client_email": "firebase-adminsdk-j0yl9@bookbnb-degoas-ed.iam.gserviceaccount.com",
-    "client_id": "113541112032005868737",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-j0yl9%40bookbnb-degoas-ed.iam.gserviceaccount.com"
-  }
-});
-
-const bucket = storage.bucket("gs://bookbnb-degoas-ed.appspot.com");
 
 const multer = Multer({
   storage: Multer.memoryStorage(),
@@ -80,6 +59,26 @@ const multer = Multer({
 router.post('/upload/:idPosting', multer.single('file'), async (req, res) => {
   // if (!validToken.validToken(req, res)) return;
   // let tokenDecode = decodeToken.decodeToken(req);
+
+  const _private_key_id = process.env['firebase_private_key_id'];
+  const _private_key = process.env['firebase_private_key'].replace(/\\n/g, '\n');
+
+  const storage = new Storage({
+    credentials: {
+      "type": "service_account",
+      "project_id": "bookbnb-degoas-ed",
+      "private_key_id": _private_key_id,
+      "private_key": _private_key,
+      "client_email": "firebase-adminsdk-j0yl9@bookbnb-degoas-ed.iam.gserviceaccount.com",
+      "client_id": "113541112032005868737",
+      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+      "token_uri": "https://oauth2.googleapis.com/token",
+      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+      "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-j0yl9%40bookbnb-degoas-ed.iam.gserviceaccount.com"
+    }
+  });
+
+  const bucket = storage.bucket("gs://bookbnb-degoas-ed.appspot.com");
 
   logger.log({
     service: req.method + ": " + req.originalUrl,
