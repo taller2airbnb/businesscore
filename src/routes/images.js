@@ -119,7 +119,7 @@ router.post('/upload/:idPosting', multer.single('file'), async (req, res) => {
   .on('finish', async (file) => {
     try {
       const id_image = imagePosting[0].id_image_posting;
-      await dao.execSql("update_image_posting", [id_image, resDownloadUrl]); 
+      await dao.execSql("update_img_post", [id_image, resDownloadUrl]); 
       logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: 'Success update image_posting' });
       res.status(200).send({
         message: "Success file upload",
