@@ -18,8 +18,8 @@ const storage = new Storage({
   credentials: {
     "type": "service_account",
     "project_id": "bookbnb-degoas-ed",
-    "private_key_id": process.env[firebase_private_key_id],
-    "private_key": process.env[firebase_private_key],
+    "private_key_id": process.env['firebase_private_key_id'],
+    "private_key": process.env['firebase_private_key'],
     "client_email": "firebase-adminsdk-j0yl9@bookbnb-degoas-ed.iam.gserviceaccount.com",
     "client_id": "113541112032005868737",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
