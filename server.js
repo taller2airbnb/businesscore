@@ -29,6 +29,7 @@ app.use(require('./src/routes/rating'));
 app.use(require('./src/routes/wallet'));
 app.use(require('./src/routes/comment'));
 app.use(require('./src/routes/pushNotifications'));
+app.use(require('./src/routes/images'));
 
 
 module.exports = app;
