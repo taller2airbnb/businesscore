@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { Buffer } = require("buffer");
 const stream = require('stream');
+const uuid = require('uuid-v4');
 
 const router = Router();
 var cors = require("cors");
@@ -47,12 +48,12 @@ const multer = Multer({
  *         required: true
  *         format: base64
  *       - name: idPosting
- *         description: idposting
+ *         description: Posting
  *         in: path
  *         required: true
  *         type: number
  *       - name: metaContentType
- *         description: content type metadata
+ *         description: Content type metadata
  *         in: query
  *         required: false
  *         type: string
@@ -103,6 +104,10 @@ router.post('/upload/:idPosting', multer.single('file'), async (req, res) => {
 
   bufferStream.pipe(file.createWriteStream({
       metadata: {
+            metadata: {
+              // This line is very important. It's to create a download token.
+              firebaseStorageDownloadTokens: uuid()
+            },
         contentType: req.query.metaContentType // 'image/jpeg', 'video/mp4'
       }
   }))

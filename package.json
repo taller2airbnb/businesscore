@@ -37,6 +37,7 @@
     "supertest-as-promised": "^4.0.2",
     "swagger-jsdoc": "^4.3.1",
     "swagger-ui-express": "^4.1.4",
+    "uuid-v4": "^0.1.0",
     "winston": "^3.3.3"
   }
 }
