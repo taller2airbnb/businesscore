@@ -22,7 +22,7 @@ const multer = Multer({
 
 /**
  * @swagger
- * /upload/{idPosting}:
+ * /images/upload/{idPosting}:
  *   post:
  *     tags:
  *       - images
@@ -56,7 +56,7 @@ const multer = Multer({
  *       500:
  *         description: Server error
  */
-router.post('/upload/:idPosting', multer.single('file'), async (req, res) => {
+router.post('/images/upload/:idPosting', multer.single('file'), async (req, res) => {
   // if (!validToken.validToken(req, res)) return;
   // let tokenDecode = decodeToken.decodeToken(req);
 
@@ -147,5 +147,39 @@ router.post('/upload/:idPosting', multer.single('file'), async (req, res) => {
   });
 
 });
+
+/**
+ * @swagger
+ * /images/{idPosting}:
+ *    get:
+ *     tags:
+ *       - images
+ *     description: get images
+ *     parameters:
+ *       - name: idPosting
+ *         in: path
+ *         description: idposting
+ *         required: true
+ *         type: number
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/images/:idPosting", async (req, res) => {
+  //if (!validToken.validToken(req, res)) return;
+
+  try {
+    const response = await dao.execSql("get_images", [req.params.idPosting]);
+    res.send({ message: response, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response});
+  } catch (error) {
+    res.status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+    logger.log({service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+  };
+});
+
 
 module.exports = router;
