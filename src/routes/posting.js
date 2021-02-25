@@ -692,4 +692,49 @@ router.get("/myPostings", async (req, res) => {
   };
 });
 
+/**
+ * @swagger
+ * /posting/recomendations:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get hotels in specific area
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: latitude
+ *         in: query
+ *         required: true
+ *         type: number
+ *       - name: longitude
+ *         in: query
+ *         required: true
+ *         type: number
+ *       - name: limit
+ *         in: query
+ *         required: true
+ *         type: number
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/posting/recomendations", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    const postings = await dao.execSql("postings_recomendations", [
+      req.query.latitude,
+      req.query.longitude,
+      req.query.limit
+    ]);
+
+    res.status(200).send({ message: postings, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: postings });
+  } catch (error) {
+    logger.log({service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
 module.exports = router;
