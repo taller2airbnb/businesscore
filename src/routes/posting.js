@@ -721,10 +721,12 @@ router.get("/myPostings", async (req, res) => {
 router.get("/posting/recomendations", async (req, res) => {
   try {
     if (!validToken.validToken(req, res)) return;
+    let radio = 25;
     const postings = await dao.execSql("postings_recomendations", [
       req.query.latitude,
       req.query.longitude,
-      req.query.limit
+      req.query.limit,
+      radio
     ]);
 
     res.status(200).send({ message: postings, status: 200, error: false });
