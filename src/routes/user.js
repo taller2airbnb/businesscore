@@ -23,6 +23,7 @@ const remoteApiUrlSC = getSettingSC.getSettingSC("API_URL");
 const requesterSC = new RemoteRequester(remoteApiUrlSC);
 const apiClientSC = new ApiClient(requesterSC);
 
+const { logger } = require("../config/logger.js");
 
 /**
  * @swagger
