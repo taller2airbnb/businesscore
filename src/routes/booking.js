@@ -9,6 +9,7 @@ var decodeToken = require("./tokenController.js");
 const RemoteRequester = require("../communication/requester/RemoteRequester");
 const ApiClient = require("../communication/client/ApiClient");
 const getSettingSC = require("../../settings.js");
+const getSettingNT = require("../../settings.js");
 const handlerResponse = require("./hanlderResponse");
 const getSettingProfile = require("../../settings.js");
 
@@ -24,6 +25,11 @@ requester.setApiKey(apiKeyProfileServer);
 const apiClient = new ApiClient(requester);
 const { logger } = require("../config/logger.js");
 const { re } = require("mathjs");
+
+
+const remoteApiUrlNT = getSettingNT.getSettingNT("API_URL");
+const requesterNT = new RemoteRequester(remoteApiUrlNT);
+const apiClientNT =  new ApiClient(requesterNT);
 
 
 /**
