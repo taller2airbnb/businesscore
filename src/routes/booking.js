@@ -82,6 +82,7 @@ router.post("/intentBooking", async (req, res) => {
     body["lastDay"] = parseInt(lastDay);
     body["lastMonth"] = parseInt(lastMonth);
     body["lastYear"] = parseInt(lastYear);
+    let respNoti;
 
     //send notification to host
     try {
@@ -96,7 +97,7 @@ router.post("/intentBooking", async (req, res) => {
       requestNotification["body"] = "Dates: " + req.body.initialDate
         + " to " + req.body.lastDate + " from " + tokenDecode.payload.username;
       if (userResponse.message.push_token != null) {
-        apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
+        respNotif = await apiClientNT.sendNotification(requestNotification, handlerResponse.handlerResponse);
       } else {
         logger.log({ service: req.method + ": " + req.originalUrl, level: 'error', message: "Fail notification:" + requestNotification });
       }
