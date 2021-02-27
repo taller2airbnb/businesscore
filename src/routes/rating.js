@@ -49,7 +49,7 @@ router.post("/ratingPosting/:idPosting", async (req, res) => {
       tokenDecode.payload.id,
     ])
   )[0];
-  if (!user_is_posting_booker) {
+  if (!i_book_posting) {
     let messageError =
       "Only you can rate if you have ever booked this hotel/posting";
     res.status(400).send({ message: messageError, status: 400, error: true });
@@ -175,7 +175,7 @@ router.post("/ratingBooker/:idUser", async (req, res) => {
     const { visit_to_me } = (
       await dao.execSql("visit_to_me", [
         tokenDecode.payload.id,
-        idUser
+        req.params.idUser
       ])
     )[0];
     if (!visit_to_me) {
@@ -193,8 +193,8 @@ router.post("/ratingBooker/:idUser", async (req, res) => {
     //solo puedo calificar una vez al usuario
     const { rate_user_only_once } = (
       await dao.execSql("rate_user_only_once", [
-        req.params.idPosting,
         tokenDecode.payload.id,
+        req.params.idUser
       ])
     )[0];
     if (!rate_user_only_once) {
