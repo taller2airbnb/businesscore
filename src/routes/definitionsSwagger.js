@@ -252,7 +252,7 @@
  */
 
 
-  /**
+ /**
  * @swagger
  * definitions:
  *   BlockedStatusPosting:
@@ -260,3 +260,13 @@
  *       blocked:
  *         type: boolean
  */
+
+ /**
+ * @swagger
+ * definitions:
+ *   LikedStatusPosting:
+ *     properties:
+ *       liked:
+ *         type: boolean
+ */
+
