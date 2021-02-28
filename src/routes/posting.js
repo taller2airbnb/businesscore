@@ -739,4 +739,52 @@ router.get("/posting/recomendations", async (req, res) => {
   };
 });
 
+/**
+ * @swagger
+ * /posting/statusLike/{idPosting}:
+ *   put:
+ *     tags:
+ *       - posting
+ *     description: New posting (YYYY-MM-DD HH24:MI:SS)
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: idPosting
+ *         in: path
+ *         description: idposting
+ *         required: true
+ *         type: number
+ *       - name: body
+ *         description: Update status posting like
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/LikedStatusPosting'
+ *     responses:
+ *       200:
+ *         description: Successfully Update status liked
+ *       500:
+ *         description: Server error
+ */
+router.put("/posting/statusLike/:idPosting", async (req, res) => {
+  if (!validToken.validToken(req, res)) return;
+  let tokenDecode = decodeToken.decodeToken(req);
+
+  //TODO: validar si es el host
+  try {
+    const response = await dao.execSql("change_status_like_posting", [
+      req.params.idPosting,
+      tokenDecode.payload.id,
+      req.body.liked
+    ]);
+    res.status(200).send({ message: response, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response[0] });
+  } catch (error) {
+    logger.log({service: req.method + ": "  + req.originalUrl, level: 'error', message: error.message});
+    res.status(500).send({ message: "Data base: " + error, status: 500, error: true });
+  };
+});
+
 module.exports = router;
