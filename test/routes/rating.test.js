@@ -24,12 +24,14 @@ describe(" Test Suite: Ratings", () => {
       tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
 
       const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockResolvedValueOnce([{i_book_posting: true}]);
+      daoMock.mockResolvedValueOnce([{rate_hotel_only_once: true}]);
       daoMock.mockResolvedValueOnce([
         [
           {
             id_rating: 2,
             content: "re pistero",
-            score: 9,
+            score: 4,
             id_user_booker: 2,
             id_posting: 17,
           },
@@ -37,7 +39,7 @@ describe(" Test Suite: Ratings", () => {
       ]);
 
       const res = await request.post("/ratingPosting/17").send({
-        score: 9,
+        score: 4,
         content: "re pistero",
       });
       expect(res.body.status).toBe(200);
@@ -58,7 +60,7 @@ describe(" Test Suite: Ratings", () => {
       });
 
       const res = await request.post("/ratingPosting/17").send({
-        score: 9,
+        score: 4,
         content: "re pistero",
       });
       expect(res.body.status).toBe(500);
@@ -72,15 +74,16 @@ describe(" Test Suite: Ratings", () => {
     try {
       const tokenDecodeMock = jest.spyOn(decodeToken, "decodeToken");
       tokenDecodeMock.mockReturnValue({ payload: { id: 8 } });
-
       const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockResolvedValueOnce([{visit_to_me: true}]);
+      daoMock.mockResolvedValueOnce([{rate_user_only_once: true}]);
       daoMock.mockResolvedValueOnce([
         [
           [
             {
               "id_rating": 2,
               "content": "re buen tipo este",
-              "score": 8,
+              "score": 3,
               "id_user_owner": 2,
               "id_user_booker": 7
             }
@@ -88,8 +91,10 @@ describe(" Test Suite: Ratings", () => {
         ],
       ]);
 
+   
+
       const res = await request.post("/ratingBooker/4").send({
-        "score": 8,
+        "score": 3,
         "content": "re buen tipo este"
       });
       expect(res.body.status).toBe(200);
@@ -110,7 +115,7 @@ describe(" Test Suite: Ratings", () => {
       });
 
       const res = await request.post("/ratingBooker/4").send({
-        "score": 8,
+        "score": 3,
         "content": "re buen tipo este"
       });
       expect(res.body.status).toBe(500);
