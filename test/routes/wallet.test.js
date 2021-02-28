@@ -4,7 +4,6 @@ var dao = require("../../src/db/index");
 const dbMock = jest.spyOn(dao, "inicialize");
 dbMock.mockResolvedValueOnce({});
 const server = require('../../app.js');
-const axios = require('axios');
 var validToken = require("../../src/routes/tokenController.js");
 var decodeToken = require("../../src/routes/tokenController.js");
 var apiClient = require("../../src/communication/client/ApiClient.js")
@@ -23,7 +22,6 @@ describe(" Test Suite: wallet", () => {
     it('User get wallet', async () => {
         try {
 
-            jest.mock('axios');
             const validTokenMock = jest.spyOn(validToken, 'validToken');
             validTokenMock.mockReturnValue(true);
 
@@ -52,7 +50,6 @@ describe(" Test Suite: wallet", () => {
     it('User dont get wallet', async () => {
         try {
 
-            jest.mock('axios');
             const validTokenMock = jest.spyOn(validToken, 'validToken');
             validTokenMock.mockReturnValue(true);
 
