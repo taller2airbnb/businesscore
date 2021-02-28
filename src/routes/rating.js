@@ -41,59 +41,55 @@ const { logger } = require("../config/logger.js");
 router.post("/ratingPosting/:idPosting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   let tokenDecode = decodeToken.decodeToken(req);
-
-  //solo puedo calificar al posting si lo reserve alguna vez
-  const { i_book_posting } = (
-    await dao.execSql("i_book_posting", [
-      req.params.idPosting,
-      tokenDecode.payload.id,
-    ])
-  )[0];
-  if (!i_book_posting) {
-    let messageError =
-      "Only you can rate if you have ever booked this hotel/posting";
-    res.status(400).send({ message: messageError, status: 400, error: true });
-    logger.log({
-      service: req.method + ": " + req.originalUrl,
-      level: "error",
-      message: messageError,
-    });
-    return;
-  }
-
-  //solo puedo calificar una vez al posting
-  const { rate_hotel_only_once } = (
-    await dao.execSql("rate_hotel_only_once", [
-      req.params.idPosting,
-      tokenDecode.payload.id,
-    ])
-  )[0];
-  if (!rate_hotel_only_once) {
-    let messageError = "Only you can rate hotel/posting only one";
-    res.status(400).send({ message: messageError, status: 400, error: true });
-    logger.log({
-      service: req.method + ": " + req.originalUrl,
-      level: "error",
-      message: messageError,
-    });
-    return;
-  }
-
-  if (req.body.score < 0 || req.body.score > 5) {
-    res
-      .status(400)
-      .send({
-        message: "The score must be between 0 and 5",
-        status: 400,
-        error: true,
-      });
-    logger.log({
-      service: req.method + ": " + req.originalUrl,
-      level: "error",
-      message: "The score must be between 0 and 5",
-    });
-  }
   try {
+    //solo puedo calificar al posting si lo reserve alguna vez
+    const { i_book_posting } = (await dao.execSql("i_book_posting", [req.params.idPosting, tokenDecode.payload.id]))[0];
+    if (!i_book_posting) {
+      let messageError =
+        "Only you can rate if you have ever booked this hotel/posting";
+      res.status(400).send({ message: messageError, status: 400, error: true });
+      logger.log({
+        service: req.method + ": " + req.originalUrl,
+        level: "error",
+        message: messageError,
+      });
+      return;
+    }
+
+    //solo puedo calificar una vez al posting
+    const { rate_hotel_only_once } = (
+      await dao.execSql("rate_hotel_only_once", [
+        req.params.idPosting,
+        tokenDecode.payload.id,
+      ])
+    )[0];
+    if (!rate_hotel_only_once) {
+      let messageError = "Only you can rate hotel/posting only one";
+      res.status(400).send({ message: messageError, status: 400, error: true });
+      logger.log({
+        service: req.method + ": " + req.originalUrl,
+        level: "error",
+        message: messageError,
+      });
+      return;
+    }
+
+    if (req.body.score < 0 || req.body.score > 5) {
+      res
+        .status(400)
+        .send({
+          message: "The score must be between 0 and 5",
+          status: 400,
+          error: true,
+        });
+      logger.log({
+        service: req.method + ": " + req.originalUrl,
+        level: "error",
+        message: "The score must be between 0 and 5",
+      });
+      return;
+    }
+
     const infoRating = await dao.execSql("rating_posting", [
       tokenDecode.payload.id,
       req.params.idPosting,
@@ -154,23 +150,25 @@ router.post("/ratingPosting/:idPosting", async (req, res) => {
  */
 router.post("/ratingBooker/:idUser", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
-  let tokenDecode = decodeToken.decodeToken(req);
-  if (req.body.score < 0 || req.body.score > 5) {
-    res
-      .status(400)
-      .send({
-        message: "The score must be between 0 and 5",
-        status: 400,
-        error: true,
-      });
-    logger.log({
-      service: req.method + ": " + req.originalUrl,
-      level: "error",
-      message: "The score must be between 0 and 5",
-    });
-  }
-
   try {
+    let tokenDecode = decodeToken.decodeToken(req);
+    if (req.body.score < 0 || req.body.score > 5) {
+      res
+        .status(400)
+        .send({
+          message: "The score must be between 0 and 5",
+          status: 400,
+          error: true,
+        });
+      logger.log({
+        service: req.method + ": " + req.originalUrl,
+        level: "error",
+        message: "The score must be between 0 and 5",
+      });
+      return;
+    }
+
+
     //solo puedo calificar si el usuario me reservo
     const { visit_to_me } = (
       await dao.execSql("visit_to_me", [

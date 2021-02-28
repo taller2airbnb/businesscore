@@ -6,17 +6,19 @@
   "scripts": {
     "start": "node server.js",
     "cover": "npm run test -- --coverage",
-    "test": "jest --runInBand --forceExit"
+    "test": "jest --forceExit --runInBand"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^26.6.1",
+    "jest": "^26.6.3",
     "nodemon": "^2.0.5",
-    "supertest": "^6.0.1"
+    "supertest": "^6.0.1",
+    "webpack": "^5.18.0"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "@google-cloud/storage": "^5.7.4",
     "big-number": "^2.0.0",
     "bignumber": "1.1.0",
@@ -28,6 +30,7 @@
     "firebase": "^8.2.7",
     "jsonwebtoken": "^8.5.1",
     "mathjs": "^8.1.1",
+    "microbundle": "^0.13.0",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
@@ -39,5 +42,8 @@
     "swagger-ui-express": "^4.1.4",
     "uuid-v4": "^0.1.0",
     "winston": "^3.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }

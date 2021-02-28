@@ -1,81 +1,208 @@
-
 var supertest = require('supertest-as-promised'); 
-const server = require('../../server.js');
+var dao = require("../../src/db/index");
+const dbMock = jest.spyOn(dao, "inicialize");
+dbMock.mockResolvedValueOnce({});
+dbMock.mockResolvedValueOnce({});
+const server = require('../../app.js');
+var validToken = require("../../src/routes/tokenController.js");
+var decodeToken = require("../../src/routes/tokenController.js");
+var apiClient = require("../../src/communication/client/ApiClient.js");
+
 const request = supertest(server);
+
+
 
 describe(" Test Suite: user", () => {
 
-    xit('User register success', async () => {
-
-        const req = {
-            "alias": "cosmefulanito",
-            "email": "cosmefulanito@gmail.com",
-            "first_name": "Cosme",
-            "last_name": "Fulanito",
-            "national_id": "11111111",
-            "national_id_type": "DNI",
-            "password": "cosmefulanito1123",
-            "profile": 0
-        }
-
-        const res = await request.post('/profile-register').send(req);
-        expect(res.status).toBe(200);
+    beforeEach(() => {
+        jest.resetAllMocks();
+        const validTokenMock = jest.spyOn(validToken, "validToken");
+        validTokenMock.mockReturnValue(true);
+        dbMock.mockResolvedValueOnce({});
     });
 
-    xit('User register bad request', async () => {
+    it("Get user by id", async () => {
+    try {
 
-        const req = {
-            "alias": "cosmefulanito",
-            "email": "cosmefulanito@gmail.com",
-            "first_name": "Cosme",
-            "last_name": "Fulanito",
-            "national_id": "11111111",
-            "national_id_type": "DNI",
-            "password": "cosmefulanito1123",
-            "profile": 0
-        }
+      const apiClientMock = jest.spyOn(apiClient.prototype, "getUser");
+      apiClientMock.mockResolvedValueOnce({
+        status: 200,
+        message: {
+            alias: "hardtokill",
+            blocked: false,
+            email: "hard@to.kill",
+            first_name: "John",
+            id: 3,
+            last_name: "McClane",
+            national_id: "77777777",
+            national_id_type: "DNI",
+            profile: 2,
+            push_token: null,
+        },
+        error: false
+      });
 
-        const res = await request.post('/profile-register').send(req);
-        expect(res.status).toBe(200);
-    });
+      const daoMock = jest.spyOn(dao, "execSql");
+      daoMock.mockResolvedValueOnce([{ "get_creator_id": 2 }]);
+      const apiClientWalletMock = jest.spyOn(apiClient.prototype, "getWallet");
+      apiClientWalletMock.mockResolvedValueOnce({
+          status: 200,
+          message: "unaWallet",
+          error: false
+      });
 
-    xit('User register duplicate', async () => {
+      const res = await request.get("/user/3").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
-        const req = {
-            "alias": "cosmefulanito",
-            "email": "cosmefulanito@gmail.com",
-            "first_name": "Cosme",
-            "last_name": "Fulanito",
-            "national_id": "11111111",
-            "national_id_type": "DNI",
-            "password": "cosmefulanito1123",
-            "profile": 0
-        }
+  it("Get users", async () => {
+    try {
+      const apiClientMock = jest.spyOn(apiClient.prototype, "getUsers");
+      apiClientMock.mockResolvedValueOnce({
+        status: 200,
+        message: [{
+            alias: "hardtokill",
+            blocked: false,
+            email: "hard@to.kill",
+            first_name: "John",
+            id: 3,
+            last_name: "McClane",
+            national_id: "77777777",
+            national_id_type: "DNI",
+            profile: 2,
+            push_token: null,
+        }],
+        error: false
+      });
 
-        const res = await request.post('/profile-register').send(req);
-        expect(res.status).toBe(200);
-    });
+      const res = await request.get("/user").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
-    xit('User login success', async () => {
+  it("Register user", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const apiClientMock = jest.spyOn(apiClient.prototype, "register");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "unRegistroPAPAAAA",
+          error: false
+      });
 
-        const req = {
-            "email": "cosmefulanito@gmail.com",
-            "password": "cosmefulanito1123",
-        }
+      daoMock.mockResolvedValueOnce([{ "get_creator_id": 2 }]);
 
-        const res = await request.post('/profile-login').send(req);
-        expect(res.status).toBe(200);
-    });
+      const createIdentityMock = jest.spyOn(apiClient.prototype, "createIdentity");
+      createIdentityMock.mockResolvedValueOnce({
+        status: 200,
+        message: {
+          id: 201,
+          address: "0x45b5ecb08E4dc0639afB7E5F5e01C099714089b5",
+          mnemonic: "abandon abandon abandon abandon ability merry six sight jazz ordinary equal about",
+        },
+        error: false,
+      });
 
-    xit('User login fail', async () => {
+      apiClientMock.mockResolvedValueOnce([
+        {
+          insert_user_wallet: "",
+        },
+      ]);
 
-        const req = {
-            "email": "cosmefulanito@gmail.com",
-            "password": "111",
-        }
+      const res = await request.post("/register").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
 
-        const res = await request.post('/profile-login').send(req);
-        expect(res.status).toBe(200);
-    });
-  
+  it("Login user", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      let apiClientMock = jest.spyOn(apiClient.prototype, "login");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "unLogin",
+          error: false
+      });
+
+      daoMock.mockResolvedValueOnce([{ "get_creator_id": 2 }]);
+
+      apiClientMock = jest.spyOn(apiClient.prototype, "getWallet");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "unaWallet",
+          error: false
+      });
+
+      const res = await request.post("/login").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Change user pass", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const apiClientMock = jest.spyOn(apiClient.prototype, "changePassword");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "Cuchu Cambiaso",
+          error: false
+      });
+
+      const res = await request.put("/user/hard@to.kill/password/").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Recover token", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const apiClientMock = jest.spyOn(apiClient.prototype, "recoverToken");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "Rescatate un token",
+          error: false
+      });
+
+      const res = await request.post("/recover_token/hard@to.kill").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+  it("Block status", async () => {
+    try {
+      const daoMock = jest.spyOn(dao, "execSql");
+      const apiClientMock = jest.spyOn(apiClient.prototype, "blockedStatus");
+      apiClientMock.mockResolvedValueOnce({
+          status: 200,
+          message: "Te bloquea con de todo",
+          error: false
+      });
+
+      const res = await request.put("/user/2/blocked_status/").send();
+      expect(res.body.status).toBe(200);
+      expect(res.body.error).toBe(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+            
 });
