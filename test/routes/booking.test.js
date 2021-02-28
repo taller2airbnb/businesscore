@@ -28,6 +28,27 @@ describe(" Test Suite: Bookings", () => {
       daoMock.mockResolvedValueOnce([{ get_creator_id: 8 }]);
       daoMock.mockResolvedValueOnce([{ get_transaction_hash_room: "unaTransactionRoom" }]);
 
+      //notificacion
+      daoMock.mockResolvedValueOnce([{ name: "un hotel" }]);
+
+      const apiClientUserMock = jest.spyOn(apiClient.prototype, "getUser");
+      apiClientUserMock.mockReturnValue({
+        status: 200,
+        message: {
+          alias: "hardtokill",
+          blocked: false,
+          email: "hard@to.kill",
+          first_name: "John",
+          id: 3,
+          last_name: "McClane",
+          national_id: "77777777",
+          national_id_type: "DNI",
+          profile: 2,
+          push_token: null,
+        },
+        error: false
+      });
+
       const apiClientMock = jest.spyOn(apiClient.prototype, "intentBooking");
       apiClientMock.mockReturnValue({
         status: 200,
@@ -89,6 +110,27 @@ describe(" Test Suite: Bookings", () => {
       daoMock.mockResolvedValueOnce([{ get_creator_id: 8 }]);
       daoMock.mockResolvedValueOnce([{ get_transaction_hash_room: "unaTransactionRoom" }]);
 
+      //notificacion
+      daoMock.mockResolvedValueOnce([{ name: "un hotel" }]);
+
+      const apiClientUserMock = jest.spyOn(apiClient.prototype, "getUser");
+      apiClientUserMock.mockReturnValue({
+        status: 200,
+        message: {
+          alias: "hardtokill",
+          blocked: false,
+          email: "hard@to.kill",
+          first_name: "John",
+          id: 3,
+          last_name: "McClane",
+          national_id: "77777777",
+          national_id_type: "DNI",
+          profile: 2,
+          push_token: null,
+        },
+        error: false
+      });
+
       const apiClientMock = jest.spyOn(apiClient.prototype, "intentBooking");
       apiClientMock.mockReturnValue({
         status: 401,
@@ -135,16 +177,16 @@ describe(" Test Suite: Bookings", () => {
       apiClientMock.mockReturnValue({
         status: 200,
         message: {
-            alias: "hardtokill",
-            blocked: false,
-            email: "hard@to.kill",
-            first_name: "John",
-            id: 3,
-            last_name: "McClane",
-            national_id: "77777777",
-            national_id_type: "DNI",
-            profile: 2,
-            push_token: null,
+          alias: "hardtokill",
+          blocked: false,
+          email: "hard@to.kill",
+          first_name: "John",
+          id: 3,
+          last_name: "McClane",
+          national_id: "77777777",
+          national_id_type: "DNI",
+          profile: 2,
+          push_token: null,
         },
         error: false
       });
@@ -204,6 +246,30 @@ describe(" Test Suite: Bookings", () => {
       });
 
       daoMock.mockResolvedValueOnce([{}]);
+
+
+      //notificacion
+      daoMock.mockResolvedValueOnce([{ get_user_id: 4 }]);
+      daoMock.mockResolvedValueOnce([{ name: "un hotel" }]);
+
+      const apiClientUserMock = jest.spyOn(apiClient.prototype, "getUser");
+      apiClientUserMock.mockReturnValue({
+        status: 200,
+        message: {
+          alias: "hardtokill",
+          blocked: false,
+          email: "hard@to.kill",
+          first_name: "John",
+          id: 3,
+          last_name: "McClane",
+          national_id: "77777777",
+          national_id_type: "DNI",
+          profile: 2,
+          push_token: null,
+        },
+        error: false
+      });
+
       const res = await request.post("/acceptBooking").send({
         "transactionHash": "0xc41adbc118cb0cdf7f086a9f7baacd84442455e00e215d98140a2c92e87b344f"
       });
@@ -295,6 +361,29 @@ describe(" Test Suite: Bookings", () => {
       });
 
       daoMock.mockResolvedValueOnce([{}]);
+
+      //notificacion
+      daoMock.mockResolvedValueOnce([{ get_user_id: 4 }]);
+      daoMock.mockResolvedValueOnce([{ name: "un hotel" }]);
+
+      const apiClientUserMock = jest.spyOn(apiClient.prototype, "getUser");
+      apiClientUserMock.mockReturnValue({
+        status: 200,
+        message: {
+          alias: "hardtokill",
+          blocked: false,
+          email: "hard@to.kill",
+          first_name: "John",
+          id: 3,
+          last_name: "McClane",
+          national_id: "77777777",
+          national_id_type: "DNI",
+          profile: 2,
+          push_token: null,
+        },
+        error: false
+      });
+
       const res = await request.post("/rejectBooking").send({
         "transactionHash": "0xc41adbc118cb0cdf7f086a9f7baacd84442455e00e215d98140a2c92e87b344f"
       });
@@ -505,23 +594,23 @@ describe(" Test Suite: Bookings", () => {
 
       const apiClientMockTransactons = jest.spyOn(apiClient.prototype, "transactions");
       apiClientMockTransactons.mockReturnValue({
-        "status":200,
-        "message":{
-           "transactions":[
-              {
-                 "transaction_hash_room":"0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
-                 "transaction_hash":"0x8422434e062a36d4df5f84d6427b134ae8ea881b8aee3191d114aa94b253ab70",
-                 "wallet_owner":"0x8ea99D0dAc6015289AaA485a12A75B81062D6912",
-                 "creator_id_owner":20,
-                 "wallet_booker":"0x5d527ee765d4806FF2af49bd783B8c11bD5B1841",
-                 "creator_id_booker":16,
-                 "operation":"ACCEPTED_BOOKING",
-                 "payment":"50000000000000",
-                 "creation_date":"2021-01-30T22:14:53.021Z"
-              }
-           ]
+        "status": 200,
+        "message": {
+          "transactions": [
+            {
+              "transaction_hash_room": "0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
+              "transaction_hash": "0x8422434e062a36d4df5f84d6427b134ae8ea881b8aee3191d114aa94b253ab70",
+              "wallet_owner": "0x8ea99D0dAc6015289AaA485a12A75B81062D6912",
+              "creator_id_owner": 20,
+              "wallet_booker": "0x5d527ee765d4806FF2af49bd783B8c11bD5B1841",
+              "creator_id_booker": 16,
+              "operation": "ACCEPTED_BOOKING",
+              "payment": "50000000000000",
+              "creation_date": "2021-01-30T22:14:53.021Z"
+            }
+          ]
         },
-        "error":false
+        "error": false
       });
 
       const daoMock = jest.spyOn(dao, "execSql");
@@ -538,16 +627,16 @@ describe(" Test Suite: Bookings", () => {
       apiClientUsers.mockResolvedValueOnce({
         status: 200,
         message: {
-            alias: "hardtokill",
-            blocked: false,
-            email: "hard@to.kill",
-            first_name: "John",
-            id: 3,
-            last_name: "McClane",
-            national_id: "77777777",
-            national_id_type: "DNI",
-            profile: 2,
-            push_token: null,
+          alias: "hardtokill",
+          blocked: false,
+          email: "hard@to.kill",
+          first_name: "John",
+          id: 3,
+          last_name: "McClane",
+          national_id: "77777777",
+          national_id_type: "DNI",
+          profile: 2,
+          push_token: null,
         },
         error: false
       });
@@ -610,23 +699,23 @@ describe(" Test Suite: Bookings", () => {
 
       const apiClientMockTransactons = jest.spyOn(apiClient.prototype, "transactions");
       apiClientMockTransactons.mockReturnValue({
-        "status":200,
-        "message":{
-           "transactions":[
-              {
-                 "transaction_hash_room":"0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
-                 "transaction_hash":"0x8422434e062a36d4df5f84d6427b134ae8ea881b8aee3191d114aa94b253ab70",
-                 "wallet_owner":"0x8ea99D0dAc6015289AaA485a12A75B81062D6912",
-                 "creator_id_owner":20,
-                 "wallet_booker":"0x5d527ee765d4806FF2af49bd783B8c11bD5B1841",
-                 "creator_id_booker":16,
-                 "operation":"ACCEPTED_BOOKING",
-                 "payment":"50000000000000",
-                 "creation_date":"2021-01-30T22:14:53.021Z"
-              }
-           ]
+        "status": 200,
+        "message": {
+          "transactions": [
+            {
+              "transaction_hash_room": "0xdbb8fe79357a6816287057f39b9533a13e97438908a2266a1fff9f0b52d5171f",
+              "transaction_hash": "0x8422434e062a36d4df5f84d6427b134ae8ea881b8aee3191d114aa94b253ab70",
+              "wallet_owner": "0x8ea99D0dAc6015289AaA485a12A75B81062D6912",
+              "creator_id_owner": 20,
+              "wallet_booker": "0x5d527ee765d4806FF2af49bd783B8c11bD5B1841",
+              "creator_id_booker": 16,
+              "operation": "ACCEPTED_BOOKING",
+              "payment": "50000000000000",
+              "creation_date": "2021-01-30T22:14:53.021Z"
+            }
+          ]
         },
-        "error":false
+        "error": false
       });
 
       const daoMock = jest.spyOn(dao, "execSql");

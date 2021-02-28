@@ -54,6 +54,7 @@ const { logger } = require("../config/logger.js");
 router.post("/notification", async (req, res, next) => {
   if (!validToken.validToken(req, res)) return;
   try {
+    
     let userResponse = await apiClient.getUser(
       req.query.idUser,
       handlerResponse.handlerResponse

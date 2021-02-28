@@ -359,6 +359,14 @@ router.delete("/posting/:idPosting", async (req, res) => {
  *         required: false
  *         type: number
  *         description: '2'
+ *       - name: latitude
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: longitude
+ *         in: query
+ *         required: false
+ *         type: number
  *     responses:
  *          '200':
  *           description:  OK
@@ -366,6 +374,7 @@ router.delete("/posting/:idPosting", async (req, res) => {
 router.get("/posting/search", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   try {
+    let radio = 25;
     const response = await dao.execSql("search_posting", [
       req.query.priceMin,
       req.query.priceMax,
@@ -373,7 +382,10 @@ router.get("/posting/search", async (req, res) => {
       req.query.endDate,
       req.query.feature,
       req.query.name,
-      req.query.max_number_guests
+      req.query.max_number_guests,
+      req.query.latitude,
+      req.query.longitude,
+      radio
     ]);
     res.send({ message: response, status: 200, error: false });
     logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response });
@@ -520,6 +532,14 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
  *         required: false
  *         type: number
  *         description: '2'
+ *       - name: latitude
+ *         in: query
+ *         required: false
+ *         type: number
+ *       - name: longitude
+ *         in: query
+ *         required: false
+ *         type: number
  *     responses:
  *          '200':
  *           description:  OK
@@ -527,6 +547,7 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
 router.get("/posting/searchLiked", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
   try {
+    let radio = 25;
     const response = await dao.execSql("search_posting_liked", [
       req.query.priceMin,
       req.query.priceMax,
@@ -534,7 +555,10 @@ router.get("/posting/searchLiked", async (req, res) => {
       req.query.endDate,
       req.query.feature,
       req.query.name,
-      req.query.max_number_guests
+      req.query.max_number_guests,
+      req.query.latitude,
+      req.query.longitude,
+      radio
     ]);
     res.send({ message: response, status: 200, error: false });
     logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: response });
@@ -663,6 +687,53 @@ router.get("/myPostings", async (req, res) => {
     res
       .status(500)
       .send({ message: "Get my postings failed: " + error, status: 500, error: true });
+  };
+});
+
+/**
+ * @swagger
+ * /posting/recomendations:
+ *    get:
+ *     tags:
+ *       - posting
+ *     description: get hotels in specific area
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: latitude
+ *         in: query
+ *         required: true
+ *         type: number
+ *       - name: longitude
+ *         in: query
+ *         required: true
+ *         type: number
+ *       - name: limit
+ *         in: query
+ *         required: true
+ *         type: number
+ *     responses:
+ *          '200':
+ *           description:  OK
+ */
+router.get("/posting/recomendations", async (req, res) => {
+  try {
+    if (!validToken.validToken(req, res)) return;
+    let radio = 25;
+    const postings = await dao.execSql("postings_recomendations", [
+      req.query.latitude,
+      req.query.longitude,
+      req.query.limit,
+      radio
+    ]);
+
+    res.status(200).send({ message: postings, status: 200, error: false });
+    logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: postings });
+  } catch (error) {
+    logger.log({service: req.method + ": " + req.originalUrl, level: 'error', message: error.message });
+    res
+      .status(500)
+      .send({ message: "Data base: " + error, status: 500, error: true });
   };
 });
 
