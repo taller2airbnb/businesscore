@@ -1,5 +1,8 @@
 
 var supertest = require('supertest-as-promised'); 
+var dao = require("../../src/db/index");
+const dbMock = jest.spyOn(dao, "inicialize");
+dbMock.mockResolvedValueOnce({});
 const server = require('../../src/routes/index.js');
 const request = supertest(server);
 
