@@ -23,7 +23,7 @@ const { logger } = require("../config/logger.js");
  *    get:
  *     tags:
  *       - posting
- *     description: get posting
+ *     description: get posting - X es latitud y Y es longitud
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -365,10 +365,12 @@ router.delete("/posting/:idPosting", async (req, res) => {
  *         in: query
  *         required: false
  *         type: number
+ *         description: 'es la X'
  *       - name: longitude
  *         in: query
  *         required: false
  *         type: number
+ *         description: 'es la Y'
  *     responses:
  *          '200':
  *           description:  OK
