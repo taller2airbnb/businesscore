@@ -207,13 +207,17 @@ router.put("/posting/:idPosting", async (req, res) => {
       return;
     }
 
+    await dao.execSql("update_features_posting", [
+      req.params.idPosting,
+      req.body.features
+    ]);
+
     const responseUpdate = await dao.execSql("update_posting", [
       req.params.idPosting,
       req.body.price_day,
       req.body.start_date,
       req.body.end_date,
       req.body.state,
-      //TODO: req.body.features,
       req.body.public,
       req.body.content,
       req.body.name,
@@ -223,6 +227,7 @@ router.put("/posting/:idPosting", async (req, res) => {
       req.body.latitude,
       req.body.longitude
     ]);
+
     res.status(200).send({ message: responseUpdate[0], status: 200, error: false });
     logger.log({ service: req.method + ": " + req.originalUrl, level: 'info', message: responseUpdate[0] });
   } catch (error) {
