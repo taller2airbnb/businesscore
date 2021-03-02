@@ -37,13 +37,16 @@ const { logger } = require("../config/logger.js");
  */
 router.get("/posting", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
+  let tokenDecode = decodeToken.decodeToken(req);
   try {
-    const postings = await dao.execSql("get_posting", [req.query.idPosting]);
+    const postings = await dao.execSql("get_posting", [tokenDecode.payload.id,
+      req.query.idPosting,
+      ]);
 
     await Promise.all(
       postings.map(async (posting) => {
         const features = await dao.execSql("get_feature_by_posting", [
-          posting.id_posting,
+          posting.id_posting
         ]);
         posting["features"] = (features.map((x) => (x.id_feature))).join(',');;
       })
