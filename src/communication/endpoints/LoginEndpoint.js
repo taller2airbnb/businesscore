@@ -16,6 +16,6 @@ module.exports = class LoginEndpoint extends Endpoint {
     }
 
     needsAuthorization() {
-        return false;
+        return true;
     }
 }

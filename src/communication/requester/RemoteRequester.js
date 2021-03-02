@@ -8,16 +8,16 @@ module.exports = class RemoteRequester extends Requester {
         this._baseUrl = url;
     }
 
+    setApiKey(apikey){
+        this._apiKey = apikey;
+    }
+
     call({endpoint, onResponse, data = undefined}) {
         const request = this._buildRequest(endpoint, data);
         let url = endpoint.url();
-        //TODO: implementar el post 
-        // if (endpoint.method() === 'GET' && data) {
-        //     url += "?" + this._dataToQueryString(data);
-        // }
         return fetch(this._baseUrl + url, request)
         .then(result => {
-            return  [result.status != 400 && result.status && 500 ? result.json() : "", result.status] ; 
+            return  [result.status != 400 && result.status != 500 ? result.json() : "", result.status] ; 
         }) 
         .then(result => {
             return onResponse(this._buildResponse(result, endpoint));
@@ -63,13 +63,16 @@ module.exports = class RemoteRequester extends Requester {
                 }
             }
         }
-        return new ErrorApiResponse(result[1]);
+        return new ErrorApiResponse(result[0],result[1]);
     }
 
     _buildHeadersFor(endpoint) {
         let headers = {};
         if (endpoint.contentType() && endpoint.contentType() !== "multipart/form-data") {
             headers['Content-Type'] = endpoint.contentType();
+            if (endpoint.needsAuthorization()){
+                headers['Token'] = this._apiKey;
+            }
         }
 
         return headers;

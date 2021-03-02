@@ -3,19 +3,26 @@ const ChangePasswordSuccessful = require("../responses/user/ChangePasswordSucces
 const InvalidCredentials = require("../responses/login/InvalidCredentials");
 
 module.exports = class ChangePasswordEndpoint extends Endpoint {
-    static url() {
-        return '/change_password/'
-    }
+
+    constructor(user_mail) {
+        super();
+        this._user_mail = user_mail;
+      }
+      
+      url() {
+        return "/user/" +  this._user_mail + "/password/";
+      }
+    
 
     ownResponses() {
         return [ChangePasswordSuccessful, InvalidCredentials];
     }
 
     method() {
-        return 'POST'
+        return 'PUT'
     }
 
     needsAuthorization() {
-        return false;
+        return true;
     }
 }

@@ -8,7 +8,7 @@
  *       last_name:
  *         type: string
  *       id:
- *         type: string
+ *         type: number
  *       national_id_type:
  *         type: string
  *       national_id:
@@ -50,6 +50,18 @@
  *         type: boolean
  *       content:
  *         type: string 
+ *       name:
+ *         type: string 
+ *       country:
+ *         type: string
+ *       city:
+ *         type: string  
+ *       max_number_guests:
+ *         type: number
+ *       latitude:
+ *         type: number
+ *       longitude:
+ *         type: number     
  */
 
  /**
@@ -57,8 +69,6 @@
  * definitions:
  *   PostingPut:
  *     properties:
- *       price_day:
- *         type: number
  *       start_date:
  *         type: string
  *       end_date:
@@ -71,6 +81,19 @@
  *         type: boolean
  *       content:
  *         type: string
+ *       name:
+ *         type: string
+ *       country:
+ *         type: string
+ *       city:
+ *         type: string  
+ *       max_number_guests:
+ *         type: number  
+ *       latitude:
+ *         type: number
+ *       longitude:
+ *         type: number  
+ 
  */
 
  
@@ -117,10 +140,133 @@
  * definitions:
  *   ChangePassword:
  *     properties:
- *       email:
+ *       new_password:
  *         type: string
- *       password:
- *         type: string
- *       validate:
+ *       token:
  *         type: string
  */
+
+
+ /**
+ * @swagger
+ * definitions:
+ *   intentBooking:
+ *     properties:
+ *       idPosting:
+ *         type: number
+ *       initialDate:
+ *         type: string
+ *       lastDate:
+ *         type: string
+ */
+
+ 
+ /**
+ * @swagger
+ * definitions:
+ *   BlockedStatus:
+ *     properties:
+ *       new_status:
+ *         type: boolean
+ */
+
+
+ /**
+ * @swagger
+ * definitions:
+ *   AcceptBooking:
+ *     properties:
+ *       transactionHash:
+ *         type: string
+ */
+
+/**
+ * @swagger
+ * definitions:
+ *   RejectBooking:
+ *     properties:
+ *       transactionHash:
+ *         type: string
+ */
+
+
+/**
+ * @swagger
+ * definitions:
+ *   PricePut:
+ *     properties:
+ *       priceRoom:
+ *         type: number
+ */
+
+ /**
+ * @swagger
+ * definitions:
+ *   RatingAdd:
+ *     properties:
+ *       score:
+ *         type: number
+ *       content:
+ *         type: string
+ */
+
+  /**
+ * @swagger
+ * definitions:
+ *   CommentAdd:
+ *     properties:
+ *       content:
+ *         type: string
+ *       linkedComment:
+ *         type: number
+ */
+
+   /**
+ * @swagger
+ * definitions:
+ *   CommentDel:
+ *     properties:
+ *       idComment:
+ *         type: number
+ */
+
+
+ /**
+ * @swagger
+ * definitions:
+ *   ChangePushToken:
+ *     properties:
+ *       push_token:
+ *         type: string
+ */
+
+ /**
+ * @swagger
+ * definitions:
+ *   PushNotification:
+ *     properties:
+ *       body:
+ *         type: string
+ *       title:
+ *         type: string
+ */
+
+
+ /**
+ * @swagger
+ * definitions:
+ *   BlockedStatusPosting:
+ *     properties:
+ *       blocked:
+ *         type: boolean
+ */
+
+ /**
+ * @swagger
+ * definitions:
+ *   LikedStatusPosting:
+ *     properties:
+ *       liked:
+ *         type: boolean
+ */
+

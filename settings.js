@@ -13,3 +13,17 @@ module.exports.getSettingProfile = function getSettingProfile(variableName) {
     return process.env[variableFullName];
 }
 
+module.exports.getSettingSC = function getSettingSC(variableName) {
+    const variablePrefix = 'SMART_CONTRACT_';
+    const variableFullName = variablePrefix + variableName;
+    
+    return process.env[variableFullName];
+}
+
+module.exports.getSettingNT = function getSettingNT(variableName) {
+    const variablePrefix = 'NOTIFICATION_';
+    const variableFullName = variablePrefix + variableName;
+    
+    return process.env[variableFullName];
+}
+

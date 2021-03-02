@@ -8,18 +8,11 @@ module.exports = class ChangePasswordSuccessful extends SuccessfulApiResponse {
     };
   }
 
-  static understandThis(response) {
-    return response.status >= 200 && response.status < 300  ;
-  }
 
-  static getMessage() {
-    return "Credential changed successful";
+  constructor(result) {
+    super(result[0], result[1]);
   }
-
-  static hasError(){
-    return false;
-  }
-
+  
   static statusCode(){
     return 200;
   }

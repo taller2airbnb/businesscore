@@ -1,10 +1,10 @@
 const Endpoint = require("./Endpoint.js");
-const RegisterSuccessful = require("../responses/user/RegisterSuccessful");
-const InvalidRegister = require("../responses/user/InvalidRegister");
+const GetUserSuccessful = require("../responses/user/GetUserSuccessful");
+const InvalidGetUser = require("../responses/user/InvalidGetUser");
 
 ("use strict");
 
-module.exports = class RegisterAdminEndpoint extends Endpoint {
+module.exports = class GetUserEndpoint extends Endpoint {
 
   constructor(userId) {
     super();
@@ -20,10 +20,10 @@ module.exports = class RegisterAdminEndpoint extends Endpoint {
   }
 
   needsAuthorization() {
-    return false;
+    return true;
   }
 
   ownResponses() {
-    return [RegisterSuccessful, InvalidRegister];
+    return [GetUserSuccessful, InvalidGetUser];
 }
 };
