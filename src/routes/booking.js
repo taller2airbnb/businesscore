@@ -217,7 +217,7 @@ router.post("/acceptBooking", async (req, res) => {
       requestNotification["to"] = userResponse.message.push_token;
       requestNotification["title"] = "Accept Booking:" + posting.name;
       requestNotification["body"] = "Dates: " + requestAcceptBooking.initial_year + "-"
-        + requestAcceptBooking.initial_month + "-" + requestAcceptBooking.last_day
+        + requestAcceptBooking.initial_month + "-" + requestAcceptBooking.initial_day
         + " to " + requestAcceptBooking.last_year + "-"
         + requestAcceptBooking.last_month + "-" + requestAcceptBooking.last_day + " from " + tokenDecode.payload.username;
       if (userResponse.message.push_token != null) {
@@ -290,7 +290,7 @@ router.post("/rejectBooking", async (req, res) => {
       requestNotification["to"] = userResponse.message.push_token;
       requestNotification["title"] = "Reject Booking:" + posting.name;
       requestNotification["body"] = "Dates: " + requestRejectBooking.initial_year + "-"
-        + requestRejectBooking.initial_month + "-" + requestRejectBooking.last_day
+        + requestRejectBooking.initial_month + "-" + requestRejectBooking.initial_day
         + " to " + requestRejectBooking.last_year + "-"
         + requestRejectBooking.last_month + "-" + requestRejectBooking.last_day + " from " + tokenDecode.payload.username;
       if (userResponse.message.push_token != null) {
