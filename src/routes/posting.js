@@ -509,10 +509,6 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - name: userId
- *         in: query
- *         required: false
- *         type: number
  *       - name: priceMin
  *         in: query
  *         required: false
@@ -560,10 +556,11 @@ router.put("/priceRoom/:idPosting", async (req, res) => {
  */
 router.get("/posting/searchLiked", async (req, res) => {
   if (!validToken.validToken(req, res)) return;
+  let tokenDecode = decodeToken.decodeToken(req);
   try {
     let radio = 25;
     const response = await dao.execSql("search_posting_liked", [
-      req.query.userId,
+      tokenDecode.payload.id,
       req.query.priceMin,
       req.query.priceMax,
       req.query.startDate,
