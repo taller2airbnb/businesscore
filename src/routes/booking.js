@@ -410,13 +410,13 @@ router.get("/transactions", async (req, res) => {
 
     await Promise.all(transactions.map(async infoTransactions => {
 
-      const owner_id = (await dao.execSql("get_user_id", [infoTransactions.creator_id_booker]))[0];
+      const owner_id = (await dao.execSql("get_user_id", [infoTransactions.creator_id_owner]))[0];
       const booker_id = (await dao.execSql("get_user_id", [infoTransactions.creator_id_booker]))[0];
       const { get_name_posting } = (await dao.execSql("get_name_posting", [infoTransactions.transaction_hash_room]))[0];
 
 
-      let booker = (await apiClient.getUser(owner_id.get_user_id, handlerResponse.handlerResponse)).message;
-      let owner = ( await apiClient.getUser(booker_id.get_user_id, handlerResponse.handlerResponse)).message;
+      let booker = (await apiClient.getUser(booker_id.get_user_id, handlerResponse.handlerResponse)).message;
+      let owner = ( await apiClient.getUser(owner_id.get_user_id, handlerResponse.handlerResponse)).message;
 
       infoTransactions["name_posting"] = get_name_posting;
       infoTransactions["first_name_booker"] = booker.first_name;
